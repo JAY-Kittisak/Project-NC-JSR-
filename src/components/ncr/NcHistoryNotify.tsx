@@ -38,6 +38,7 @@ const NcHistoryNotify: React.FC<Props> = ({ historyTitle }) => {
                                 key={tab}
                                 label={tab}
                                 historyTitle={historyTitle}
+                                tabType={'ncStatus'}
                             />
                         ))}
                     </NcTabStyled>

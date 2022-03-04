@@ -47,7 +47,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## set Admin
     0. /jsr-nc ตาม ep.26
-    1. firebase functions:config:set admin.super_admin="tim@test.com"
+    1. firebase functions:config:set admin.super_admin="<Email>"
     2. firebase deploy --only functions
 ## แก้ error
     0. ลบ "eslint:recommended", ใน .eslintrc.js

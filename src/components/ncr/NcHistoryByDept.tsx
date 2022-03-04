@@ -39,6 +39,7 @@ const NcHistoryByDept: React.FC<Props> = ({ dept , branch}) => {
                             key={tab}
                             label={tab}
                             historyTitle=''
+                            tabType='dept'
                         />
                     ))}
                 </NcTabStyled>

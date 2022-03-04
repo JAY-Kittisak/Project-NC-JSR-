@@ -58,6 +58,7 @@ function HomePage() {
             </HomePageStyled>
             <MainLayout>
                 <News />
+                <br />
                 <Holiday />
             </MainLayout>
         </>

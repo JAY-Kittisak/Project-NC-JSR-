@@ -6,7 +6,7 @@ import Button from '../Button'
 import Input from '../Input'
 // import SocialMediaLogin from './SocialMediaLogin'
 import { useModalContext } from '../../state/modal-context'
-import { useAuthenticate } from '../../hooks'
+import { useAuthenticate } from '../../hooks/useAuthenticate'
 import { SignUpData } from "../../types";
 
 interface Props { }

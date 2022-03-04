@@ -170,6 +170,7 @@ const lineNotify = async (
     url: string
 ) => {
   const topicUrl = `ประเด็นความไม่สอดคล้อง: ${topic}\nตอบ NC คลิก: ${url}`;
+  const numCode = `เลขที่ ${code}`;
 
   try {
     await axios({
@@ -179,7 +180,7 @@ const lineNotify = async (
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`,
       },
-      data: `message=เลขที่ ${code}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
+      data: `message=${numCode}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
     }).then((response) => {
       console.log("Line Notify response status:", response.status);
     });
@@ -199,6 +200,7 @@ const lineNotifyCdc = async (
     url: string
 ) => {
   const topicUrl = `ประเด็นความไม่สอดคล้อง: ${topic}\nตอบ NC คลิก: ${url}`;
+  const numCode = `เลขที่ ${code}`;
 
   try {
     await axios({
@@ -208,7 +210,7 @@ const lineNotifyCdc = async (
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${tokenCdc}`,
       },
-      data: `message=เลขที่ ${code}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
+      data: `message=${numCode}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
     }).then((response) => {
       console.log("Line Notify response status:", response.status);
     });
@@ -263,7 +265,6 @@ export const onNcCreated = functions.firestore
               .get();
 
           if (nc.branch === "ลาดกระบัง") {
-
             lineNotify(
                 nc.code,
                 nc.creator.username,
@@ -337,7 +338,6 @@ export const onNcCreated = functions.firestore
             // Update the counts document in the nc-counts collection
             return {updateCount, updateCountCode};
           } else {
-
             lineNotifyCdc(
                 nc.code,
                 nc.creator.username,
@@ -412,3 +412,57 @@ export const onNcCreated = functions.firestore
             return {updateCountCdc, updateCountCodeCdc};
           }
         });
+
+export const onNcUpdated = functions.firestore
+    .document(`${ncNotifyCollection}/{ncId}`)
+    .onUpdate(async (snapshot, context) => {
+      const beforeProd = snapshot.before.data() as NcrNotify;
+      const afterProd = snapshot.after.data() as NcrNotify;
+
+      // Check if the status has been changed
+      if (beforeProd.ncStatus !== afterProd.ncStatus) {
+      // If status is changed
+        if (afterProd.branch === "ลาดกระบัง") {
+          const countsData = await admin
+              .firestore()
+              .collection(ncCountsCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          if (!countsData.exists) return;
+
+          const counts = countsData.data() as Counts;
+
+          // Update the counts object
+          counts[beforeProd.ncStatus] = counts[beforeProd.ncStatus] - 1;
+          counts[afterProd.ncStatus] = counts[afterProd.ncStatus] + 1;
+
+          await admin
+              .firestore()
+              .collection(ncCountsCollection)
+              .doc(ncCountsDocument)
+              .set(counts);
+        } else {
+          const countsDataCdc = await admin
+              .firestore()
+              .collection(ncCountsCdcCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          if (!countsDataCdc.exists) return;
+
+          const countsCdc = countsDataCdc.data() as Counts;
+
+          // Update the counts object
+          countsCdc[beforeProd.ncStatus] = countsCdc[beforeProd.ncStatus] - 1;
+          countsCdc[afterProd.ncStatus] = countsCdc[afterProd.ncStatus] + 1;
+
+          await admin
+              .firestore()
+              .collection(ncCountsCdcCollection)
+              .doc(ncCountsDocument)
+              .set(countsCdc);
+        }
+      }
+    }
+    );
