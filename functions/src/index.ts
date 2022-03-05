@@ -167,10 +167,12 @@ const lineNotify = async (
     username: string,
     dept: string,
     topic: string,
-    url: string
+    status: string,
 ) => {
-  const topicUrl = `ประเด็นความไม่สอดคล้อง: ${topic}\nตอบ NC คลิก: ${url}`;
   const numCode = `เลขที่ ${code}`;
+  const showStatus = `สถานะ: ${status}`;
+  const answerUrl = `ตอบ NC คลิก: ${"jsr-nc.web.app"}`;
+  const topicUrl = `ประเด็น: ${topic}\n${showStatus}\n${answerUrl}`;
 
   try {
     await axios({
@@ -197,10 +199,12 @@ const lineNotifyCdc = async (
     username: string,
     dept: string,
     topic: string,
-    url: string
+    status: string,
 ) => {
-  const topicUrl = `ประเด็นความไม่สอดคล้อง: ${topic}\nตอบ NC คลิก: ${url}`;
   const numCode = `เลขที่ ${code}`;
+  const showStatus = `สถานะ: ${status}`;
+  const answerUrl = `ตอบ NC คลิก: ${"jsr-nc.web.app"}`;
+  const topicUrl = `ประเด็น: ${topic}\n${showStatus}\n${answerUrl}`;
 
   try {
     await axios({
@@ -270,7 +274,7 @@ export const onNcCreated = functions.firestore
                 nc.creator.username,
                 nc.dept,
                 nc.topic,
-                "jsr-nc.web.app/nc/answer"
+                nc.ncStatus
             );
 
             if (!countsData.exists) {
@@ -343,7 +347,7 @@ export const onNcCreated = functions.firestore
                 nc.creator.username,
                 nc.dept,
                 nc.topic,
-                "jsr-nc.web.app/nc/answer"
+                nc.ncStatus
             );
 
             if (!countsDataCdc.exists) {
@@ -423,6 +427,14 @@ export const onNcUpdated = functions.firestore
       if (beforeProd.ncStatus !== afterProd.ncStatus) {
       // If status is changed
         if (afterProd.branch === "ลาดกระบัง") {
+          lineNotify(
+              afterProd.code,
+              afterProd.creator.username,
+              afterProd.dept,
+              afterProd.topic,
+              afterProd.ncStatus
+          );
+
           const countsData = await admin
               .firestore()
               .collection(ncCountsCollection)
@@ -443,6 +455,14 @@ export const onNcUpdated = functions.firestore
               .doc(ncCountsDocument)
               .set(counts);
         } else {
+          lineNotifyCdc(
+              afterProd.code,
+              afterProd.creator.username,
+              afterProd.dept,
+              afterProd.topic,
+              afterProd.ncStatus
+          );
+
           const countsDataCdc = await admin
               .firestore()
               .collection(ncCountsCdcCollection)
