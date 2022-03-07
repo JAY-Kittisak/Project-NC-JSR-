@@ -22,6 +22,7 @@ type WidthProps = {
 
 const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
     const {
+        creatorName,
         code,
         createdAt,
         category,
@@ -29,7 +30,6 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
         topic,
         detail,
         topicType,
-        creator,
         follow,
         approve,
         branch
@@ -77,7 +77,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                     <WidthStyled width='100%'>
                         <div className='flex-between'>
                             <p>
-                                <span className='title-en'>From: </span> {creator.username}
+                                <span className='title-en'>From: </span> {creatorName}
                             </p>
                             <p>
                                 <span className='title-en'>To: </span>{dept}
@@ -284,7 +284,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
-                                    <p>{creator.username}</p>
+                                    <p>{creatorName}</p>
                                     <p>ผู้ออก NC</p>
 
                                     {follow?.followedAt && (

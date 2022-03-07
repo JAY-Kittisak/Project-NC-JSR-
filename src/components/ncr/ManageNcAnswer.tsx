@@ -160,6 +160,8 @@ const ManageNcAnswer: React.FC<Props> = ({
 
     })
 
+    const editBoolean = (userInfo?.dept === ncToDept) && ((ncStatus === 'รอตอบ') || (ncStatus === 'ไม่อนุมัติ'))
+
     useEffect(() => {
         if (addAnswerNcFinished) {
             setSelectedFile(null)
@@ -188,6 +190,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="containmentAction">การแก้ไขเบื้องต้น</label>
                         <textarea
+                            readOnly={!editBoolean}
                             cols={30}
                             rows={2}
                             name="containmentAction"
@@ -203,6 +206,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <div className="form-field">
                             <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
                             <input
+                                readOnly={!editBoolean}
                                 type="date"
                                 name='containmentDueDate'
                                 id="containmentDueDate"
@@ -214,6 +218,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <div className="form-field">
                             <label htmlFor="containmentName">ผู้รับผิดชอบ</label>
                             <input
+                                readOnly={!editBoolean}
                                 type="text"
                                 name='containmentName'
                                 id="containmentName"
@@ -231,6 +236,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="rootCause">สาเหตุของปัญหา</label>
                         <textarea
+                            readOnly={!editBoolean}
                             cols={30}
                             rows={2}
                             name="rootCause"
@@ -246,6 +252,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="correctiveAction">การแก้ไขปัญหาและการป้องกัน</label>
                         <textarea
+                            readOnly={!editBoolean}
                             cols={30}
                             rows={2}
                             name="correctiveAction"
@@ -261,6 +268,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <div className="form-field">
                             <label htmlFor="correctiveDueDate">กำหนดเสร็จ</label>
                             <input
+                                readOnly={!editBoolean}
                                 type="date"
                                 name='correctiveDueDate'
                                 id="correctiveDueDate"
@@ -272,6 +280,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <div className="form-field">
                             <label htmlFor="correctiveName">ผู้รับผิดชอบ</label>
                             <input
+                                readOnly={!editBoolean}
                                 type="text"
                                 name='correctiveName'
                                 id="correctiveName"
@@ -291,6 +300,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='qp'
@@ -304,6 +314,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='sd'
@@ -317,6 +328,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='wi'
@@ -330,6 +342,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='km'
@@ -343,6 +356,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='opl'
@@ -356,6 +370,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='risk'
@@ -369,6 +384,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='kaizen'
@@ -382,6 +398,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                         <CheckboxStyled>
                             <div className="group">
                                 <input
+                                    disabled={!editBoolean}
                                     type="checkbox"
                                     name="editedDoc"
                                     id='อื่น'
@@ -397,6 +414,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <div className="form-field mb-one">
                         <label htmlFor="docDetail">เลขที่เอกสาร/เอกสารอื่นๆ(หากมี)</label>
                         <textarea
+                            readOnly={!editBoolean}
                             cols={30}
                             rows={2}
                             name="docDetail"
@@ -486,8 +504,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                                 </FlexStyled>
 
                             )}
-                    {userInfo?.dept === ncToDept && (
-                        ((ncStatus === 'รอตอบ') || (ncStatus === 'ไม่อนุมัติ')) && (
+                    {editBoolean && (
                             <Button
                                 type='submit'
                                 loading={loading}
@@ -495,7 +512,6 @@ const ManageNcAnswer: React.FC<Props> = ({
                             >
                                 {ncAnswer ? 'อัพเดท' : 'บันทึก'}
                             </Button>
-                        )
                     )}
                 </form>
                 {error && <p className='paragraph-error'>{error}</p>}

@@ -117,6 +117,7 @@ export type NcrNotify = {
     fileNcName?: string
     ncStatus: StatusNc
     branch: string
+    creatorName: string
     creator: UserCreator
     follow?: FollowNc
     approve?: ApproveNc
@@ -130,8 +131,7 @@ export type UploadFollowNc = Omit<FollowNc, 'followedAt'> & {followedAt: firebas
 export type UploadApproveNc = Omit<ApproveNc,'approvedAt'> & {approvedAt: firebase.firestore.FieldValue}
 
 export type AddNcrNotifyData = Pick<
-    NcrNotify,
-    'code' | 'category' | 'dept' | 'topic' | 'topicType' | 'detail' | 'fileNcName'
+    NcrNotify, 'creatorName' |'code' | 'category' | 'dept' | 'topic' | 'topicType' | 'detail' | 'fileNcName'
 >
 
 export type AddFollowNcData = Pick<

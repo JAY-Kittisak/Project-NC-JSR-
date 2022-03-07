@@ -35,7 +35,7 @@ const NonConformances: React.FC<Props> = ({ user }) => {
                                 setAlertWarning={setAlertWarning} 
                                 setAlertState={setAlertState}
                             />
-                            <NcHistoryNotify historyTitle="ประวัติการออก NC" />
+                            <NcHistoryNotify />
                         </>
                     )}
 

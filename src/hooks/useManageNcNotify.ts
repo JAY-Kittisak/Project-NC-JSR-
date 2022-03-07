@@ -32,7 +32,7 @@ export const useManageNcNotify = () => {
         ncStatus: StatusNc
     ) => {
         
-        const { category, dept, topic, topicType, detail } = data
+        const {creatorName, category, dept, topic, topicType, detail } = data
         
         setLoading(true)
         setAddNcNotifyFinished(false)
@@ -88,6 +88,7 @@ export const useManageNcNotify = () => {
                     // 2. Create a new document in the nc-notify collection in firestore, requires nc-notify data and the image url
     
                     const newNcNotify: UploadNcNotify = {
+                        creatorName,
                         code: codeFinished,
                         category,
                         dept,
@@ -126,6 +127,7 @@ export const useManageNcNotify = () => {
         } else {
 
             const newNcNotify: UploadNcNotify = {
+                creatorName,
                 code: codeFinished,
                 category,
                 dept,

@@ -7,15 +7,20 @@ import { orderTabs } from '../../helpers'
 import Spinner from '../Spinner'
 import { useQueryNcByDept } from '../../hooks/useQueryNcByDept'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
-import { Branch } from '../../types'
+import { Branch, NcrTab } from '../../types'
+import { useSelectTab } from '../../hooks/useSelectTab'
+
+export const prodTabType = 'ncStatus'
 
 interface Props {
     dept: string
     branch: Branch
 }
 
-const NcHistoryByDept: React.FC<Props> = ({ dept , branch}) => {
+const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
     const { ncByDept, loading, error } = useQueryNcByDept(dept, branch)
+    const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
+    // const [ncByStatus, setNcByStatus] = useState(ncByDept[activeTab])
 
     if (loading) return (
         <SpinnerStyled>
@@ -38,8 +43,8 @@ const NcHistoryByDept: React.FC<Props> = ({ dept , branch}) => {
                         <Tab
                             key={tab}
                             label={tab}
-                            historyTitle=''
-                            tabType='dept'
+                            tabType={prodTabType}
+                            activeTab={activeTab}
                         />
                     ))}
                 </NcTabStyled>
@@ -124,4 +129,4 @@ const HistoryDetail = styled.section`
     }
 `
 
-export default NcHistoryByDept
+export default NcHistoryToDept

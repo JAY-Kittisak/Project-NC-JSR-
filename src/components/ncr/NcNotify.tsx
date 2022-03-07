@@ -71,17 +71,9 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
 
     const handleAddNotifyNc = handleSubmit(async (data) => {
         if (!user || !filterDept) return
-
-        let initial: 'J' | 'C' = 'J'
-        let email = ''
-
-        if (user.branch === 'ลาดกระบัง') {
-            initial = 'J'
-            email = filterDept[0].emailJsr
-        } else {
-            initial = 'C'
-            email = filterDept[0].emailCdc
-        }
+        
+        const initial = user.branch === 'ลาดกระบัง' ? 'J' : 'C'
+        const email = user.branch === 'ลาดกระบัง' ? filterDept[0].emailJsr : filterDept[0].emailCdc
 
         const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
 
@@ -158,6 +150,16 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p>{errors.category?.message}</p>
                 )}
+                
+                <div className="form-field">
+                    <label htmlFor="containmentName">ชื่อผู้ออก NC</label>
+                    <input
+                        type="text"
+                        name='creatorName'
+                        id="creatorName"
+                        ref={register({ required: 'โปรดใส่ชื่อผู้ออก NC' })}
+                    />
+                </div>
                 <div className='flex-between'>
                     {departments &&<div className="form-field">
                         <label htmlFor="dept">

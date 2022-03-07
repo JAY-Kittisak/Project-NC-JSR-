@@ -1,15 +1,29 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styled from 'styled-components'
 
 import NcHistoryNotifyItem from './NcHistoryNotifyItem'
+import Tab from '../Tab'
 import Spinner from '../Spinner'
+import { orderTabs } from '../../helpers'
 import { useNcContext } from '../../state/nc-context'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
+import { useSelectTab } from '../../hooks/useSelectTab'
+import { NcrTab } from '../../types'
+
+export const prodTabType = ''
 
 interface Props {}
 
-const NcHistoryNotify: React.FC<Props> = () => {
+const NcHistoryAdminView: React.FC<Props> = () => {
     const { ncState: { ncNotify, loading, error } } = useNcContext()
+    const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
+
+    const [ncByStatus, setNcByStatus] = useState(ncNotify[activeTab])
+
+    // When the tab changed
+    useEffect(() => {
+        setNcByStatus(ncNotify[activeTab])
+    }, [activeTab, ncNotify])
 
     if (loading) return (
         <SpinnerStyled>
@@ -22,10 +36,21 @@ const NcHistoryNotify: React.FC<Props> = () => {
 
     if (error) return <h2 className='header--center'>{error}</h2>
 
+
     return (
         <NcHistory>
             <HistoryHeader>
-                <h4>ประวัติการออก NC</h4>
+                <h4>ประวัติการออก NC ทั้งหมด</h4>
+                    <NcTabStyled>
+                        {orderTabs.map((tab) => (
+                            <Tab
+                                key={tab}
+                                label={tab}
+                                tabType={prodTabType}
+                                activeTab={activeTab}
+                            />
+                        ))}
+                    </NcTabStyled>
                 {/* <NcPaginationStyled>
 
                 </NcPaginationStyled> */}
@@ -46,7 +71,7 @@ const NcHistoryNotify: React.FC<Props> = () => {
                         <h3 className='header--center'>สถานะ</h3>
                     </div>
                 </div>
-                {(!ncNotify || ncNotify.All.length === 0) ? (<h2>No NC.</h2>) : ncNotify.All.map(item => (
+                {ncByStatus.map(item => (
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
@@ -64,6 +89,13 @@ const NcHistory = styled.div`
         border-left: 5px solid #e74c3c;
         padding-left: 16px;
     }
+`
+
+const NcTabStyled = styled.div`
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    height: 2rem;
 `
 
 // const NcPaginationStyled = styled.div`
@@ -101,4 +133,4 @@ const HistoryDetail = styled.section`
     }
 `
 
-export default NcHistoryNotify
+export default NcHistoryAdminView

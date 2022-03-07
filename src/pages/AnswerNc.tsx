@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import NcHistoryByDept from '../components/ncr/NcHistoryByDept'
+import NcHistoryToDept from '../components/ncr/NcHistoryToDept'
 import Title from '../components/Title'
 import { useAuthContext } from '../state/auth-context'
 import { InnerLayout, MainLayout } from '../styles/LayoutStyle'
@@ -16,7 +16,7 @@ const AnswerNc: React.FC<Props> = () => {
                 <InnerLayout>
                     {(!userInfo || userInfo.dept === 'null') ? (
                         <h2 className='header--center'>No. User INFO หรือยังไม่ได้มีการตั้งค่าแผนกของคุณ</h2>
-                    ) : (<NcHistoryByDept dept={userInfo.dept} branch={userInfo.branch}/>)}
+                    ) : (<NcHistoryToDept dept={userInfo.dept} branch={userInfo.branch}/>)}
                     
                 </InnerLayout>
             </AnswerNcStyled>

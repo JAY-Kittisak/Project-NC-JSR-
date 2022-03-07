@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { MainLayout,InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
-import NcHistoryNotify from '../components/ncr/NcHistoryNotify'
+import NcHistoryAdminView from '../components/ncr/NcHistoryAdminView'
 
 interface Props { }
 
@@ -13,7 +13,7 @@ const ManageNc: React.FC<Props> = () => {
             <Title title={'Manage NCR'} span={'Manage NCR'} />
             <ManageNcStyled>
                 <InnerLayout>
-                    <NcHistoryNotify historyTitle="จัดการเอกสาร"/>
+                    <NcHistoryAdminView />
                 </InnerLayout>
             </ManageNcStyled>
         </MainLayout>

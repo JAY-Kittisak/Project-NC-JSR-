@@ -100,6 +100,7 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
                         rows={3}
                         name="approveDetail"
                         id="approveDetail"
+                        disabled={userInfo?.dept !== 'QMR'}
                         defaultValue={approve?.approveDetail ? approve.approveDetail : ''}
                         ref={register}
                     />

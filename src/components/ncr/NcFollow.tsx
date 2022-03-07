@@ -95,6 +95,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                         rows={3}
                         name="followDetail"
                         id="followDetail"
+                        readOnly={creatorId !== userInfo?.id}
                         defaultValue={follow?.followDetail ? follow.followDetail : ''}
                         ref={register}
                     />
