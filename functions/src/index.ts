@@ -4,8 +4,10 @@ import axios from "axios";
 
 admin.initializeApp();
 
-const token = "IxBSr7gT0NIKMS0cty7dkF1uvyt7Q1eG7lhepbpDeG6";
-const tokenCdc = "Feg1407WsyiJDDWzubQlQzDbvUllAljcrUsCyGn9Vyk";
+const token = "srd1JED7b2IKW9HXyEgkpDJQutgS07n57UCLijRyXkI";
+const tokenCdc = "srd1JED7b2IKW9HXyEgkpDJQutgS07n57UCLijRyXkI";
+// const token = "IxBSr7gT0NIKMS0cty7dkF1uvyt7Q1eG7lhepbpDeG6";
+// const tokenCdc = "Feg1407WsyiJDDWzubQlQzDbvUllAljcrUsCyGn9Vyk";
 const lineNotifyUrl = "https://notify-api.line.me/api/notify";
 
 const env = functions.config();

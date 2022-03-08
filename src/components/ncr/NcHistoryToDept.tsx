@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState ,useEffect} from 'react'
 import styled from 'styled-components'
 
 import Tab from '../Tab'
@@ -20,7 +20,12 @@ interface Props {
 const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
     const { ncByDept, loading, error } = useQueryNcByDept(dept, branch)
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
-    // const [ncByStatus, setNcByStatus] = useState(ncByDept[activeTab])
+    const [ncByStatus, setNcByStatus] = useState(ncByDept[activeTab])
+    
+    // When the tab changed
+    useEffect(() => {
+        setNcByStatus(ncByDept[activeTab])
+    }, [activeTab, ncByDept])
 
     if (loading) return (
         <SpinnerStyled>
@@ -66,7 +71,7 @@ const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
                         <h3 className='header--center'>สถานะ</h3>
                     </div>
                 </div>
-                {(!ncByDept || ncByDept.length === 0) ? (<h2>No NC.</h2>) : ncByDept.map(item => (
+                {ncByStatus.map(item => (
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>

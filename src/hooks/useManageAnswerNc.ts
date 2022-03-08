@@ -50,12 +50,12 @@ export const useManageAnswerNc = () => {
     const addNewAnswerNc = (
         data: AddAnswerNcData, 
         ncId: string,
-        answerName: string,
     ) => (
         fileAnswerNcUrl: string | undefined,
         filePath: string | undefined
     ) => {
         const { 
+            answerName,
             containmentAction,
             containmentDueDate,
             containmentName,
@@ -153,13 +153,13 @@ export const useManageAnswerNc = () => {
         answerNcId: string,
         data: AddAnswerNcData, 
         ncId: string,
-        answerName: string,
         ncStatus: StatusNc
     ) => (
         fileAnswerNcUrl: string | undefined, 
         filePath: string | undefined
     ) => {
         const { 
+            answerName,
             containmentAction,
             containmentDueDate,
             containmentName,

@@ -150,16 +150,18 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p>{errors.category?.message}</p>
                 )}
-                
                 <div className="form-field">
-                    <label htmlFor="containmentName">ชื่อผู้ออก NC</label>
+                    <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้ออก NC</label>
                     <input
                         type="text"
                         name='creatorName'
                         id="creatorName"
-                        ref={register({ required: 'โปรดใส่ชื่อผู้ออก NC' })}
+                        ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
                     />
                 </div>
+                {errors && (
+                    <p>{errors.creatorName?.message}</p>
+                )}
                 <div className='flex-between'>
                     {departments &&<div className="form-field">
                         <label htmlFor="dept">

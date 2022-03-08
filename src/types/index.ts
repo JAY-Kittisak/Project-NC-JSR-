@@ -131,7 +131,15 @@ export type UploadFollowNc = Omit<FollowNc, 'followedAt'> & {followedAt: firebas
 export type UploadApproveNc = Omit<ApproveNc,'approvedAt'> & {approvedAt: firebase.firestore.FieldValue}
 
 export type AddNcrNotifyData = Pick<
-    NcrNotify, 'creatorName' |'code' | 'category' | 'dept' | 'topic' | 'topicType' | 'detail' | 'fileNcName'
+    NcrNotify, 
+    | 'creatorName' 
+    |'code' 
+    | 'category' 
+    | 'dept' 
+    | 'topic' 
+    | 'topicType' 
+    | 'detail' 
+    | 'fileNcName'
 >
 
 export type AddFollowNcData = Pick<
@@ -149,7 +157,8 @@ export type UploadAnswerNc = Omit<NcAnswer, 'id' | 'createdAt' | 'updatedAt'> & 
     updatedAt?: firebase.firestore.FieldValue
 }
 export type AddAnswerNcData = Pick<
-    NcAnswer, 
+    NcAnswer,
+    | 'answerName'
     | 'containmentAction' 
     | 'containmentDueDate' 
     | 'containmentName' 
@@ -178,3 +187,5 @@ export type CountsCode = { counts: number }
 export type AlertNt = "show" | "hide"
 
 export type AlertType = 'success' | 'warning'
+
+export type Nc = { [key in NcrTab]: NcrNotify[] }

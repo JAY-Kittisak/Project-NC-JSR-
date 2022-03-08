@@ -57,3 +57,6 @@ export const orderTabs: NcrTab[] = [
 export const categories: CatNc[] = ['NCR', 'CCR', 'SCR']
 
 export type AlertNotify = "show" | "hide"
+
+export const calculateTotalPages = (totalItems: number, perPage: number) =>
+  Math.ceil(totalItems / perPage)

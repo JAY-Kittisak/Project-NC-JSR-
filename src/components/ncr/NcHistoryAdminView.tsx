@@ -1,29 +1,44 @@
-import React,{useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import NcHistoryNotifyItem from './NcHistoryNotifyItem'
 import Tab from '../Tab'
 import Spinner from '../Spinner'
-import { orderTabs } from '../../helpers'
+import Pagination from '../Pagination'
 import { useNcContext } from '../../state/nc-context'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
 import { useSelectTab } from '../../hooks/useSelectTab'
-import { NcrTab } from '../../types'
+import { usePagination } from '../../hooks/usePagination'
+import { orderTabs } from '../../helpers'
+import { NcrTab ,NcrNotify} from '../../types'
 
-export const prodTabType = ''
+export const prodTabType = 'ncStatus'
+export const ncPerPage = 2
 
-interface Props {}
+interface Props { }
 
 const NcHistoryAdminView: React.FC<Props> = () => {
-    const { ncState: { ncNotify, loading, error } } = useNcContext()
+    const { ncState: { ncNotify, ncCounts, loading, error } } = useNcContext()
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
 
+    const [ncByDemo, setNcByDemo] = useState(ncNotify[activeTab])
     const [ncByStatus, setNcByStatus] = useState(ncNotify[activeTab])
+
+    const {page, totalPages} = usePagination<NcrTab, NcrNotify>(
+        ncCounts[activeTab],
+        ncPerPage,
+        activeTab,
+        ncByDemo
+    )
 
     // When the tab changed
     useEffect(() => {
-        setNcByStatus(ncNotify[activeTab])
-    }, [activeTab, ncNotify])
+        const startIndex = ncPerPage * (page - 1)
+        const endIndex = ncPerPage * page
+
+        setNcByDemo(ncNotify[activeTab])
+        setNcByStatus(ncNotify[activeTab].slice(startIndex, endIndex))
+    }, [activeTab, ncNotify, page])
 
     if (loading) return (
         <SpinnerStyled>
@@ -36,25 +51,31 @@ const NcHistoryAdminView: React.FC<Props> = () => {
 
     if (error) return <h2 className='header--center'>{error}</h2>
 
-
     return (
         <NcHistory>
             <HistoryHeader>
                 <h4>ประวัติการออก NC ทั้งหมด</h4>
-                    <NcTabStyled>
-                        {orderTabs.map((tab) => (
-                            <Tab
-                                key={tab}
-                                label={tab}
-                                tabType={prodTabType}
-                                activeTab={activeTab}
-                            />
-                        ))}
-                    </NcTabStyled>
-                {/* <NcPaginationStyled>
-
-                </NcPaginationStyled> */}
+                <NcTabStyled>
+                    {orderTabs.map((tab) => (
+                        <Tab
+                            key={tab}
+                            label={tab}
+                            tabType={prodTabType}
+                            activeTab={activeTab}
+                            withPagination={true}
+                        />
+                    ))}
+                </NcTabStyled>
             </HistoryHeader>
+
+            <NcPaginationStyled>
+                <Pagination
+                    page={page}
+                    totalPages={totalPages}
+                    tabType={prodTabType}
+                    activeTab={activeTab}
+                />
+            </NcPaginationStyled>
 
             <HistoryDetail>
                 <div className="nc-content">
@@ -98,11 +119,11 @@ const NcTabStyled = styled.div`
     height: 2rem;
 `
 
-// const NcPaginationStyled = styled.div`
-//     margin-bottom: 1rem;
-//     display: flex;
-//     justify-content: flex-end;
-// `
+const NcPaginationStyled = styled.div`
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+`
 
 const HistoryHeader = styled.section`
     display: flex;

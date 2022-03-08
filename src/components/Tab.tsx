@@ -6,6 +6,7 @@ interface Props<T> {
     label: T
     tabType: string
     activeTab: T
+    withPagination?: boolean
 }
 
 interface PropStyled {
@@ -18,11 +19,17 @@ function getLabelColor(label: string, activeTab: string) {
     else return ""
 }
 
-const Tab = <T extends string>({ label, tabType, activeTab}: Props<T>) => {
+const Tab = <T extends string>({ label, tabType, activeTab, withPagination }: Props<T>) => {
     const { pathname } = useLocation()
 
     return (
-        <Link to={`${pathname}?${tabType}=${label}`}>
+        <Link 
+            to={
+                withPagination 
+                    ? `${pathname}?${tabType}=${label}&page=1` 
+                    : `${pathname}?${tabType}=${label}`
+            }
+        >
             <ParagraphStyled label={label} activeTab={activeTab}>
                 {label}
             </ParagraphStyled>
@@ -34,7 +41,7 @@ const ParagraphStyled = styled.p`
     margin: 1rem .8rem 1rem 0rem;
     padding: 0;
     text-align: start;
-    color: ${(props: PropStyled) => getLabelColor(props.label,props.activeTab)};
+    color: ${(props: PropStyled) => getLabelColor(props.label, props.activeTab)};
 
     &:hover {
         color: var(--primary-color);

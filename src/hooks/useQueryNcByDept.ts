@@ -1,12 +1,22 @@
 import { useState, useEffect } from 'react'
 
 import { useAsyncCall } from './useAsyncCall'
-import { NcrNotify, Branch } from '../types'
+import { NcrNotify, Branch, NcrTab ,Nc} from '../types'
 import { ncNotifyRef, snapshotToDoc } from '../firebase'
+
+const initialNc: Nc = {
+    All: [],
+    รอตอบ: [],
+    ตอบแล้ว: [],
+    รอปิด: [],
+    ไม่อนุมัติ: [],
+    ปิดแล้ว: [],
+}
 
 export const useQueryNcByDept = (dept: string, branch: Branch) => {
     const { loading, setLoading, error, setError } = useAsyncCall()
-    const [ncByDept, setNcByDept] = useState<NcrNotify[] | null>(null)
+    // const [ncByDept, setNcByDept] = useState<NcrNotify[] | null>(null)
+    const [ncByDept, setNcByDept] = useState(initialNc)
 
     useEffect(() => {
         setLoading(true)
@@ -20,7 +30,7 @@ export const useQueryNcByDept = (dept: string, branch: Branch) => {
                 const allNc: NcrNotify[] = []
 
                 if (!snapshots) {
-                    setNcByDept(null)
+                    setNcByDept(initialNc)
                     setError('Nc not found.')
                     setLoading(false)
                     return
@@ -31,13 +41,25 @@ export const useQueryNcByDept = (dept: string, branch: Branch) => {
 
                     allNc.push(ncr)
                 })
+
+                const updatedNc: any = {}
+    
+                Object.keys(initialNc).forEach(ncStatus => {
+                    const status = ncStatus as NcrTab
+
+                    status === 'All' 
+                        ? (updatedNc.All = allNc) 
+                        : (updatedNc[status] = allNc.filter(
+                            (item) => item.ncStatus === status
+                        ))
+                })
                 
-                setNcByDept(allNc)
+                setNcByDept(updatedNc)
                 setLoading(false)
             },
             error: (err) => {
                 setError(err.message)
-                setNcByDept(null)
+                setNcByDept(initialNc)
                 setLoading(false)
             },
         })

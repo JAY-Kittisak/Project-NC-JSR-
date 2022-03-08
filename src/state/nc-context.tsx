@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 
 import { useAsyncCall } from '../hooks/useAsyncCall'
-import { NcrTab, NcrNotify, CatNc } from '../types'
+import { NcrTab, NcrNotify, CatNc ,Nc} from '../types'
 import { 
     ncNotifyRef, 
     snapshotToDoc,
@@ -18,19 +18,8 @@ import {
 import { useAuthContext } from './auth-context'
 import { isAdmin, isClient } from '../helpers'
 
-interface Props {
+interface Props {}
 
-}
-
-// {
-//     All: [ {topic: 'xxx', category: 'xxx', ...}],
-//     Issue: [ {topic: 'xxx', category: 'xxx', ...}],
-//     รอตอบ: [ {topic: 'xxx', category: 'xxx', ...}],
-//     รอปิด: [ {topic: 'xxx', category: 'xxx', ...}],
-//     ปิดแล้ว: [ {topic: 'xxx', category: 'xxx', ...}],
-// }
-
-type Nc = { [key in NcrTab]: NcrNotify[] }
 type NcCounts = { [key in NcrTab | CatNc]: number}
 type NcrState = {
     ncNotify: Nc
@@ -46,7 +35,7 @@ type NcDispatch ={
 const NcStateContext = createContext<NcrState | undefined>(undefined)
 const NcDispatchContext = createContext<NcDispatch | undefined>(undefined)
 
-const initialNc: Nc = {
+export const initialNc: Nc = {
     All: [],
     รอตอบ: [],
     ตอบแล้ว: [],
@@ -123,6 +112,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         } else if (isAdmin(userInfo.role)) {
         // If the user i an admin, query all Departments.
             unsubscribe = ncNotifyRef
+                .where('branch', '==', 'ชลบุรี')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot({
                     next: (snapshots) => {
