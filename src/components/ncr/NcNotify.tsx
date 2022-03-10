@@ -96,7 +96,6 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     })
 
     useEffect(() => {
-
         if (departments) {
             const filterTopic = departments.filter((value) => value.dept === dept)
             const mapTopic = filterTopic.map(item => item.topic)
@@ -104,7 +103,9 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             setTopic(mapIs)
             setFilterDept(filterTopic)
         }
+    }, [departments, dept])
 
+    useEffect(() => {
         if (addNcNotifyFinished) {
             reset()
             setSelectedFile(null)
@@ -113,8 +114,6 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             setAlertWarning('show')
         }
     }, [
-        departments,
-        dept,
         addNcNotifyFinished, 
         reset,
         setUploadProgression,

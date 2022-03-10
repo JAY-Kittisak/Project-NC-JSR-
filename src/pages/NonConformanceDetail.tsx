@@ -60,6 +60,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
     if (!nc) return <h2 className='header--center'>Error Non Conformance Detail</h2>
 
     const {
+        creatorName,
         code,
         createdAt,
         category,
@@ -93,11 +94,10 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 <span>วันที่ :</span><SpanStyled>{formatDate(createdAt)}</SpanStyled>
                                 <span>Type : </span><SpanStyled>{category}</SpanStyled>
                             </p>
-                            <p>
-                                ออกโดย :<SpanStyled>{creator.username}</SpanStyled>
-                                <span>แผนก :</span><SpanStyled>{creator.dept}</SpanStyled>
-                                <span>อีเมล :</span><SpanStyled>{creator.email}</SpanStyled>
-                            </p>
+                            <div className="form-field">
+                                <label htmlFor="name">ชื่อ-นามสกุล ผู้ออก NC</label>
+                                <input readOnly type="text" id="name" value={creatorName + ' แผนก ' + creator.dept} />
+                            </div>
                             <div className='flex-between'>
                                 <div className="form-field">
                                     <label htmlFor="name">ถึงแผนก</label>

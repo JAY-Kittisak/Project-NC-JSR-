@@ -23,10 +23,10 @@ const userCountsDocument = "counts";
 
 type Branch = "ลาดกระบัง" | "ชลบุรี"
 type Role = "SUPER_ADMIN" | "CLIENT" | "ADMIN"
-type StatusNc = "รอตอบ"| "ตอบแล้ว"| "รอปิด"| "ไม่อนุมัติ" | "ปิดแล้ว"
+type StatusNc = "รอตอบ" | "ตอบแล้ว" | "รอปิด" | "ไม่อนุมัติ" | "ปิดแล้ว"
 type CatNc = "NCR" | "CCR" | "SCR"
 type TopicType = "Product" | "Product"
-type CountsCode = {counts: number}
+type CountsCode = { counts: number }
 type Counts = {
   [key in "All" | CatNc | StatusNc]: number
 }
@@ -37,6 +37,7 @@ type UserCreator = {
   email: string
 }
 type NcrNotify = {
+  creatorName: string
   code: string
   category: CatNc
   dept: string
@@ -109,7 +110,7 @@ export const updateUser = functions.https.onCall(async (data, context) => {
     // Check Authorization
     const adminUser = await admin.auth().getUser(context.auth.uid);
 
-    const {role} = adminUser.customClaims as {role: Role};
+    const {role} = adminUser.customClaims as { role: Role };
 
     if (role !== "SUPER_ADMIN") throw new Error("No authorization");
 
@@ -164,18 +165,7 @@ export const onUserCreated = functions.firestore
       }
     });
 
-const lineNotify = async (
-    code: string,
-    username: string,
-    dept: string,
-    topic: string,
-    status: string,
-) => {
-  const numCode = `เลขที่ ${code}`;
-  const showStatus = `สถานะ: ${status}`;
-  const answerUrl = `ตอบ NC คลิก: ${"jsr-nc.web.app"}`;
-  const topicUrl = `ประเด็น: ${topic}\n${showStatus}\n${answerUrl}`;
-
+const lineNotify = async (message: string) => {
   try {
     await axios({
       method: "post",
@@ -184,7 +174,7 @@ const lineNotify = async (
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`,
       },
-      data: `message=${numCode}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
+      data: message,
     }).then((response) => {
       console.log("Line Notify response status:", response.status);
     });
@@ -196,18 +186,7 @@ const lineNotify = async (
   }
 };
 
-const lineNotifyCdc = async (
-    code: string,
-    username: string,
-    dept: string,
-    topic: string,
-    status: string,
-) => {
-  const numCode = `เลขที่ ${code}`;
-  const showStatus = `สถานะ: ${status}`;
-  const answerUrl = `ตอบ NC คลิก: ${"jsr-nc.web.app"}`;
-  const topicUrl = `ประเด็น: ${topic}\n${showStatus}\n${answerUrl}`;
-
+const lineNotifyCdc = async (message: string) => {
   try {
     await axios({
       method: "post",
@@ -216,7 +195,7 @@ const lineNotifyCdc = async (
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${tokenCdc}`,
       },
-      data: `message=${numCode}\nFrom: ${username}\nTo: ${dept}\n${topicUrl}`,
+      data: message,
     }).then((response) => {
       console.log("Line Notify response status:", response.status);
     });
@@ -233,6 +212,10 @@ export const onNcCreated = functions.firestore
     .onCreate(
         async (snapshot, context) => {
           const nc = snapshot.data() as NcrNotify;
+
+          const message = "message= เลขที่ " + nc.code + "\nFrom: " +
+          nc.creatorName +"\nTo: " + nc.dept + "\nประเด็น: " + nc.topic +
+        "\nสถานะ: " + nc.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
 
           let counts: Counts;
           let countsCode: CountsCode;
@@ -271,13 +254,7 @@ export const onNcCreated = functions.firestore
               .get();
 
           if (nc.branch === "ลาดกระบัง") {
-            lineNotify(
-                nc.code,
-                nc.creator.username,
-                nc.dept,
-                nc.topic,
-                nc.ncStatus
-            );
+            lineNotify(message);
 
             if (!countsData.exists) {
               // First nc item
@@ -313,7 +290,7 @@ export const onNcCreated = functions.firestore
                 ตอบแล้ว: nc.ncStatus === "ตอบแล้ว" ? ตอบแล้ว + 1 : ตอบแล้ว,
                 รอปิด: nc.ncStatus === "รอปิด" ? รอปิด + 1 : รอปิด,
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ?
-                  ไม่อนุมัติ + 1 : ไม่อนุมัติ,
+              ไม่อนุมัติ + 1 : ไม่อนุมัติ,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
                 NCR: nc.category === "NCR" ? NCR + 1 : NCR,
                 CCR: nc.category === "CCR" ? CCR + 1 : CCR,
@@ -344,13 +321,7 @@ export const onNcCreated = functions.firestore
             // Update the counts document in the nc-counts collection
             return {updateCount, updateCountCode};
           } else {
-            lineNotifyCdc(
-                nc.code,
-                nc.creator.username,
-                nc.dept,
-                nc.topic,
-                nc.ncStatus
-            );
+            lineNotifyCdc(message);
 
             if (!countsDataCdc.exists) {
               // First nc item
@@ -386,7 +357,7 @@ export const onNcCreated = functions.firestore
                 ตอบแล้ว: nc.ncStatus === "ตอบแล้ว" ? ตอบแล้ว + 1 : ตอบแล้ว,
                 รอปิด: nc.ncStatus === "รอปิด" ? รอปิด + 1 : รอปิด,
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ?
-                  ไม่อนุมัติ + 1 : ไม่อนุมัติ,
+              ไม่อนุมัติ + 1 : ไม่อนุมัติ,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
                 NCR: nc.category === "NCR" ? NCR + 1 : NCR,
                 CCR: nc.category === "CCR" ? CCR + 1 : CCR,
@@ -425,17 +396,16 @@ export const onNcUpdated = functions.firestore
       const beforeProd = snapshot.before.data() as NcrNotify;
       const afterProd = snapshot.after.data() as NcrNotify;
 
+      const message = "message= เลขที่ " + afterProd.code + "\nFrom: " +
+    afterProd.creatorName + "\nTo: " +
+    afterProd.dept + "\nประเด็น: " + afterProd.topic + "\nสถานะ: " +
+      afterProd.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
+
       // Check if the status has been changed
       if (beforeProd.ncStatus !== afterProd.ncStatus) {
       // If status is changed
         if (afterProd.branch === "ลาดกระบัง") {
-          lineNotify(
-              afterProd.code,
-              afterProd.creator.username,
-              afterProd.dept,
-              afterProd.topic,
-              afterProd.ncStatus
-          );
+          lineNotify(message);
 
           const countsData = await admin
               .firestore()
@@ -457,13 +427,7 @@ export const onNcUpdated = functions.firestore
               .doc(ncCountsDocument)
               .set(counts);
         } else {
-          lineNotifyCdc(
-              afterProd.code,
-              afterProd.creator.username,
-              afterProd.dept,
-              afterProd.topic,
-              afterProd.ncStatus
-          );
+          lineNotifyCdc(message);
 
           const countsDataCdc = await admin
               .firestore()

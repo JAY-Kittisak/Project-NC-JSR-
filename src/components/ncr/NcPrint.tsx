@@ -30,6 +30,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
         topic,
         detail,
         topicType,
+        creator,
         follow,
         approve,
         branch
@@ -75,15 +76,16 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                         <p className='textAlignVer'>ผู้ออกเอกสาร</p>
                     </div>
                     <WidthStyled width='100%'>
-                        <div className='flex-between'>
+                        <div className='flex-half'>
                             <p>
-                                <span className='title-en'>From: </span> {creatorName}
+                                <span className='title'>จาก : </span> {creatorName}
+                                <span className='title'>แผนก : </span> {creator.dept}
                             </p>
                             <p>
-                                <span className='title-en'>To: </span>{dept}
+                                <span className='title'>ถึงแผนก : </span>{dept}
                             </p>
-                            <p><span className='title'>ประเภทความไม่สอดคล้อง: </span>{topicType}</p>
                         </div>
+                            <p><span className='title'>ประเภทความไม่สอดคล้อง: </span>{topicType}</p>
                         <p><span className='title'>ประเด็นความไม่สอดคล้อง: </span>{topic}</p>
                         <div className='min-h'>
                             <p><span className='title'>รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง(Detail of Nonconforming): </span></p>
@@ -347,6 +349,14 @@ const WidthStyled = styled.div`
     width: ${(props: WidthProps) => props.width};
     padding: 0px 10px 0px 10px;
 
+    .flex-half {
+        display: flex;
+
+        p {
+            width: 50%
+        }
+    }
+
     p {
         font-size: 10pt;
     }
@@ -398,11 +408,6 @@ const NcPrintStyled = styled.section`
 
     .title {
         font-size: 10pt;
-        font-weight : 600;
-    }
-
-    .title-en {
-        font-size: 12pt;
         font-weight : 600;
     }
 

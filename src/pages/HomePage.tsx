@@ -7,9 +7,9 @@ import YouTubeIcon from "@material-ui/icons/YouTube";
 import Hero from "../components/hero/Hero";
 import { useAuthContext } from "../state/auth-context";
 import { useModalContext } from "../state/modal-context";
-import { MainLayout } from "../styles/LayoutStyle";
-import News from "../components/home/News";
-import Holiday from "../components/home/Holiday";
+// import { MainLayout } from "../styles/LayoutStyle";
+// import News from "../components/home/News";
+// import Holiday from "../components/home/Holiday";
 
 function HomePage() {
     const { setModalType } = useModalContext()
@@ -37,12 +37,19 @@ function HomePage() {
                     <h1>
                         <span className="span-primary">JSR</span> NC System
                     </h1>
+                    {/* <h1>
+                        บริษัท <span className="span-primary">จ.ศรีรุ่งเรื่องอิมเป็กซ์</span> จำกัด
+                    </h1> */}
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis
-                        minima, possimus omnis commodi officiis iure earum autem eveniet et.
-                        Commodi, qui! Laudantium aliquam deserunt eligendi facere! Laudantium
-                        natus saepe nobis!
+                        เรา JSR มุ่งมั่นที่จะเป็นผู้นำด้านการจำหน่ายเครื่องมืออุตสาหกรรม ที่มีผลิตภัณฑ์ หลากหลาย ครอบคลุมความต้องการของลูกค่า
                     </p>
+                    <p>
+                        ตลอดจนการคัดสรรผลิตภัณฑ์ให้มีคุณภาพสูงสุดโดยการพัฒนาศักยภาพยุคลากร และ ระบบงานอย่างต่อเนื่อง
+                    </p>
+                    <p>
+                    <span className="span-slogan">ดังสโลแกน</span> "ผู้นำด้านเครื่องเมืออุตสาหกรรม ผลิตภัณฑ์ครอบคลุมคุณภาพมาตรฐานบริการประทับใจ พร้อมก้าวไปกับทุกอุตสาหกรรม ของประเทศไทย"
+                    </p>
+
                     <div className="icons">
                         <a href="https://www.facebook.com/jsrimpex" className="icon i-facebook">
                             <FacebookIcon />
@@ -56,27 +63,32 @@ function HomePage() {
                     )}
                 </div>
             </HomePageStyled>
-            <MainLayout>
+            {/* <MainLayout>
                 <News />
                 <br />
                 <Holiday />
-            </MainLayout>
+            </MainLayout> */}
         </>
     );
 }
 
 const HomePageStyled = styled.header`
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     position: relative;
 
     .typography {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 80%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 80%;
+
+        .span-slogan {
+            font-weight: 600;
+            text-decoration: underline;
+        }
 
         .icons{
             display: flex;

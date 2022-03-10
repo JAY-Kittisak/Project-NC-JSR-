@@ -13,7 +13,7 @@ import { orderTabs } from '../../helpers'
 import { NcrTab ,NcrNotify} from '../../types'
 
 export const prodTabType = 'ncStatus'
-export const ncPerPage = 2
+export const ncPerPage = 3
 
 interface Props { }
 
@@ -122,7 +122,7 @@ const NcTabStyled = styled.div`
 const NcPaginationStyled = styled.div`
     margin-bottom: 1rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 `
 
 const HistoryHeader = styled.section`

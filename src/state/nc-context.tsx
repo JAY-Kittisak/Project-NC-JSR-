@@ -112,7 +112,6 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         } else if (isAdmin(userInfo.role)) {
         // If the user i an admin, query all Departments.
             unsubscribe = ncNotifyRef
-                .where('branch', '==', 'ชลบุรี')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot({
                     next: (snapshots) => {

@@ -49,8 +49,8 @@ const SignUp: React.FC<Props> = () => {
                 <form onSubmit={handleSignUp}>
                     <Input
                         name="username"
-                        label='Username'
-                        placeholder="ชื่อ นามสกุล ภาษาไทย"
+                        label='Department'
+                        placeholder="เช่น แผนกไอที ลาดกระบัง"
                         error={errors.username?.message}
                         ref={register({
                             required: 'Username is required.',
