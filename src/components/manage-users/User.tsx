@@ -67,7 +67,7 @@ const User: React.FC<Props> = ({
             </TdStyled>
             <TdStyled width='10'>
                 {!isEditing ? (
-                    <p>{dept}</p>
+                    <p className={dept === 'null' ? 'paragraph-error' : undefined}>{dept}</p>
                 ) : (
                     <select onChange={(e) => setNewDept(e.target.value)}>
                         <option value={dept}>{dept}</option>

@@ -114,6 +114,7 @@ export const RadioStyled = styled.div`
 
 export const SpinnerStyled = styled.div`
     width: 100%;
+    height: 100vh;
     position: relative;
 
     .typography {

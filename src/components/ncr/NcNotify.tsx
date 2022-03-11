@@ -124,7 +124,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     return (
         <NcNotifyStyled>
             <div className="nc-notify-title">
-                <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง (NC Report)</h4>
+                <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
             </div>
 
             <form className="form" onSubmit={handleAddNotifyNc}>

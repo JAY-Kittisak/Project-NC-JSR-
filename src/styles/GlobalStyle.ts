@@ -68,10 +68,6 @@ const GlobalStyled = createGlobalStyle`
         text-decoration: none;
         font-family: 'Nunito', sans-serif;
         font-size: 1.1rem;
-            /* FIXME: */
-            @media screen and (max-width: 1600px){
-                font-size: .9rem;
-            }
     }
 
     body{
@@ -116,6 +112,7 @@ const GlobalStyled = createGlobalStyle`
     .span-primary {
         color: var(--primary-color);
     }
+    
     h6{
         color: var(--white-color);
         font-size: 1.2rem;
@@ -159,7 +156,7 @@ const GlobalStyled = createGlobalStyle`
         transform: translateX(0%);
         z-index: 20;
     }
-    @media screen and (max-width: 1200px){
+    @media screen and (max-width: 1400px){
         .ham-burger-menu{
             display: block;
         }

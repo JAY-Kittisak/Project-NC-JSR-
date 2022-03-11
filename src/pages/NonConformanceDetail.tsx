@@ -65,7 +65,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
         createdAt,
         category,
         dept,
-        email,
         topic,
         detail,
         topicType,
@@ -88,26 +87,26 @@ const NonConformanceDetail: React.FC<Props> = () => {
                 <InnerLayout className='nc-detail-section' >
                     <div className="left-content">
                         <div className='notify'>
-                            <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง (NC Report)</h4>
-                            <p className='flex-between'>
-                                เลขที่ :<SpanStyled>{code}</SpanStyled>
-                                <span>วันที่ :</span><SpanStyled>{formatDate(createdAt)}</SpanStyled>
-                                <span>Type : </span><SpanStyled>{category}</SpanStyled>
-                            </p>
+                            <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
+                            <div className="paragraph-end">
+                                <p><span>ประเภท : </span><SpanStyled>{category}</SpanStyled></p>
+                                <p>เลขที่ :<SpanStyled>{code}</SpanStyled></p>
+                                <p><span>วันที่ :</span><SpanStyled>{formatDate(createdAt)}</SpanStyled></p>
+                            </div>
                             <div className="form-field">
                                 <label htmlFor="name">ชื่อ-นามสกุล ผู้ออก NC</label>
                                 <input readOnly type="text" id="name" value={creatorName + ' แผนก ' + creator.dept} />
                             </div>
-                            <div className='flex-between'>
+                            <GridStyled>
                                 <div className="form-field">
                                     <label htmlFor="name">ถึงแผนก</label>
-                                    <input readOnly type="text" id="name" value={dept + ' อีเมล ' + email} />
+                                    <input readOnly type="text" id="name" value={dept} />
                                 </div>
                                 <div className="form-field">
                                     <label htmlFor="name">ประเภทของความไม่สอดคล้อง</label>
                                     <input readOnly type="text" id="name" value={topicType} />
                                 </div>
-                            </div>
+                            </GridStyled>
                             <div className="form-field">
                                 <label htmlFor="name">ประเด็นความไม่สอดคล้อง</label>
                                 <input readOnly type="text" id="name" value={topic} />
@@ -207,6 +206,18 @@ const NcStatusStyled = styled.span`
     color: ${(props: { ncStatus: StatusNc }) => getStatusColor(props.ncStatus)};
 `
 
+const GridStyled = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 2rem;
+    @media screen and (max-width:1800px){
+        grid-template-columns: repeat(1, 1fr);
+        .f-button{
+            margin-bottom: 3rem;
+        }
+    }
+`
+
 const NcDetailStyled = styled.div`
     .nc-detail-section {
         display: grid;
@@ -217,6 +228,16 @@ const NcDetailStyled = styled.div`
             .f-button{
                 margin-bottom: 3rem;
             }
+        }
+    }
+
+    .paragraph-end {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+        @media screen and (max-width:1800px){
+            flex-direction: column;
         }
     }
     

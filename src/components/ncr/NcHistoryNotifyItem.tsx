@@ -19,7 +19,7 @@ const NcHistoryNotifyItem: React.FC<Props> = ({item}) => {
                     <p>{item.dept}</p>
                 </div>
                 <div className="nc-column">
-                    <div className='truncated'>{item.topic}</div>
+                    <p className='truncated'>{item.topic}</p>
                 </div>
                 <div
                     className="nc-column"
@@ -85,7 +85,7 @@ const NotifyItem = styled.div`
     }
 
     .font-small {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
     
 `
