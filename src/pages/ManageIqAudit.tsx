@@ -6,19 +6,12 @@ import Title from '../components/Title'
 interface Props { }
 
 const ManageIqAudit: React.FC<Props> = () => {
-    const tim = {
-        code: '00001',
-        name: 'kittisak',
-        nick: 'jay',
-        age: '27'
-    }
 
     return (
         <MainLayout>
             <Title title={'Manage IQA'} span={'Manage IQA'} />
             <ManageIqAStyled>
                 <InnerLayout className='manage-iqa'>
-                    <p>{tim.code}</p>
                 </InnerLayout>
             </ManageIqAStyled>
         </MainLayout>

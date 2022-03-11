@@ -13,7 +13,7 @@ import { orderTabs } from '../../helpers'
 import { NcrTab ,NcrNotify} from '../../types'
 
 export const prodTabType = 'ncStatus'
-export const ncPerPage = 3
+export const ncPerPage = 10
 
 interface Props { }
 

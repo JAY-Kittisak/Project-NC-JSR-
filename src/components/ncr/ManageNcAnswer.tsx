@@ -536,7 +536,6 @@ const FlexStyled = styled.div`
 `
 
 const NcAnswerStyled = styled.div`
-    padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
 
     h4 {

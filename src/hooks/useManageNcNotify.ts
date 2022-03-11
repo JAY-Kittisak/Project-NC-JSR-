@@ -24,8 +24,7 @@ export const useManageNcNotify = () => {
 
     const addNewNcNotify = async (
         fileNc: File | null, 
-        data: AddNcrNotifyData, 
-        email: string,
+        data: AddNcrNotifyData,
         creator: UserCreator,
         code: string, 
         branch: Branch, 
@@ -92,7 +91,6 @@ export const useManageNcNotify = () => {
                         code: codeFinished,
                         category,
                         dept,
-                        email,
                         topic,
                         topicType,
                         detail,
@@ -131,7 +129,6 @@ export const useManageNcNotify = () => {
                 code: codeFinished,
                 category,
                 dept,
-                email,
                 topic,
                 topicType,
                 detail,

@@ -7,7 +7,7 @@ import { useManageNcNotify } from '../../hooks/useManageNcNotify'
 import { formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
-import { StatusNc, ApproveNc, AddApproveNcData,Approve, AlertNt, AlertType} from '../../types'
+import { StatusNc, ApproveNc, AddApproveNcData, Approve, AlertNt, AlertType } from '../../types'
 
 interface Props {
     ncId: string
@@ -90,7 +90,6 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.approveNc?.message}</p>
                 )}
-
                 <div className="form-field">
                     <label htmlFor="approveDetail">
                         ข้อเสนอแนะเพิ่มเติม

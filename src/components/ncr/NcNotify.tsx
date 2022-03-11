@@ -6,7 +6,7 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '../Button';
 import { useManageNcNotify } from '../../hooks/useManageNcNotify';
 import { RadioStyled } from '../../styles/LayoutStyle';
-import { AddNcrNotifyData, Department, UserInfo, AlertType, AlertNt} from '../../types';
+import { AddNcrNotifyData, UserInfo, AlertType, AlertNt} from '../../types';
 import { categories, fileType } from '../../helpers'
 import { useDepartmentsContext } from '../../state/dept-context';
 
@@ -21,7 +21,6 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
 
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
     const [dept, setDept] = useState('Marketing')
-    const [filterDept, setFilterDept] = useState<Department[] | null>(null)
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
@@ -70,13 +69,8 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     }
 
     const handleAddNotifyNc = handleSubmit(async (data) => {
-        if (!user || !filterDept) return
+        if (!user) return
         
-        const initial = user.branch === 'ลาดกระบัง' ? 'J' : 'C'
-        const email = user.branch === 'ลาดกระบัง' ? filterDept[0].emailJsr : filterDept[0].emailCdc
-
-        const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
-
         const creator = {
             id: user.id,
             username: user.username,
@@ -84,10 +78,13 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             email: user.email
         }
 
+        const initial = user.branch === 'ลาดกระบัง' ? 'J' : 'C'
+
+        const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
+
         return addNewNcNotify(
             selectedFile, 
             data,
-            email,
             creator, 
             code,
             user.branch, 
@@ -101,7 +98,6 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             const mapTopic = filterTopic.map(item => item.topic)
             const mapIs = mapTopic[0]
             setTopic(mapIs)
-            setFilterDept(filterTopic)
         }
     }, [departments, dept])
 

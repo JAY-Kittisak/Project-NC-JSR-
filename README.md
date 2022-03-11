@@ -57,7 +57,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
     4. firebase deploy --only functions:<"ชื่อ function">
 
 ## วิธี Deploy
-    1. ต้องอยู่ที่ /jsr-cn-system
+    1. ต้องอยู่ที่ /jsr-cn
     2. npm run build
-    3. firebase deploy
+    3. firebase deploy    --- firebase deploy --only hosting
 

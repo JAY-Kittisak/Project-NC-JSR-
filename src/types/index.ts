@@ -108,7 +108,6 @@ export type NcrNotify = {
     code: string
     category: CatNc
     dept: string
-    email: string
     topic: string
     topicType: TopicType
     detail: string

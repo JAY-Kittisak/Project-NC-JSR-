@@ -149,7 +149,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         </div>
                     </div>
                     
-                    <div className="right-content">
+                    <section>
                         <ManageNcAnswer
                             ncId={params.id}
                             ncAnswer={ncAnswer}
@@ -159,7 +159,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             setAlertState={setAlertState}
                         />
                         {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError.length}</p>}
-                    </div>
+                    </section>
 
                     <NcFollow
                         ncId={params.id}
@@ -221,7 +221,7 @@ const GridStyled = styled.div`
 const NcDetailStyled = styled.div`
     .nc-detail-section {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 2fr 1fr;
         grid-column-gap: 2rem;
         @media screen and (max-width:1310px){
             grid-template-columns: repeat(1, 1fr);
@@ -238,14 +238,6 @@ const NcDetailStyled = styled.div`
         justify-content: space-between;
         @media screen and (max-width:1800px){
             flex-direction: column;
-        }
-    }
-    
-    .right-content{
-        display: grid;
-        grid-template-columns: repeat(1,1fr);
-        @media screen and (max-width: 502px){
-            width: 70%;
         }
     }
         
