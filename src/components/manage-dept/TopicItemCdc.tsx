@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Department } from '../../types'
-import AddAndEditDept from '../manage-dept/AddAndEditDept'
+import AddAndEditDeptCdc from '../manage-dept/AddAndEditDeptCdc'
 import PrimaryButton from '../PrimaryButton'
 
 interface Props {
     department: Department
 }
 
-const TopicItem: React.FC<Props> = ({ department }) => {
+const TopicItemCdc: React.FC<Props> = ({ department }) => {
     const [openDialog, setOpenDialog] = useState(false)
     const { id, dept, topic } = department
 
@@ -29,7 +29,7 @@ const TopicItem: React.FC<Props> = ({ department }) => {
                     <PrimaryButton title={"เพิ่มประเด็น"} />
                 </div>
             </div>
-            {openDialog && <AddAndEditDept setOpenDialog={setOpenDialog} title={dept} deptId={id} />}
+            {openDialog && <AddAndEditDeptCdc setOpenDialog={setOpenDialog} title={dept} deptId={id} />}
         </TopicItemStyled>
     )
 }
@@ -85,4 +85,4 @@ const TopicItemStyled = styled.div`
         }
     }
 `
-export default TopicItem
+export default TopicItemCdc

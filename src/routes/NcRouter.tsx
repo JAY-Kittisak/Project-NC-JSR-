@@ -5,6 +5,7 @@ import NonConformances from "../pages/NonConformances";
 import NonConformanceDetail from "../pages/NonConformanceDetail";
 import NcContextProvider from '../state/nc-context'
 import DeptContextProvider from '../state/dept-context'
+import DeptCdcContextProvider from '../state/dept-cdc-context'
 import AnswerNc from "../pages/AnswerNc";
 import PageNotFound from "../pages/PageNotFound";
 import { UserInfo } from '../types';
@@ -16,22 +17,24 @@ const NcRouter: React.FC<Props> = (props) => {
 
     return (
         <DeptContextProvider>
-            <NcContextProvider>
-                <Switch>
-                    <Route path="/nc/answer">
-                        <AnswerNc />
-                    </Route>
-                    <Route path="/nc/notify/:id">
-                        <NonConformanceDetail />
-                    </Route>
-                    <Route path="/nc/notify">
-                        <NonConformances user={userInfo}/>
-                    </Route>
-                    <Route path='*'>
-                        <PageNotFound />
-                    </Route>
-                </Switch>
-            </NcContextProvider>
+            <DeptCdcContextProvider>
+                <NcContextProvider>
+                    <Switch>
+                        <Route path="/nc/answer">
+                            <AnswerNc />
+                        </Route>
+                        <Route path="/nc/notify/:id">
+                            <NonConformanceDetail />
+                        </Route>
+                        <Route path="/nc/notify">
+                            <NonConformances user={userInfo}/>
+                        </Route>
+                        <Route path='*'>
+                            <PageNotFound />
+                        </Route>
+                    </Switch>
+                </NcContextProvider>
+            </DeptCdcContextProvider>
         </DeptContextProvider>
     )
 }

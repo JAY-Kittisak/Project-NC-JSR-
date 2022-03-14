@@ -11,6 +11,7 @@ import { db, firebase, storageRef } from './config'
 export const usersRef = db.collection('users')
 export const userCountsRef = db.collection('user-counts')
 export const departmentRef = db.collection('department')
+export const departmentCdcRef = db.collection('department-cdc')
 export const ncNotifyRef = db.collection('nc-notify')
 export const ncAnswerRef = db.collection('nc-answer')
 export const ncCountsRef = db.collection('nc-counts')

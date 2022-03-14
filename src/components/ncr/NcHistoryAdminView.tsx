@@ -18,7 +18,7 @@ export const ncPerPage = 10
 interface Props { }
 
 const NcHistoryAdminView: React.FC<Props> = () => {
-    const { ncState: { ncNotify, ncCounts, loading, error } } = useNcContext()
+    const { ncState: { ncNotify, ncCounts, loading, error, queryMoreNc } } = useNcContext()
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
 
     const [ncByDemo, setNcByDemo] = useState(ncNotify[activeTab])
@@ -36,9 +36,18 @@ const NcHistoryAdminView: React.FC<Props> = () => {
         const startIndex = ncPerPage * (page - 1)
         const endIndex = ncPerPage * page
 
+        if (
+            ncNotify[activeTab].length < ncCounts[activeTab] &&
+            ncNotify[activeTab].length < ncPerPage * page
+        ) {
+            // Make a new query to the nc collection in firestore
+
+            return queryMoreNc()
+        }
+
         setNcByDemo(ncNotify[activeTab])
         setNcByStatus(ncNotify[activeTab].slice(startIndex, endIndex))
-    }, [activeTab, ncNotify, page])
+    }, [activeTab, ncNotify, page, ncCounts, queryMoreNc])
 
     if (loading) return (
         <SpinnerStyled>

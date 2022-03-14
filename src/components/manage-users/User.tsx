@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { branchSelect, formatDate } from '../../helpers'
-import { UserInfo, Branch } from '../../types'
+import { UserInfo, Branch, Department } from '../../types'
 import { useUpdateUser } from '../../hooks/useUpdateUser'
 import Button from '../Button';
 import { useDepartmentsContext } from '../../state/dept-context';
+import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 
 interface Props {
     user: UserInfo
@@ -35,6 +36,7 @@ const User: React.FC<Props> = ({
     const [newRole, setNewRole] = useState(role)
     const [newBranch, setNewBranch] = useState<Branch>(branch)
     const [newDept, setNewDept] = useState(dept)
+    const [oldDept, setOldDept] = useState<Department[] | null>(null)
     const [isEditing, setIsEditing] = useState(false)
 
     const { updateUsers, loading, error } = useUpdateUser()
@@ -42,6 +44,10 @@ const User: React.FC<Props> = ({
     const {
         departmentsState: { departments }
     } = useDepartmentsContext()
+
+    const {
+        departmentsState: { departments: deptCdc }
+    } = useDepartmentsCdcContext()
 
     const handleUpdateUser = async () => {
         if (
@@ -57,6 +63,14 @@ const User: React.FC<Props> = ({
         if (error) alert(error)
     }
 
+    useEffect(() => {
+        if (newBranch === 'ลาดกระบัง') {
+            setOldDept(departments)
+        } else {
+            setOldDept(deptCdc)
+        }
+    }, [newBranch, departments, deptCdc])
+
     return (
         <tr>
             <TdStyled width='20'>
@@ -71,7 +85,7 @@ const User: React.FC<Props> = ({
                 ) : (
                     <select onChange={(e) => setNewDept(e.target.value)}>
                         <option value={dept}>{dept}</option>
-                        {departments && departments.map(item => {
+                        {oldDept && oldDept.map(item => {
                             return (
                                 <option key={item.id} value={item.dept}>{item.dept}</option>
                             )

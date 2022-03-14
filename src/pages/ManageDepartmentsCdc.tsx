@@ -5,24 +5,24 @@ import styled from 'styled-components'
 import { MainLayout,InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
 import Button from '../components/Button';
-import DeptItem from '../components/manage-dept/DeptItem'
+import DeptItemCdc from '../components/manage-dept/DeptItemCdc'
 import Input from '../components/Input';
 import { AddDepartment, AlertNt, AlertType} from '../types';
-import { useManageDept } from '../hooks/useManageDept';
+import { useManageDeptCdc } from '../hooks/useManageDeptCdc';
 import AlertNotification from '../components/dialogs/AlertNotification';
 
 interface Props { }
 
-const ManageDepartments: React.FC<Props> = () => {
+const ManageDepartmentsCdc: React.FC<Props> = () => {
     const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
     const [alertState, setAlertState] = useState<AlertType>('success');
 
     const {
-        addNewDept,
-        addDeptFinished,
+        addNewDeptCdc,
+        addDeptCdcFinished,
         loading,
         error
-    } = useManageDept()
+    } = useManageDeptCdc()
     
     const { 
         register, 
@@ -32,16 +32,16 @@ const ManageDepartments: React.FC<Props> = () => {
     } = useForm<AddDepartment>()
 
     const handleAddDept = handleSubmit((data) => {
-        addNewDept(data)
+        addNewDeptCdc(data)
     })
 
     useEffect(() => { 
-        if (addDeptFinished) {
+        if (addDeptCdcFinished) {
             reset()
             setAlertState('success')
             setAlertWarning('show')
         }
-    },[addDeptFinished,reset] )
+    },[addDeptCdcFinished,reset] )
 
     return (
         <MainLayout>
@@ -90,7 +90,7 @@ const ManageDepartments: React.FC<Props> = () => {
                     </form>
                     {error && <p className='paragraph-error'>{error}</p>}
 
-                    <DeptItem />
+                    <DeptItemCdc />
 
                 </InnerLayout>
             </ManageDeptStyled>
@@ -155,4 +155,4 @@ const ManageDeptStyled = styled.div`
         }
     }
 `
-export default ManageDepartments
+export default ManageDepartmentsCdc

@@ -87,6 +87,11 @@ const Navigation: React.FC<Props> = () => {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
+                                    <NavLink to="/admin/manage-dept-cdc" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                        manage dept Cdc
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
                                     <NavLink to="/admin/manage-users" exact className={(isActive) => isActive ? "active-class" : ""}>
                                         manage users
                                     </NavLink>

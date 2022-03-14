@@ -7,9 +7,11 @@ import ManageIqAuditDetail from "../pages/ManageIqAuditDetail";
 import ManageNc from "../pages/ManageNc";
 import ManageNcDetail from "../pages/ManageNcDetail";
 import ManageDepartments from "../pages/ManageDepartments";
+import ManageDepartmentsCdc from "../pages/ManageDepartmentsCdc";
 import ManageUsers from "../pages/ManageUsers";
 import PageNotFound from "../pages/PageNotFound";
 import DeptContextProvider from '../state/dept-context'
+import DeptCdcContextProvider from '../state/dept-cdc-context'
 import { UserInfo } from '../types';
 import { isAdmin } from '../helpers'
 
@@ -42,9 +44,16 @@ const AdminRoutes: React.FC<Props> = (props) => {
                     <ManageDepartments />
                 </DeptContextProvider>
             </Route>
+            <Route path="/admin/manage-dept-Cdc">
+                <DeptCdcContextProvider>
+                    <ManageDepartmentsCdc />
+                </DeptCdcContextProvider>
+            </Route>
             <Route path="/admin/manage-users">
                 <DeptContextProvider>
-                    <ManageUsers userInfo={userInfo}/>
+                    <DeptCdcContextProvider>
+                        <ManageUsers userInfo={userInfo}/>
+                    </DeptCdcContextProvider>
                 </DeptContextProvider>
             </Route>
             <Route path='*'>

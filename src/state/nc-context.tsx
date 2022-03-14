@@ -9,6 +9,7 @@ import React, {
 
 import { useAsyncCall } from '../hooks/useAsyncCall'
 import { NcrTab, NcrNotify, CatNc ,Nc} from '../types'
+import { firebase } from '../firebase/config'
 import { 
     ncNotifyRef, 
     snapshotToDoc,
@@ -17,6 +18,8 @@ import {
 } from '../firebase'
 import { useAuthContext } from './auth-context'
 import { isAdmin, isClient } from '../helpers'
+
+const limitQuery = 10
 
 interface Props {}
 
@@ -27,6 +30,7 @@ type NcrState = {
     ncCountsCdc: NcCounts
     loading: boolean
     error: string
+    queryMoreNc: () => void
 }
 type NcDispatch ={
     setNcNotify: Dispatch<SetStateAction<Nc>>
@@ -61,8 +65,54 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
     const [ncNotify, setNcNotify] = useState(initialNc)
     const [ncCounts, setNcCounts] = useState(initialNcCounts)
     const [ncCountsCdc, setNcCountsCdc] = useState(initialNcCounts)
+    const [lastDocument, setLastDocument] = useState<firebase.firestore.DocumentData>()
+
     const {authState: { userInfo }} = useAuthContext()
 
+    const queryMoreNc = async () => {
+        try {
+            if (!lastDocument) return
+
+            setLoading(true)
+
+            const snapshots = await ncNotifyRef
+            .orderBy('createdAt', 'desc')
+            .startAfter(lastDocument)
+            .limit(limitQuery)
+            .get()
+
+            
+            const newQueries = snapshots.docs.map(snapshot => snapshotToDoc<NcrNotify>(snapshot))
+
+            const lastVisible = snapshots.docs[snapshots.docs.length - 1]
+            setLastDocument(lastVisible)
+
+            // Combine the new queries with the existing state
+            setNcNotify(prev => {
+                const updatedNc: any = {}
+
+                Object.keys(initialNc).forEach(ncStatus => {
+                    const status = ncStatus as NcrTab
+
+                    status === 'All' 
+                        ? (updatedNc.All = [...prev.All, ...newQueries]) 
+                        : (updatedNc[status] = [
+                            ...prev[status], 
+                            ...newQueries.filter(item => item.ncStatus === status)
+                        ])
+                })
+
+                return updatedNc
+            })
+
+            setLoading(false)
+        } catch (err) {
+            const { message } = err as {message: string}
+
+            setError(message)
+            setLoading(false)
+        }
+    }
 
     // Fetch the nc-notify collection from firestore
     useEffect(() => {
@@ -77,6 +127,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
             unsubscribe = ncNotifyRef
                 .where('creator.id', '==', userInfo.id)
                 .orderBy('createdAt', 'desc')
+                .limit(limitQuery)
                 .onSnapshot({
                     next: (snapshots) => {
                         const allNc: NcrNotify[] = []
@@ -113,15 +164,16 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         // If the user i an admin, query all Departments.
             unsubscribe = ncNotifyRef
                 .orderBy('createdAt', 'desc')
+                .limit(limitQuery)
                 .onSnapshot({
                     next: (snapshots) => {
-                        const allNc: NcrNotify[] = []
+                        const allNc = snapshots.docs.map(snapshot => snapshotToDoc<NcrNotify>(snapshot))
 
-                        snapshots.forEach(snapshot => {
-                            const nc = snapshotToDoc<NcrNotify>(snapshot)
+                        // snapshots.forEach(snapshot => {
+                        //     const nc = snapshotToDoc<NcrNotify>(snapshot)
 
-                            allNc.push(nc)
-                        })
+                        //     allNc.push(nc)
+                        // })
 
                         const updatedNc: any = {}
 
@@ -192,7 +244,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
     }, [])
 
     return (
-        <NcStateContext.Provider value={{ncNotify, ncCounts, ncCountsCdc, loading, error}}>
+        <NcStateContext.Provider value={{ncNotify, ncCounts, ncCountsCdc, loading, error, queryMoreNc}}>
             <NcDispatchContext.Provider value={{setNcNotify}}>
                 {children}
             </NcDispatchContext.Provider>

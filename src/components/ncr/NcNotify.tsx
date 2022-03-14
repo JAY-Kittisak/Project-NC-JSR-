@@ -6,9 +6,10 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '../Button';
 import { useManageNcNotify } from '../../hooks/useManageNcNotify';
 import { RadioStyled } from '../../styles/LayoutStyle';
-import { AddNcrNotifyData, UserInfo, AlertType, AlertNt} from '../../types';
+import { AddNcrNotifyData, UserInfo, AlertType, AlertNt } from '../../types';
 import { categories, fileType } from '../../helpers'
 import { useDepartmentsContext } from '../../state/dept-context';
+import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 
 interface Props {
     user: UserInfo | null
@@ -20,7 +21,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     const [radioBtn, setRadioBtn] = useState('NCR')
 
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
-    const [dept, setDept] = useState('Marketing')
+    const [dept, setDept] = useState('SC')
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
@@ -28,13 +29,17 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
         departmentsState: { departments }
     } = useDepartmentsContext()
 
-    const { 
+    const {
+        departmentsState: { departments: deptCdc }
+    } = useDepartmentsCdcContext()
+
+    const {
         addNewNcNotify,
         setUploadProgression,
-        uploadProgression, 
-        addNcNotifyFinished, 
-        loading, 
-        error 
+        uploadProgression,
+        addNcNotifyFinished,
+        loading,
+        error
     } = useManageNcNotify()
 
     const { register, handleSubmit, errors, reset } = useForm<AddNcrNotifyData>()
@@ -57,7 +62,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
         const files = e.target.files
 
         if (!files || !files[0]) return
-        
+
         const file = files[0]
 
         if (!fileType.includes(file.type)) {
@@ -70,7 +75,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
 
     const handleAddNotifyNc = handleSubmit(async (data) => {
         if (!user) return
-        
+
         const creator = {
             id: user.id,
             username: user.username,
@@ -83,23 +88,34 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
         const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
 
         return addNewNcNotify(
-            selectedFile, 
+            selectedFile,
             data,
-            creator, 
+            creator,
             code,
-            user.branch, 
+            user.branch,
             'รอตอบ',
         )
     })
 
     useEffect(() => {
-        if (departments) {
-            const filterTopic = departments.filter((value) => value.dept === dept)
-            const mapTopic = filterTopic.map(item => item.topic)
-            const mapIs = mapTopic[0]
-            setTopic(mapIs)
+        if (!user) return
+
+        if (user.branch === 'ลาดกระบัง') {
+            if (departments) {
+                const filterTopic = departments.filter((value) => value.dept === dept)
+                const mapTopic = filterTopic.map(item => item.topic)
+                const mapIs = mapTopic[0]
+                setTopic(mapIs)
+            }
+        } else {
+            if (deptCdc) {
+                const filterTopic = deptCdc.filter((value) => value.dept === dept)
+                const mapTopic = filterTopic.map(item => item.topic)
+                const mapIs = mapTopic[0]
+                setTopic(mapIs)
+            }
         }
-    }, [departments, dept])
+    }, [departments, dept, deptCdc, user])
 
     useEffect(() => {
         if (addNcNotifyFinished) {
@@ -110,7 +126,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             setAlertWarning('show')
         }
     }, [
-        addNcNotifyFinished, 
+        addNcNotifyFinished,
         reset,
         setUploadProgression,
         setAlertState,
@@ -158,23 +174,43 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                     <p>{errors.creatorName?.message}</p>
                 )}
                 <div className='flex-between'>
-                    {departments &&<div className="form-field">
-                        <label htmlFor="dept">
-                            ถึงแผนก
-                        </label>
-                        <select
-                            name="dept"
-                            onChange={(e) => setDept(e.target.value)}
-                            ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
-                        >
-                            <option style={{ display: 'none' }}></option>
-                            {departments.map((cat) => (
-                                <option key={cat.id} value={cat.dept}>
-                                    {cat.dept}
-                                </option>
-                            ))}
-                        </select>
-                    </div>}
+                    {user?.branch === 'ลาดกระบัง' ? (
+                        departments && <div className="form-field">
+                            <label htmlFor="dept">
+                                ถึงแผนก
+                            </label>
+                            <select
+                                name="dept"
+                                onChange={(e) => setDept(e.target.value)}
+                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                            >
+                                <option style={{ display: 'none' }}></option>
+                                {departments.map((cat) => (
+                                    <option key={cat.id} value={cat.dept}>
+                                        {cat.dept}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    ) : (
+                        deptCdc && <div className="form-field">
+                            <label htmlFor="dept">
+                                ถึงแผนก
+                            </label>
+                            <select
+                                name="dept"
+                                onChange={(e) => setDept(e.target.value)}
+                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                            >
+                                <option style={{ display: 'none' }}></option>
+                                {deptCdc.map((cat) => (
+                                    <option key={cat.id} value={cat.dept}>
+                                        {cat.dept}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
                     <div className="form-field">
                         <label htmlFor="topicType">
                             ประเภทความไม่สอดคล้อง
@@ -228,14 +264,14 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                     <div className='form-field' style={{ width: '70%' }}>
                         {uploadProgression ? (
                             <>
-                                <input 
+                                <input
                                     readOnly
                                     type='text'
                                     className='upload-progression'
                                     style={{
-                                    width: `${uploadProgression}%`,
-                                    color: 'white',
-                                    textAlign: 'center',
+                                        width: `${uploadProgression}%`,
+                                        color: 'white',
+                                        textAlign: 'center',
                                     }}
                                     // uploadProgression={uploadProgression}
                                     value={`${uploadProgression}%`}
@@ -246,13 +282,13 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                                 <label>
                                     ชื่อไฟล์ (หากมี)
                                 </label>
-                                <input 
-                                    readOnly 
-                                    type='text' 
+                                <input
+                                    readOnly
+                                    type='text'
                                     name='fileNcName'
                                     style={{ cursor: 'pointer' }}
                                     onClick={handleOpenUploadBox}
-                                    value={selectedFile ? selectedFile.name: ''}
+                                    value={selectedFile ? selectedFile.name : ''}
                                     ref={register}
                                 />
                             </>
@@ -265,25 +301,25 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                             type='button'
                             onClick={handleOpenUploadBox}
                             disabled={loading}
-                            style={{ 
-                                borderRadius: '0', 
+                            style={{
+                                borderRadius: '0',
                                 border: '1px solid #007bff',
                                 background: '#007bff'
                             }}
                         >
-                            <span>แนบไฟล์<AttachFileIcon/></span>
+                            <span>แนบไฟล์<AttachFileIcon /></span>
                         </Button>
                     </ButtonStyled>
-                    <input 
-                        type='file' 
-                        ref={inputRef} 
+                    <input
+                        type='file'
+                        ref={inputRef}
                         style={{ display: 'none' }}
                         onChange={handleSelectFile}
                     />
                 </FlexStyled>
 
-                <Button 
-                    type='submit' 
+                <Button
+                    type='submit'
                     loading={loading}
                     width='100%'
                     style={{ margin: '0.5rem 0' }}

@@ -173,8 +173,6 @@ export type AddAnswerNcData = Pick<
 export type Department = {
     id: string
     dept: string,
-    emailJsr: string,
-    emailCdc: string,
     topic?: string[]
 }
 

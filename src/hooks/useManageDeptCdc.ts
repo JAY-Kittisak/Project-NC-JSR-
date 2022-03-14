@@ -1,28 +1,28 @@
 import { useState } from 'react'
-import { departmentRef } from '../firebase'
+import { departmentCdcRef } from '../firebase'
 import { AddDepartment } from '../types'
 import { firebase } from '../firebase/config'
 
 import { useAsyncCall } from './useAsyncCall'
 
-export const useManageDept = () => {
-    const [addDeptFinished, setAddDeptFinished] = useState(false)
+export const useManageDeptCdc = () => {
+    const [addDeptCdcFinished, setAddDeptCdcFinished] = useState(false)
     
-    const [editDeptFinished, setEditDeptFinished] = useState(false)
+    const [editDeptCdcFinished, setEditDeptCdcFinished] = useState(false)
 
     const {loading, setLoading, error, setError} = useAsyncCall()
 
-    const addNewDept = (data: AddDepartment) => {
+    const addNewDeptCdc = (data: AddDepartment) => {
         const { dept } = data
         setLoading(true)
-        setAddDeptFinished(false)
+        setAddDeptCdcFinished(false)
 
         const newDept: AddDepartment = {
-            dept
+            dept,
         }
 
-        departmentRef.add(newDept).then(() => {
-            setAddDeptFinished(true)
+        departmentCdcRef.add(newDept).then(() => {
+            setAddDeptCdcFinished(true)
             setLoading(false)
         }).catch(err => {
             const { message } = err as {message: string}
@@ -32,16 +32,16 @@ export const useManageDept = () => {
         })
     }
 
-    const editDept = (deptId: string,data: string) => {
+    const editDeptCdc = (deptId: string,data: string) => {
         setLoading(true)
-        setEditDeptFinished(false)
+        setEditDeptCdcFinished(false)
 
-        departmentRef
+        departmentCdcRef
             .doc(deptId)
             .update({topic: firebase.firestore.FieldValue.arrayUnion(data)})
             .then(() => {
                 setLoading(false)
-                setEditDeptFinished(true)
+                setEditDeptCdcFinished(true)
             })
             .catch((err) => {
                 const { message } = err as { message: string }
@@ -52,10 +52,10 @@ export const useManageDept = () => {
     }
 
     return {
-        addNewDept,
-        editDept,
-        addDeptFinished,
-        editDeptFinished,
+        addNewDeptCdc,
+        editDeptCdc,
+        addDeptCdcFinished,
+        editDeptCdcFinished,
         loading,
         error
     }
