@@ -9,9 +9,10 @@ interface Props { }
 
 const AnswerNc: React.FC<Props> = () => {
     const { authState: { userInfo } } = useAuthContext()
+    
     return (
         <MainLayout>
-            <Title title={'Answer NCR'} span={'Answer NCR'} />
+            <Title title={'Answer NC'} span={'Answer NC'} />
             <AnswerNcStyled>
                 <InnerLayout>
                     {(!userInfo || userInfo.dept === 'null') ? (

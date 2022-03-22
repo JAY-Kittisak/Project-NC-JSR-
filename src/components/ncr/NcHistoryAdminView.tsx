@@ -10,7 +10,8 @@ import { SpinnerStyled } from '../../styles/LayoutStyle'
 import { useSelectTab } from '../../hooks/useSelectTab'
 import { usePagination } from '../../hooks/usePagination'
 import { orderTabs } from '../../helpers'
-import { NcrTab ,NcrNotify} from '../../types'
+import { NcrTab, NcrNotify } from '../../types'
+import PrimaryButton from '../PrimaryButton'
 
 export const prodTabType = 'ncStatus'
 export const ncPerPage = 10
@@ -18,13 +19,17 @@ export const ncPerPage = 10
 interface Props { }
 
 const NcHistoryAdminView: React.FC<Props> = () => {
-    const { ncState: { ncNotify, ncCounts, loading, error, queryMoreNc } } = useNcContext()
+    const {
+        ncState: { ncNotify, ncCounts, loading, error, queryMoreNc },
+        ncDispatch: { setBranch }
+    } = useNcContext()
+
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
 
     const [ncByDemo, setNcByDemo] = useState(ncNotify[activeTab])
     const [ncByStatus, setNcByStatus] = useState(ncNotify[activeTab])
 
-    const {page, totalPages} = usePagination<NcrTab, NcrNotify>(
+    const { page, totalPages } = usePagination<NcrTab, NcrNotify>(
         ncCounts[activeTab],
         ncPerPage,
         activeTab,
@@ -78,6 +83,16 @@ const NcHistoryAdminView: React.FC<Props> = () => {
             </HistoryHeader>
 
             <NcPaginationStyled>
+
+                <HistoryHeader>
+                    <div onClick={() => setBranch('ลาดกระบัง')}>
+                        <PrimaryButton  title={"ลาดกระบัง"}/>
+                    </div>
+                    <div onClick={() => setBranch('ชลบุรี')}>
+                        <PrimaryButton  title={"ชลบุรี"}/>
+                    </div>
+                </HistoryHeader>
+
                 <Pagination
                     page={page}
                     totalPages={totalPages}
@@ -108,6 +123,10 @@ const NcHistoryAdminView: React.FC<Props> = () => {
         </NcHistory>
     )
 }
+
+// const SelectStyled = styled.div`
+
+// `
 const NcHistory = styled.div`
     padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
@@ -125,18 +144,20 @@ const NcTabStyled = styled.div`
     width: 40%;
     display: flex;
     justify-content: space-between;
-    height: 2rem;
 `
 
 const NcPaginationStyled = styled.div`
     margin-bottom: 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 `
 
 const HistoryHeader = styled.section`
     display: flex;
     justify-content: space-between;
+    div:first-child{
+        margin-right: 10px
+    }
 `
 
 const HistoryDetail = styled.section`

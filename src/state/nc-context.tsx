@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 
 import { useAsyncCall } from '../hooks/useAsyncCall'
-import { NcrTab, NcrNotify, CatNc ,Nc} from '../types'
+import { NcrTab, NcrNotify, CatNc ,Nc, Branch} from '../types'
 import { firebase } from '../firebase/config'
 import { 
     ncNotifyRef, 
@@ -27,13 +27,13 @@ type NcCounts = { [key in NcrTab | CatNc]: number}
 type NcrState = {
     ncNotify: Nc
     ncCounts: NcCounts
-    ncCountsCdc: NcCounts
     loading: boolean
     error: string
     queryMoreNc: () => void
 }
 type NcDispatch ={
     setNcNotify: Dispatch<SetStateAction<Nc>>
+    setBranch: Dispatch<SetStateAction<Branch>>
 }
 
 const NcStateContext = createContext<NcrState | undefined>(undefined)
@@ -62,9 +62,9 @@ const initialNcCounts: NcCounts = {
 
 const NcContextProvider: React.FC<Props> = ({ children }) => {
     const {loading ,setLoading, error, setError} = useAsyncCall()
+    const [branch, setBranch] = useState<Branch>('ลาดกระบัง')
     const [ncNotify, setNcNotify] = useState(initialNc)
     const [ncCounts, setNcCounts] = useState(initialNcCounts)
-    const [ncCountsCdc, setNcCountsCdc] = useState(initialNcCounts)
     const [lastDocument, setLastDocument] = useState<firebase.firestore.DocumentData>()
 
     const {authState: { userInfo }} = useAuthContext()
@@ -76,12 +76,12 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
             setLoading(true)
 
             const snapshots = await ncNotifyRef
-            .orderBy('createdAt', 'desc')
-            .startAfter(lastDocument)
-            .limit(limitQuery)
-            .get()
+                .where('branch', '==', branch)
+                .orderBy('createdAt', 'desc')
+                .startAfter(lastDocument)
+                .limit(limitQuery)
+                .get()
 
-            
             const newQueries = snapshots.docs.map(snapshot => snapshotToDoc<NcrNotify>(snapshot))
 
             const lastVisible = snapshots.docs[snapshots.docs.length - 1]
@@ -114,7 +114,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         }
     }
 
-    // Fetch the nc-notify collection from firestore
+    // Fetch the nc-notify collection from firestore (first query)
     useEffect(() => {
         if (!userInfo) return setNcNotify(initialNc)
 
@@ -163,6 +163,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         } else if (isAdmin(userInfo.role)) {
         // If the user i an admin, query all Departments.
             unsubscribe = ncNotifyRef
+                .where('branch', '==', branch)
                 .orderBy('createdAt', 'desc')
                 .limit(limitQuery)
                 .onSnapshot({
@@ -174,6 +175,9 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
 
                         //     allNc.push(nc)
                         // })
+
+                        const lastVisible = snapshots.docs[snapshots.docs.length - 1]
+                        setLastDocument(lastVisible)
 
                         const updatedNc: any = {}
 
@@ -201,51 +205,44 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
             return () => unsubscribe()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [branch])
 
     // Fetch the nc-counts collection from firestore
     useEffect(() => {
         
         if (!userInfo) return setNcCounts(initialNcCounts)
 
-        const unsubscribe = ncCountsRef
-            .doc('counts')
-            .onSnapshot((snapshot) => {
-                const countsData = snapshot.data() as NcCounts
+        let unsubscribe: () => void
 
-                if (!countsData) return setNcCounts(initialNcCounts)
+        if (branch === 'ลาดกระบัง') {
+            unsubscribe = ncCountsRef
+                .doc('counts')
+                .onSnapshot((snapshot) => {
+                    const countsData = snapshot.data() as NcCounts
 
-                setNcCounts(countsData)
-            }
-        )
+                    if (!countsData) return setNcCounts(initialNcCounts)
 
-        return () => unsubscribe()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+                    setNcCounts(countsData)
+                })
+        } else if (branch === 'ชลบุรี') {
+            unsubscribe = ncCountsCdcRef
+                .doc('counts')
+                .onSnapshot((snapshot) => {
+                    const countsData = snapshot.data() as NcCounts
 
-    // Fetch the nc-counts-cdc collection from firestore
-    useEffect(() => {
-        
-        if (!userInfo) return setNcCountsCdc(initialNcCounts)
+                    if (!countsData) return setNcCounts(initialNcCounts)
 
-        const unsubscribe = ncCountsCdcRef
-            .doc('counts')
-            .onSnapshot((snapshot) => {
-                const countsData = snapshot.data() as NcCounts
-
-                if (!countsData) return setNcCountsCdc(initialNcCounts)
-
-                setNcCountsCdc(countsData)
-            }
-        )
+                    setNcCounts(countsData)
+                })
+        }
 
         return () => unsubscribe()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [branch])
 
     return (
-        <NcStateContext.Provider value={{ncNotify, ncCounts, ncCountsCdc, loading, error, queryMoreNc}}>
-            <NcDispatchContext.Provider value={{setNcNotify}}>
+        <NcStateContext.Provider value={{ncNotify, ncCounts, loading, error, queryMoreNc}}>
+            <NcDispatchContext.Provider value={{setNcNotify, setBranch}}>
                 {children}
             </NcDispatchContext.Provider>
         </NcStateContext.Provider>

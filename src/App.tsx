@@ -9,7 +9,6 @@ function App() {
   return (
     <AuthContextProvider>
       <ModalContextProvider>
-        {/* FIXME: NcContextProvider ไม่ให้มันมึ้นมาก่อนเราล็อคอิน */}
           <BrowserRouter>
             <Layout>
               <Routes />

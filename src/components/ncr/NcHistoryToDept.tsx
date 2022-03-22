@@ -1,4 +1,4 @@
-import React, {useState ,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import Tab from '../Tab'
@@ -17,11 +17,11 @@ interface Props {
     branch: Branch
 }
 
-const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
-    const { ncByDept, loading, error } = useQueryNcByDept(dept, branch)
+const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
+    const { ncByDept, loading, error , queryMoreNc } = useQueryNcByDept(dept, branch)
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
     const [ncByStatus, setNcByStatus] = useState(ncByDept[activeTab])
-    
+
     // When the tab changed
     useEffect(() => {
         setNcByStatus(ncByDept[activeTab])
@@ -41,8 +41,8 @@ const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
     return (
         <NcHistory>
             <HistoryHeader>
-                <h4>NC ที่ถูกออกให้กับแผนก { dept }</h4>
-                
+                <h4>NC ที่ถูกออกให้กับแผนก {dept}</h4>
+
                 <NcTabStyled>
                     {orderTabs.map((tab) => (
                         <Tab
@@ -55,7 +55,7 @@ const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
                 </NcTabStyled>
 
             </HistoryHeader>
-            
+
             <HistoryDetail>
                 <div className="nc-content">
                     <div className="nc-column">
@@ -75,6 +75,12 @@ const NcHistoryToDept: React.FC<Props> = ({ dept , branch}) => {
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
+            <br />
+            {ncByStatus.length > 9 &&(
+                <div className='flex-center'>
+                    <button onClick={() => queryMoreNc()}>Load more</button>
+                </div>
+            )} 
         </NcHistory>
     )
 }
