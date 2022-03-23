@@ -5,11 +5,12 @@ import NcHistoryNotifyItem from './NcHistoryNotifyItem'
 import Spinner from '../Spinner'
 import { useNcContext } from '../../state/nc-context'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
+import Button from '../Button'
 
 interface Props {}
 
 const NcHistoryNotify: React.FC<Props> = () => {
-    const { ncState: { ncNotify, loading, error } } = useNcContext()
+    const { ncState: { ncNotify, loading, error,queryMoreNc, btnLoading  } } = useNcContext()
 
     if (loading) return (
         <SpinnerStyled>
@@ -50,6 +51,19 @@ const NcHistoryNotify: React.FC<Props> = () => {
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
+            {ncNotify.All.length > 11 && (
+                <div className='flex-center'>
+                    <Button
+                        type='button'
+                        loading={btnLoading}
+                        width='130px'
+                        style={{ margin: '0.5rem 0' }}
+                        onClick={() => queryMoreNc()}
+                    >
+                        โหลดเพิ่ม
+                    </Button>
+                </div>
+            )} 
         </NcHistory>
     )
 }

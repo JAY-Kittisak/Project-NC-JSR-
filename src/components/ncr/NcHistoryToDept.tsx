@@ -9,6 +9,7 @@ import { useQueryNcByDept } from '../../hooks/useQueryNcByDept'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
 import { Branch, NcrTab } from '../../types'
 import { useSelectTab } from '../../hooks/useSelectTab'
+import Button from '../Button'
 
 export const prodTabType = 'ncStatus'
 
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
-    const { ncByDept, loading, error , queryMoreNc } = useQueryNcByDept(dept, branch)
+    const { ncByDept, loading, error , queryMoreNc, btnLoading } = useQueryNcByDept(dept, branch)
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
     const [ncByStatus, setNcByStatus] = useState(ncByDept[activeTab])
 
@@ -78,7 +79,15 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
             <br />
             {ncByStatus.length > 9 &&(
                 <div className='flex-center'>
-                    <button onClick={() => queryMoreNc()}>Load more</button>
+                    <Button
+                        type='button'
+                        loading={btnLoading}
+                        width='10%'
+                        style={{ margin: '0.5rem 0' }}
+                        onClick={() => queryMoreNc()}
+                    >
+                        โหลดเพิ่ม
+                    </Button>
                 </div>
             )} 
         </NcHistory>

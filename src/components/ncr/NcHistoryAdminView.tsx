@@ -5,7 +5,7 @@ import NcHistoryNotifyItem from './NcHistoryNotifyItem'
 import Tab from '../Tab'
 import Spinner from '../Spinner'
 import Pagination from '../Pagination'
-import { useNcContext } from '../../state/nc-context'
+import { useNcAdminContext } from '../../state/nc-admin-context'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
 import { useSelectTab } from '../../hooks/useSelectTab'
 import { usePagination } from '../../hooks/usePagination'
@@ -22,7 +22,7 @@ const NcHistoryAdminView: React.FC<Props> = () => {
     const {
         ncState: { ncNotify, ncCounts, loading, error, queryMoreNc },
         ncDispatch: { setBranch }
-    } = useNcContext()
+    } = useNcAdminContext()
 
     const { activeTab } = useSelectTab<NcrTab>(prodTabType, 'All')
 

@@ -332,14 +332,6 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     )
 }
 
-// const ProgressionStyled = styled.input`
-//     height: 100%;
-//     border: 0.6px solid #79849b;
-//     background-color: chocolate;
-//     outline: none;
-//     width: ${(props: {uploadProgression: number}) => `${props.uploadProgression}%`};
-// `
-
 const ButtonStyled = styled.section`
     margin-top: 2rem;
     width: 30%;
@@ -358,6 +350,7 @@ const NcNotifyStyled = styled.section`
     display: grid;
     grid-template-columns: repeat(1,1fr);
     background-color: var(--background-dark-color);
+    max-height: 722px;
 
     @media screen and (max-width: 502px){
         width: 70%;

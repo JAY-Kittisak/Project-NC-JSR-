@@ -8,31 +8,36 @@ import React, {
 } from 'react'
 
 import { useAsyncCall } from '../hooks/useAsyncCall'
-import { NcrTab, NcrNotify, Nc } from '../types'
+import { NcrTab, NcrNotify, CatNc, Nc, Branch } from '../types'
 import { firebase } from '../firebase/config'
 import {
     ncNotifyRef,
     snapshotToDoc,
+    ncCountsRef,
+    ncCountsCdcRef
 } from '../firebase'
 import { useAuthContext } from './auth-context'
+import { isClient } from '../helpers'
 
-const limitQuery = 12
+const limitQuery = 10
 
 interface Props { }
 
+type NcCounts = { [key in NcrTab | CatNc]: number }
 type NcrState = {
     ncNotify: Nc
+    ncCounts: NcCounts
     loading: boolean
     error: string
     queryMoreNc: () => void
-    btnLoading: boolean
 }
 type NcDispatch = {
     setNcNotify: Dispatch<SetStateAction<Nc>>
+    setBranch: Dispatch<SetStateAction<Branch>>
 }
 
-const NcStateContext = createContext<NcrState | undefined>(undefined)
-const NcDispatchContext = createContext<NcDispatch | undefined>(undefined)
+const NcAdminStateContext = createContext<NcrState | undefined>(undefined)
+const NcAdminDispatchContext = createContext<NcDispatch | undefined>(undefined)
 
 export const initialNc: Nc = {
     All: [],
@@ -43,22 +48,35 @@ export const initialNc: Nc = {
     ปิดแล้ว: [],
 }
 
-const NcContextProvider: React.FC<Props> = ({ children }) => {
+const initialNcCounts: NcCounts = {
+    All: 0,
+    รอตอบ: 0,
+    ตอบแล้ว: 0,
+    รอปิด: 0,
+    ไม่อนุมัติ: 0,
+    ปิดแล้ว: 0,
+    NCR: 0,
+    CCR: 0,
+    SCR: 0,
+}
+
+const NcAdminProvider: React.FC<Props> = ({ children }) => {
     const { loading, setLoading, error, setError } = useAsyncCall()
+    const [branch, setBranch] = useState<Branch>('ลาดกระบัง')
     const [ncNotify, setNcNotify] = useState(initialNc)
+    const [ncCounts, setNcCounts] = useState(initialNcCounts)
     const [lastDocument, setLastDocument] = useState<firebase.firestore.DocumentData>()
-    const [btnLoading, setBtnLoading] = useState(false)
 
     const { authState: { userInfo } } = useAuthContext()
 
     const queryMoreNc = async () => {
         try {
-            if (!lastDocument || !userInfo) return
+            if (!lastDocument) return
 
-            setBtnLoading(true)
+            setLoading(true)
 
             const snapshots = await ncNotifyRef
-                .where('creator.id', '==', userInfo.id)
+                .where('branch', '==', branch)
                 .orderBy('createdAt', 'desc')
                 .startAfter(lastDocument)
                 .limit(limitQuery)
@@ -87,34 +105,34 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
                 return updatedNc
             })
 
-            setBtnLoading(false)
+            setLoading(false)
         } catch (err) {
             const { message } = err as { message: string }
 
             setError(message)
-            setBtnLoading(false)
+            setLoading(false)
         }
     }
 
     // Fetch the nc-notify collection from firestore (first query)
     useEffect(() => {
-        if (!userInfo) return setNcNotify(initialNc)
+        if (!userInfo || isClient(userInfo.role)) return setNcNotify(initialNc)
 
         setLoading(true)
-
+        // If the user i an admin, query all Departments.
         const unsubscribe = ncNotifyRef
-            .where('creator.id', '==', userInfo.id)
+            .where('branch', '==', branch)
             .orderBy('createdAt', 'desc')
             .limit(limitQuery)
             .onSnapshot({
                 next: (snapshots) => {
-                    const allNc: NcrNotify[] = []
+                    const allNc = snapshots.docs.map(snapshot => snapshotToDoc<NcrNotify>(snapshot))
 
-                    snapshots.forEach(snapshot => {
-                        const nc = snapshotToDoc<NcrNotify>(snapshot)
+                    // snapshots.forEach(snapshot => {
+                    //     const nc = snapshotToDoc<NcrNotify>(snapshot)
 
-                        allNc.push(nc)
-                    })
+                    //     allNc.push(nc)
+                    // })
 
                     const lastVisible = snapshots.docs[snapshots.docs.length - 1]
                     setLastDocument(lastVisible)
@@ -133,6 +151,7 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
 
                     setNcNotify(updatedNc)
                     setLoading(false)
+
                 },
                 error: (err) => {
                     setError(err.message)
@@ -144,22 +163,55 @@ const NcContextProvider: React.FC<Props> = ({ children }) => {
         return () => unsubscribe()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [branch])
+
+    // Fetch the nc-counts collection from firestore
+    useEffect(() => {
+
+        if (!userInfo) return setNcCounts(initialNcCounts)
+
+        let unsubscribe: () => void
+
+        if (branch === 'ลาดกระบัง') {
+            unsubscribe = ncCountsRef
+                .doc('counts')
+                .onSnapshot((snapshot) => {
+                    const countsData = snapshot.data() as NcCounts
+
+                    if (!countsData) return setNcCounts(initialNcCounts)
+
+                    setNcCounts(countsData)
+                })
+        } else if (branch === 'ชลบุรี') {
+            unsubscribe = ncCountsCdcRef
+                .doc('counts')
+                .onSnapshot((snapshot) => {
+                    const countsData = snapshot.data() as NcCounts
+
+                    if (!countsData) return setNcCounts(initialNcCounts)
+
+                    setNcCounts(countsData)
+                })
+        }
+
+        return () => unsubscribe()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [branch])
 
     return (
-        <NcStateContext.Provider value={{ ncNotify, loading, error, queryMoreNc, btnLoading }}>
-            <NcDispatchContext.Provider value={{ setNcNotify }}>
+        <NcAdminStateContext.Provider value={{ ncNotify, ncCounts, loading, error, queryMoreNc }}>
+            <NcAdminDispatchContext.Provider value={{ setNcNotify, setBranch }}>
                 {children}
-            </NcDispatchContext.Provider>
-        </NcStateContext.Provider>
+            </NcAdminDispatchContext.Provider>
+        </NcAdminStateContext.Provider>
     )
 }
 
-export default NcContextProvider
+export default NcAdminProvider
 
-export const useNcContext = () => {
-    const ncState = useContext(NcStateContext)
-    const ncDispatch = useContext(NcDispatchContext)
+export const useNcAdminContext = () => {
+    const ncState = useContext(NcAdminStateContext)
+    const ncDispatch = useContext(NcAdminDispatchContext)
 
     if (ncState === undefined || ncDispatch === undefined) {
         throw new Error('useNcContext must be used within NcContextProvider.')

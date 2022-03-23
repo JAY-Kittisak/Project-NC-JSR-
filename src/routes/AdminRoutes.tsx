@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch, Redirect } from "react-router-dom";
 
-import NcContextProvider from '../state/nc-context'
+import NcAdminProvider from '../state/nc-admin-context'
 import ManageIqAudit from "../pages/ManageIqAudit";
 import ManageIqAuditDetail from "../pages/ManageIqAuditDetail";
 import ManageNc from "../pages/ManageNc";
@@ -35,9 +35,9 @@ const AdminRoutes: React.FC<Props> = (props) => {
                 <ManageNcDetail />
             </Route>
             <Route path="/admin/manage-nc">
-                <NcContextProvider>
+                <NcAdminProvider>
                     <ManageNc />
-                </NcContextProvider>
+                </NcAdminProvider>
             </Route>
             <Route path="/admin/manage-dept">
                 <DeptContextProvider>
