@@ -222,16 +222,11 @@ const User: React.FC<Props> = ({
 
 const TdStyled = styled.td`
     margin: 0;
-    /* padding: 0.5rem; */
     width: ${(props: TableWidth) => props.width + '%'};
     border: 0.2px solid #596275;
     word-wrap: break-word;
     text-align: center;
     font-size: 1rem;
-
-    @media screen and (max-width: 600px) {
-        display: none;
-    }
 
     select { 
         background-color: var(--background-dark-color);

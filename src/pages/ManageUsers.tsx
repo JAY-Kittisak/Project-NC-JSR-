@@ -1,18 +1,40 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
+
 import { MainLayout,InnerLayout, SpinnerStyled } from '../styles/LayoutStyle'
-import Title from '../components/Title'
 import { useFetchUsers } from '../hooks/useFetchUsers'
+import { usePagination } from '../hooks/usePagination'
 import { UserInfo } from '../types'
+import Title from '../components/Title'
 import Spinner from '../components/Spinner'
 import User from '../components/manage-users/User'
+import Pagination from '../components/Pagination'
+
+const usersPerPage = 2
 
 interface Props {
     userInfo: UserInfo
 }
 
 const ManageUsers: React.FC<Props> = ({ userInfo }) => {
-    const { users, loading, error} = useFetchUsers(userInfo)
+    const { users,userCounts, loading, error, queryMoreUsers} = useFetchUsers(userInfo)
+    const {page, totalPages} = usePagination(userCounts, usersPerPage, undefined, users)
+    const [ usersByPage, setUserByPage] = useState(users)
+
+    useEffect(() => {
+        if (!users) return
+
+        const startIndex = usersPerPage * (page - 1)
+        const endIndex = usersPerPage * page
+
+        if (users.length < userCounts && users.length < usersPerPage * page) {
+            queryMoreUsers()
+            return
+        }
+
+        setUserByPage(users.slice(startIndex, endIndex))
+
+    }, [users, page, userCounts ])
 
     if (loading) return (
         <SpinnerStyled>
@@ -34,6 +56,7 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
         <MainLayout>
             <Title title={'Manage Users'} span={'Manage Users'} />
                 <InnerLayout className='manage-users'>
+                    <Pagination page={page} totalPages={totalPages}/>
                     <TableStyled>
                         <thead>
                             <tr>
@@ -53,7 +76,9 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
                         </thead>
 
                         <tbody>
-                            {users.map(user => <User key={user.id} user={user} admin={userInfo} />)}
+                            {usersByPage && usersByPage.map(user => (
+                                <User key={user.id} user={user} admin={userInfo} />
+                            ))}
                         </tbody>
                     </TableStyled>
                 </InnerLayout>
@@ -85,7 +110,7 @@ const ThStyled = styled.td`
 `
 
 const SubThStyled = styled(ThStyled)`
-    font-size: .9rem;
+    font-size: .8rem;
 `
 
 const ErrorStyled = styled.h2`

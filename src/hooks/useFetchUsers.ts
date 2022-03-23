@@ -3,68 +3,108 @@ import { useState, useEffect } from 'react'
 import { useAsyncCall } from './useAsyncCall'
 import { UserInfo } from '../types'
 import { isAdmin } from '../helpers'
+import { firebase } from '../firebase/config'
 import { snapshotToDoc, userCountsRef, usersRef } from '../firebase'
 
+const userQueryLimit = 2
+
 export const useFetchUsers = (userInfo: UserInfo) => {
-    const { loading, setLoading, error, setError} = useAsyncCall()
-    const [users, setUsers] = useState<UserInfo[] | null>(null)
-    const [userCounts, setUserCounts] = useState(0)
+  const { loading, setLoading, error, setError } = useAsyncCall()
+  const [users, setUsers] = useState<UserInfo[] | null>(null)
+  const [userCounts, setUserCounts] = useState(0)
+  const [lastDocument, setLastDocument] = useState<firebase.firestore.DocumentData>()
 
-    // Query the users collection
-    useEffect(() => {
-        if (!userInfo || !isAdmin(userInfo.role)) {
-            setUsers(null)
-            return
+  // Next query
+  const queryMoreUsers = async () => {
+    try {
+      if (!lastDocument) return
+
+      setLoading(true)
+      const snapshots = await usersRef
+        .orderBy('createdAt', 'desc')
+        .startAfter(lastDocument)
+        .limit(userQueryLimit)
+        .get()
+
+      const newUsers = snapshots.docs.map(snapshot => snapshotToDoc<UserInfo>(snapshot))
+
+      const lastVisible = snapshots.docs[snapshots.docs.length - 1]
+      setLastDocument(lastVisible)
+
+      // Combinethe new users with the existing users state
+      setUsers((prev) => prev ? [...prev, ...newUsers] : newUsers)
+      setLoading(false)
+
+    } catch (err) {
+      const {message} = err as {message: string}
+
+      setError(message)
+      setLoading(false)
+    }
+  }
+
+  // Query the users collection (first query)
+  useEffect(() => {
+    if (!userInfo || !isAdmin(userInfo.role)) {
+      setUsers(null)
+      return
+    }
+
+    setLoading(true)
+
+    const unsubscribe = usersRef
+      .orderBy('createdAt', 'desc')
+      .limit(userQueryLimit)
+      .onSnapshot({
+        next: (snapshots) => {
+          const users = snapshots.docs.map(snapshot => snapshotToDoc<UserInfo>(snapshot))
+
+          // snapshot.forEach(snapshot => {
+          //   const user = snapshotToDoc<UserInfo>(snapshot)
+
+          //   users.push(user)
+          // })
+
+          const lastVisible = snapshots.docs[snapshots.docs.length - 1]
+          setLastDocument(lastVisible)
+
+          setUsers(users)
+          setLoading(false)
+        },
+        error: err => {
+          setError(err.message)
+          setUsers(null)
+          setLoading(false)
         }
+      })
 
-        setLoading(true)
-
-        const unsubscribe = usersRef.orderBy('createdAt', 'desc').onSnapshot({
-            next: (snapshot) => {
-                const users: UserInfo[] = []
-                snapshot.forEach(snapshot => {
-                    const user = snapshotToDoc<UserInfo>(snapshot)
-
-                    users.push(user)
-                })
-
-                setUsers(users)
-                setLoading(false)
-            },
-            error: err => {
-                setError(err.message)
-                setUsers(null)
-                setLoading(false)
-            }
-        })
-
-        return () => unsubscribe()
+    return () => unsubscribe()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+  }, [])
 
-    // Query the user-counts/counts
-    useEffect(() => {
-      if (!userInfo || !isAdmin(userInfo.role)) {
+  // Query the user-counts/counts
+  useEffect(() => {
+    if (!userInfo || !isAdmin(userInfo.role)) {
+      setUserCounts(0)
+      return
+    }
+
+    const unsubscribe = userCountsRef.doc('counts').onSnapshot({
+      next: (snapshot) => {
+        const { userCounts } = snapshot.data() as { userCounts: number }
+
+        setUserCounts(userCounts)
+      },
+      error: (err) => {
+        setError(err.message)
         setUserCounts(0)
-        return
-      }
-  
-      const unsubscribe = userCountsRef.doc('counts').onSnapshot({
-        next: (snapshot) => {
-          const { userCounts } = snapshot.data() as { userCounts: number }
-  
-          setUserCounts(userCounts)
-        },
-        error: (err) => {
-          setError(err.message)
-          setUserCounts(0)
-        },
-      })
-  
-      return () => unsubscribe()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+      },
+    })
 
-    return { users, userCounts, loading, error }
+    return () => unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return { users, userCounts, loading, error, queryMoreUsers }
 }
