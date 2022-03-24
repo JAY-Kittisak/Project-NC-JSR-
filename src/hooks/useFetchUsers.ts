@@ -6,7 +6,7 @@ import { isAdmin } from '../helpers'
 import { firebase } from '../firebase/config'
 import { snapshotToDoc, userCountsRef, usersRef } from '../firebase'
 
-const userQueryLimit = 2
+const userQueryLimit = 10
 
 export const useFetchUsers = (userInfo: UserInfo) => {
   const { loading, setLoading, error, setError } = useAsyncCall()
@@ -17,7 +17,7 @@ export const useFetchUsers = (userInfo: UserInfo) => {
   // Next query
   const queryMoreUsers = async () => {
     try {
-      if (!lastDocument) return
+      if (!lastDocument) return 
 
       setLoading(true)
       const snapshots = await usersRef

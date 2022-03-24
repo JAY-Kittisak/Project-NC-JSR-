@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import Tab from '../Tab'
-import NcHistoryNotifyItem from './NcHistoryNotifyItem'
+import NcHistoryToDeptItem from './NcHistoryToDeptItem'
 import { orderTabs } from '../../helpers'
 import Spinner from '../Spinner'
 import { useQueryNcByDept } from '../../hooks/useQueryNcByDept'
@@ -63,6 +63,9 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
                         <h3 className='header--center'>เลขที่</h3>
                     </div>
                     <div className='nc-column'>
+                        <h3 className='header--center'>วันที่ออก NC</h3>
+                    </div>
+                    <div className='nc-column'>
                         <h3 className='header--center'>ออกให้กับ</h3>
                     </div>
                     <div className='nc-column'>
@@ -73,7 +76,7 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
                     </div>
                 </div>
                 {ncByStatus.map(item => (
-                    <NcHistoryNotifyItem key={item.id} item={item} />
+                    <NcHistoryToDeptItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
             <br />
@@ -114,12 +117,6 @@ const NcTabStyled = styled.div`
     height: 2rem;
 `
 
-// const NcPaginationStyled = styled.div`
-//     margin-bottom: 1rem;
-//     display: flex;
-//     justify-content: flex-end;
-// `
-
 const HistoryHeader = styled.section`
     display: flex;
     justify-content: space-between;
@@ -139,7 +136,7 @@ const HistoryDetail = styled.section`
     }
 
     .nc-column {
-        width: 25%;
+        width: 20%;
     }
 
     .header--center {

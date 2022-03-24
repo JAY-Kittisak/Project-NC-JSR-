@@ -10,7 +10,7 @@ import Spinner from '../components/Spinner'
 import User from '../components/manage-users/User'
 import Pagination from '../components/Pagination'
 
-const usersPerPage = 2
+const usersPerPage = 10
 
 interface Props {
     userInfo: UserInfo
@@ -18,7 +18,7 @@ interface Props {
 
 const ManageUsers: React.FC<Props> = ({ userInfo }) => {
     const { users,userCounts, loading, error, queryMoreUsers} = useFetchUsers(userInfo)
-    const {page, totalPages} = usePagination(userCounts, usersPerPage, undefined, users)
+    const {page, totalPages} = usePagination(userCounts, usersPerPage, undefined, users as UserInfo[])
     const [ usersByPage, setUserByPage] = useState(users)
 
     useEffect(() => {
@@ -34,6 +34,7 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
 
         setUserByPage(users.slice(startIndex, endIndex))
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [users, page, userCounts ])
 
     if (loading) return (
@@ -56,7 +57,9 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
         <MainLayout>
             <Title title={'Manage Users'} span={'Manage Users'} />
                 <InnerLayout className='manage-users'>
-                    <Pagination page={page} totalPages={totalPages}/>
+                    <PaginationStyled>
+                        <Pagination page={page} totalPages={totalPages}/>
+                    </PaginationStyled>
                     <TableStyled>
                         <thead>
                             <tr>
@@ -85,6 +88,12 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
         </MainLayout>
     )
 }
+
+const PaginationStyled = styled.div`
+    display: flex;
+    justify-content: end;
+    background-color: var(--background-dark-color);
+`
 
 const TableStyled = styled.table`
     width: 100%;

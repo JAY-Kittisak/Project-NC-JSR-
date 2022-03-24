@@ -79,7 +79,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                         <div className='flex-half'>
                             <p>
                                 <span className='title'>จาก : </span> {creatorName}
-                                <span className='title'>แผนก : </span> {creator.dept}
+                                <span className='title'>&nbsp;แผนก : </span> {creator.dept}
                             </p>
                             <p>
                                 <span className='title'>ถึงแผนก : </span>{dept}

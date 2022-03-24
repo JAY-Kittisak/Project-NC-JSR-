@@ -146,6 +146,14 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 )}
                             </div>
 
+                            <div>
+                                <p>วันที่ออก NC : <SpanStyled>{formatDate(createdAt)}</SpanStyled></p>
+                                {ncAnswer && (
+                                    <p>วันที่ตอบ NC : <SpanStyled>{formatDate(ncAnswer.createdAt)}</SpanStyled></p>
+                                )}
+                                <p>ระยะเวลาที่ใช้ในการตอบ : <SpanStyled>1 วัน</SpanStyled></p>
+                            </div>
+
                         </div>
                     </div>
                     

@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 
 import { calculateTotalPages } from '../helpers'
+import { Branch } from '../types'
 
 export const usePagination = <T, U>(
   totalItems: number,
   perPage: number,
   activeTab?: T,
-  searchedItems?: U[] | null
+  items?: U[] | null,
+  branch?: Branch
 ) => {
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  // const [totalPages, setTotalPages] = useState(1)
 
-//   const history = useHistory()
+  const history = useHistory()
   const { search, pathname } = useLocation()
   const params = new URLSearchParams(search)
   const currentPage = params.get('page')
+
+  // FIXME:
+  const totalPages = calculateTotalPages(totalItems, perPage)
 
   useEffect(() => {
     if (currentPage) setPage(+currentPage)
@@ -28,13 +33,10 @@ export const usePagination = <T, U>(
   }, [activeTab])
 
   useEffect(() => {
-    if (searchedItems) {
-      setPage(1)
-      setTotalPages(calculateTotalPages(searchedItems.length, perPage))
+    setPage(1)
       // Remove the cat query string
-    //   history.replace(`${pathname}?page=1`)
-    } else setTotalPages(calculateTotalPages(totalItems, perPage))
-  }, [activeTab, searchedItems, totalItems, perPage, pathname])
+      history.replace(`${pathname}?page=1`)
+  }, [branch, pathname, history])
 
   return { page, totalPages }
 }

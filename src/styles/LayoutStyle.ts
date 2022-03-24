@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ImagePath from '../assets/svg/check-circle.svg'
 export const MainLayout = styled.div`
-    padding: 5rem;
+    padding: 4rem;
     @media screen and (max-width: 1600px){
         padding: 3rem;
     }
@@ -13,7 +13,7 @@ export const MainLayout = styled.div`
     }
 `
 export const InnerLayout = styled.div`
-    padding-top: 3.5rem;
+    padding-top: 3rem;
 `
 
 export const CheckboxStyled = styled.div`

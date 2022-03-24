@@ -24,6 +24,20 @@ export type Iqa = {
 
 export type Branch = 'ลาดกระบัง' | 'ชลบุรี'
 
+export type SelectMonth = "เดือน" |
+    "มกราคม" |
+    "กุมภาพันธ์" |
+    "มีนาคม" |
+    "เมษายน" |
+    "พฤษภาคม" |
+    "มิถุนายน" |
+    "กรกฎาคม" |
+    "สิงหาคม" |
+    "กันยายน" |
+    "ตุลาคม" |
+    "พฤศจิกายน" |
+    "ธันวาคม"
+
 export type UserInfo = {
     id: string
     username: string

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import NcHistoryNotifyItem from './NcHistoryNotifyItem'
+import NcHistoryToDeptItem from './NcHistoryToDeptItem'
 import Tab from '../Tab'
 import Spinner from '../Spinner'
 import Pagination from '../Pagination'
@@ -20,7 +20,7 @@ interface Props { }
 
 const NcHistoryAdminView: React.FC<Props> = () => {
     const {
-        ncState: { ncNotify, ncCounts, loading, error, queryMoreNc },
+        ncState: { ncNotify, ncCounts, loading, error, queryMoreNc, branch },
         ncDispatch: { setBranch }
     } = useNcAdminContext()
 
@@ -33,7 +33,8 @@ const NcHistoryAdminView: React.FC<Props> = () => {
         ncCounts[activeTab],
         ncPerPage,
         activeTab,
-        ncByDemo
+        ncByDemo,
+        branch
     )
 
     // When the tab changed
@@ -46,13 +47,14 @@ const NcHistoryAdminView: React.FC<Props> = () => {
             ncNotify[activeTab].length < ncPerPage * page
         ) {
             // Make a new query to the nc collection in firestore
-
             return queryMoreNc()
         }
 
         setNcByDemo(ncNotify[activeTab])
         setNcByStatus(ncNotify[activeTab].slice(startIndex, endIndex))
-    }, [activeTab, ncNotify, page, ncCounts, queryMoreNc])
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, ncNotify, page, ncCounts])
 
     if (loading) return (
         <SpinnerStyled>
@@ -107,6 +109,9 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                         <h3 className='header--center'>เลขที่</h3>
                     </div>
                     <div className='nc-column'>
+                        <h3 className='header--center'>วันที่ออก NC</h3>
+                    </div>
+                    <div className='nc-column'>
                         <h3 className='header--center'>ออกให้กับ</h3>
                     </div>
                     <div className='nc-column'>
@@ -117,16 +122,13 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                     </div>
                 </div>
                 {ncByStatus.map(item => (
-                    <NcHistoryNotifyItem key={item.id} item={item} />
+                    <NcHistoryToDeptItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
         </NcHistory>
     )
 }
 
-// const SelectStyled = styled.div`
-
-// `
 const NcHistory = styled.div`
     padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
@@ -174,7 +176,7 @@ const HistoryDetail = styled.section`
     }
 
     .nc-column {
-        width: 25%;
+        width: 20%;
     }
 
     .header--center {

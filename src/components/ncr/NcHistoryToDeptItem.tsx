@@ -1,19 +1,42 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { firebase } from '../../firebase/config'
 
-import { NcrNotify } from '../../types'
+import { NcrNotify  } from '../../types'
+import { formatDate, selectMonth } from '../../helpers'
 
 interface Props {
     item: NcrNotify
 }
 
-const NcHistoryNotifyItem: React.FC<Props> = ({item}) => {
+const sumNewDate = (value: firebase.firestore.Timestamp) => {
+    const date = value.toDate()
+    const datePlus = new Date(date.getTime() + 604800000)
+    return datePlus > new Date()
+}
+
+const formatDateGo = (value: firebase.firestore.Timestamp) => {
+    const date = value.toDate()
+    const datePlus = new Date(date.getTime() + 604800000)
+    const dd = datePlus.getDate()
+    const mm = date.getMonth()
+    const yy = date.getFullYear()
+    return `${dd} ${selectMonth[mm + 1]} ${yy}`;
+}
+
+const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
     return (
         <Link to={`/nc/notify/${item.id}`}>
             <NotifyItem>
                 <div className="nc-column">
-                    <p className='font-small'>{item.code}</p>
+                    <p>{item.code}</p>
+                </div>
+                <div className="nc-column">
+                    <p>{formatDate(item.createdAt)}</p>
+                    {item.ncStatus === 'รอตอบ' && (
+                        <p style={{ color: sumNewDate(item.createdAt) ? undefined : 'red' }}>ควรตอบภายในวันที่ {formatDateGo(item.createdAt)}</p>
+                    )}
                 </div>
                 <div className="nc-column">
                     <p>{item.dept}</p>
@@ -35,7 +58,7 @@ const NcHistoryNotifyItem: React.FC<Props> = ({item}) => {
                                             ? '#FF0505'
                                             : item.ncStatus === 'ปิดแล้ว'
                                                 ? '#0cbd0c'
-                                                        : undefined,
+                                                : undefined,
                     }}
                 >
                     <p>{item.ncStatus}</p>
@@ -70,11 +93,12 @@ const NotifyItem = styled.div`
     }
 
     .nc-column {
-        width: 25%;
+        width: 20%;
         p {
             margin: 5px 0;
             text-align: center;
             font-style: italic;
+            font-size: 0.9rem;
         }
     }
 
@@ -83,10 +107,5 @@ const NotifyItem = styled.div`
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-    .font-small {
-        font-size: 0.8rem;
-    }
-    
 `
-export default NcHistoryNotifyItem
+export default NcHistoryToDeptItem

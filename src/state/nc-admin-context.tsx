@@ -30,6 +30,7 @@ type NcrState = {
     loading: boolean
     error: string
     queryMoreNc: () => void
+    branch: Branch
 }
 type NcDispatch = {
     setNcNotify: Dispatch<SetStateAction<Nc>>
@@ -199,7 +200,7 @@ const NcAdminProvider: React.FC<Props> = ({ children }) => {
     }, [branch])
 
     return (
-        <NcAdminStateContext.Provider value={{ ncNotify, ncCounts, loading, error, queryMoreNc }}>
+        <NcAdminStateContext.Provider value={{ ncNotify, ncCounts, loading, error, queryMoreNc, branch }}>
             <NcAdminDispatchContext.Provider value={{ setNcNotify, setBranch }}>
                 {children}
             </NcAdminDispatchContext.Provider>
