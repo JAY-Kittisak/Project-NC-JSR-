@@ -6,14 +6,16 @@ import { useReactToPrint } from 'react-to-print'
 import ManageNcAnswer from '../components/ncr/ManageNcAnswer'
 import NcFollow from '../components/ncr/NcFollow'
 import NcApprove from '../components/ncr/NcApprove'
+import NcPrint from '../components/ncr/NcPrint'
+import EditNc from '../components/ncr/EditNc'
 import Spinner from '../components/Spinner'
 import Title from '../components/Title'
 import Button from '../components/Button'
-import NcPrint from '../components/ncr/NcPrint'
-import { formatDate } from '../helpers'
+import { useAuthContext } from '../state/auth-context'
+import { formatDate, diffDay } from '../helpers'
 import { useQueryNc } from '../hooks/useQueryNc'
 import { InnerLayout, MainLayout, SpinnerStyled } from '../styles/LayoutStyle'
-import { StatusNc, AlertNt, AlertType} from '../types'
+import { StatusNc, AlertNt, AlertType } from '../types'
 import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
 import AlertNotification from '../components/dialogs/AlertNotification'
 
@@ -34,9 +36,12 @@ function getStatusColor(value: StatusNc) {
 const NonConformanceDetail: React.FC<Props> = () => {
     const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
     const [alertState, setAlertState] = useState<AlertType>('success');
+    const [openNcForm, setOpenNcForm] = useState(false)
 
     const params = useParams<{ id: string }>()
 
+
+    const { authState: { userInfo } } = useAuthContext()
     const { nc, loading, error } = useQueryNc(params.id)
     const { ncAnswer, error: queryError } = useQueryNcAnswer(params.id)
 
@@ -86,84 +91,108 @@ const NonConformanceDetail: React.FC<Props> = () => {
             <NcDetailStyled>
                 <InnerLayout className='nc-detail-section' >
                     <div className="left-content">
-                        <div className='notify'>
-                            <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
-                            <div className="paragraph-end">
-                                <p><span>ประเภท : </span><SpanStyled>{category}</SpanStyled></p>
-                                <p>เลขที่ :<SpanStyled>{code}</SpanStyled></p>
-                                <p><span>วันที่ :</span><SpanStyled>{formatDate(createdAt)}</SpanStyled></p>
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="name">ชื่อ-นามสกุล ผู้ออก NC</label>
-                                <input readOnly type="text" id="name" value={creatorName + ' แผนก ' + creator.dept} />
-                            </div>
-                            <GridStyled>
-                                <div className="form-field">
-                                    <label htmlFor="name">ถึงแผนก</label>
-                                    <input readOnly type="text" id="name" value={dept} />
-                                </div>
-                                <div className="form-field">
-                                    <label htmlFor="name">ประเภทของความไม่สอดคล้อง</label>
-                                    <input readOnly type="text" id="name" value={topicType} />
-                                </div>
-                            </GridStyled>
-                            <div className="form-field">
-                                <label htmlFor="name">ประเด็นความไม่สอดคล้อง</label>
-                                <input readOnly type="text" id="name" value={topic} />
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="name">
-                                    รายละเอียดความไม่สอดคล้อง
-                                </label>
-                                <textarea
-                                    readOnly
-                                    cols={30}
-                                    rows={3}
-                                    name="detail"
-                                    id="detail"
-                                    value={detail}
-                                />
-                            </div>
-                            <div className='flex-between'>
-                                <div className='flex-between'>
-                                    <p className='mar-right'>
-                                        สถานะปัจจุบัน :<NcStatusStyled ncStatus={ncStatus}>
-                                            {ncStatus}
-                                        </NcStatusStyled>
-                                    </p>
-                                    {ncStatus === 'ปิดแล้ว' && <Button className='btn--orange' onClick={printNcDetail}>Print</Button>}
-                                </div>
-                                {fileNcUrl && (
-                                    <div className="flex-end">
-                                        <a
-                                            href={fileNcUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            ไฟล์แนบ / เอกสารอ้างอิง
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
+                        <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
 
+                        <FlexStyled>
                             <div>
-                                <p>วันที่ออก NC : <SpanStyled>{formatDate(createdAt)}</SpanStyled></p>
-                                {ncAnswer && (
-                                    <p>วันที่ตอบ NC : <SpanStyled>{formatDate(ncAnswer.createdAt)}</SpanStyled></p>
-                                )}
-                                <p>ระยะเวลาที่ใช้ในการตอบ : <SpanStyled>1 วัน</SpanStyled></p>
+                                <p><span>ประเภท : </span></p>
+                                <SpanStyled>{category}</SpanStyled>
                             </div>
+                            <div>
+                                <p><span>เลขที่ :</span></p>
+                                <SpanStyled>{code}</SpanStyled>
+                            </div>
+                        </FlexStyled>
+                        <FlexStyled>
+                            <div>
+                                <p><span> วันที่ :</span></p>
+                                <SpanStyled>{formatDate(createdAt)}</SpanStyled>
+                            </div>
+                            <div>
+                                <p><span>เอกสาร :</span></p>
+                                {fileNcUrl ? (
+                                    <a
+                                        href={fileNcUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        ดูเอกสาร / ไฟล์แนบ
+                                    </a>
+                                ) : (
+                                    <p><SpanStyled>ไม่มีเอกสาร</SpanStyled></p>
+                                )}
+                            </div>
+                        </FlexStyled>
+                        <FlexStyled>
+                            <div>
+                                {ncAnswer && (
+                                    <>
+                                        <p><span>ระยะเวลาในการตอบ : </span></p>
+                                        <p>
+                                            <SpanStyled style={{ color: diffDay(createdAt, ncAnswer.createdAt) > 7 ? 'red' : undefined }}>
+                                                {diffDay(createdAt, ncAnswer.createdAt)} วัน
+                                            </SpanStyled>
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <p><span>สถานะปัจจุบัน :</span></p>
+                                <NcStatusStyled ncStatus={ncStatus}>
+                                    {ncStatus}
+                                </NcStatusStyled>
+                            </div>
+                        </FlexStyled>
 
+                        <div className="form-field">
+                            <label htmlFor="name">ชื่อ-นามสกุล ผู้ออก NC</label>
+                            <input readOnly type="text" id="name" value={creatorName + ' แผนก ' + creator.dept} />
+                        </div>
+                        <GridStyled>
+                            <div className="form-field">
+                                <label htmlFor="name">ถึงแผนก</label>
+                                <input readOnly type="text" id="name" value={dept} />
+                            </div>
+                            <div className="form-field">
+                                <label htmlFor="name">ประเภทของความไม่สอดคล้อง</label>
+                                <input readOnly type="text" id="name" value={topicType} />
+                            </div>
+                        </GridStyled>
+                        <div className="form-field">
+                            <label htmlFor="name">ประเด็นความไม่สอดคล้อง</label>
+                            <input readOnly type="text" id="name" value={topic} />
+                        </div>
+                        <div className="form-field">
+                            <label htmlFor="name">
+                                รายละเอียดความไม่สอดคล้อง
+                            </label>
+                            <textarea
+                                readOnly
+                                cols={30}
+                                rows={3}
+                                name="detail"
+                                id="detail"
+                                value={detail}
+                            />
+                        </div>
+                        <div className='flex-center'>
+                            {ncStatus === 'ปิดแล้ว' && <Button className='btn--orange' onClick={printNcDetail}>Print</Button>}
+                            {(creator.id === userInfo?.id) && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
+                                <Button className='btn--orange' onClick={() => setOpenNcForm(true)}>แก้ไข NC</Button>
+                                )}
+                                <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>แก้ไข NC</Button>
                         </div>
                     </div>
                     
+                    {openNcForm && <EditNc setOpenNcForm={setOpenNcForm}/>}
+
                     <section>
                         <ManageNcAnswer
                             ncId={params.id}
                             ncAnswer={ncAnswer}
                             ncStatus={ncStatus}
                             ncToDept={dept}
-                            setAlertWarning={setAlertWarning} 
+                            setAlertWarning={setAlertWarning}
                             setAlertState={setAlertState}
                         />
                         {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError.length}</p>}
@@ -174,7 +203,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         follow={follow}
                         ncStatus={ncStatus}
                         creatorId={creator.id}
-                        setAlertWarning={setAlertWarning} 
+                        setAlertWarning={setAlertWarning}
                         setAlertState={setAlertState}
                     />
 
@@ -182,7 +211,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         ncId={params.id}
                         approve={approve}
                         ncStatus={ncStatus}
-                        setAlertWarning={setAlertWarning} 
+                        setAlertWarning={setAlertWarning}
                         setAlertState={setAlertState}
                     />
 
@@ -199,11 +228,38 @@ const NonConformanceDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
+            
 
         </MainLayout>
 
     )
 }
+
+const FlexStyled = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    p span {
+        margin: 0.5rem;
+        font-size: 1.2rem;
+    }
+    
+    a {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    a:hover {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    div {
+        margin: 0.5rem 0.5rem 0rem 0.5rem;
+        width: 50%;
+        display: flex;
+        justify-content: space-between;
+    }
+`
 
 const PrintStyled = styled.div`
     display: none;
@@ -231,7 +287,7 @@ const NcDetailStyled = styled.div`
         display: grid;
         grid-template-columns: 2fr 1fr;
         grid-column-gap: 2rem;
-        @media screen and (max-width:1310px){
+        @media screen and (max-width:1350px){
             grid-template-columns: repeat(1, 1fr);
             .f-button{
                 margin-bottom: 3rem;
@@ -256,19 +312,13 @@ const NcDetailStyled = styled.div`
     .btn--orange:hover {
         background-color: coral;
     }
+        
+    .btn--darkcyan {
+        background-color: #008B8B;
+    }
 
-    .notify {
-        p {
-            margin: 0.5rem;
-        }
-
-        span {
-            margin-left: .5rem;
-        }
-
-        a {
-            border-bottom: 3px solid var(--primary-color);
-        }
+    .btn--darkcyan:hover {
+        background-color: #008B8B;
     }
 
     .mar-right {
@@ -277,7 +327,6 @@ const NcDetailStyled = styled.div`
 
     .left-content {
         display: flex;
-        justify-content: space-between;
         flex-direction: column;
         background-color: var(--background-dark-color);
     }

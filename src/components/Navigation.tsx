@@ -103,7 +103,7 @@ const Navigation: React.FC<Props> = () => {
                 )}
             </ul>
             <footer className='footer'>
-                <p>@2022 JSR NC System</p>
+                <p>JSR NC System v1.8</p>
             </footer>
         </NavigationStyled>
     )

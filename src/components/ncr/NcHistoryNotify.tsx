@@ -47,7 +47,9 @@ const NcHistoryNotify: React.FC<Props> = () => {
                         <h3 className='header--center'>สถานะ</h3>
                     </div>
                 </div>
-                {(!ncNotify || ncNotify.All.length === 0) ? (<h2>No NC.</h2>) : ncNotify.All.map(item => (
+                {(!ncNotify || ncNotify.All.length === 0) ? (
+                    <p className='flex-center'>ยังไม่มีประวัติการออก NC</p>
+                ) : ncNotify.All.map(item => (
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>

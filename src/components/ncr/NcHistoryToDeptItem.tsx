@@ -1,29 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { firebase } from '../../firebase/config'
 
 import { NcrNotify  } from '../../types'
-import { formatDate, selectMonth } from '../../helpers'
+import { formatDate, sumNewDate, formatAddDate } from '../../helpers'
 
 interface Props {
     item: NcrNotify
 }
 
-const sumNewDate = (value: firebase.firestore.Timestamp) => {
-    const date = value.toDate()
-    const datePlus = new Date(date.getTime() + 604800000)
-    return datePlus > new Date()
-}
-
-const formatDateGo = (value: firebase.firestore.Timestamp) => {
-    const date = value.toDate()
-    const datePlus = new Date(date.getTime() + 604800000)
-    const dd = datePlus.getDate()
-    const mm = date.getMonth()
-    const yy = date.getFullYear()
-    return `${dd} ${selectMonth[mm + 1]} ${yy}`;
-}
 
 const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
     return (
@@ -35,7 +20,9 @@ const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
                 <div className="nc-column">
                     <p>{formatDate(item.createdAt)}</p>
                     {item.ncStatus === 'รอตอบ' && (
-                        <p style={{ color: sumNewDate(item.createdAt) ? undefined : 'red' }}>ควรตอบภายในวันที่ {formatDateGo(item.createdAt)}</p>
+                        <p style={{ color: sumNewDate(item.createdAt) ? 'red' : 'green' }}>
+                            ควรตอบภายในวันที่ {formatAddDate(item.createdAt)}
+                        </p>
                     )}
                 </div>
                 <div className="nc-column">

@@ -9,7 +9,7 @@ import Button from '../Button'
 import { useManageAnswerNc } from '../../hooks/useManageAnswerNc'
 import { AddAnswerNcData, StatusNc, NcAnswer, AlertNt, AlertType } from '../../types';
 import { storageRef } from '../../firebase/config'
-import { fileType } from '../../helpers';
+import { fileType, formatDate } from '../../helpers';
 import { useAuthContext } from '../../state/auth-context';
 interface Props {
     ncId: string
@@ -176,7 +176,12 @@ const ManageNcAnswer: React.FC<Props> = ({
 
     return (
         <NcAnswerStyled>
+            <section className='flex-between'>
                 <h4>ผู้รับผิดชอบการแก้ไข</h4>
+                {ncAnswer && (
+                    <p>{formatDate(ncAnswer.createdAt)}</p>
+                ) }
+            </section>
             <form className="form" onSubmit={ncAnswer ? handleEditAnswerNc : handleAddAnswerNc}>
                 <div className="form-field">
                     <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้รับตอบ</label>

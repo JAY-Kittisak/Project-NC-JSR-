@@ -32,6 +32,33 @@ export const formatDate = (value: firebase.firestore.Timestamp) => {
     return `${dd} ${selectMonth[mm + 1]} ${yy}`;
 }
 
+export const sumNewDate = (value: firebase.firestore.Timestamp) => {
+    const date = value.toDate()
+    date.setDate(date.getDate() + 7)
+
+    return date < new Date()
+}
+
+export const formatAddDate = (value: firebase.firestore.Timestamp) => {
+    const date = value.toDate()
+    date.setDate(date.getDate() + 7)
+
+    const dd = date.getDate()
+    const mm = date.getMonth()
+    return `${dd} ${selectMonth[mm + 1]}`
+}
+
+export const diffDay = (
+    value1: firebase.firestore.Timestamp,
+    value2: firebase.firestore.Timestamp
+) => {
+    const date1 = value1.toDate().valueOf();
+    const date2 = value2.toDate().valueOf();
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    return diffDays
+}
+
 export const orderTabs: NcrTab[] = [
     'รอตอบ',
     'ตอบแล้ว',

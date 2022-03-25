@@ -171,7 +171,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                     />
                 </div>
                 {errors && (
-                    <p>{errors.creatorName?.message}</p>
+                    <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
                 )}
                 <div className='flex-between'>
                     {user?.branch === 'ลาดกระบัง' ? (
