@@ -50,8 +50,8 @@ const AccountDropdown: React.FC<Props> = ({name,email}) => {
 
 const DropdownStyled = styled.section`
     position: fixed;
-    top: 90px;
-    left: 220px;
+    top: 100px;
+    left: 207px;
     z-index: 11;
 
     .menu {

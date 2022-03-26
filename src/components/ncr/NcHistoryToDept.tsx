@@ -60,19 +60,19 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
             <HistoryDetail>
                 <div className="nc-content">
                     <div className="nc-column">
-                        <h3 className='header--center'>เลขที่</h3>
+                        <p className='header--center'>เลขที่</p>
                     </div>
                     <div className='nc-column'>
-                        <h3 className='header--center'>วันที่ออก NC</h3>
+                        <p className='header--center'>วันที่ออก NC</p>
                     </div>
                     <div className='nc-column'>
-                        <h3 className='header--center'>ออกให้กับ</h3>
+                        <p className='header--center'>ออกให้กับ</p>
                     </div>
                     <div className='nc-column'>
-                        <h3 className='header--center'>ประเด็น</h3>
+                        <p className='header--center'>ประเด็น</p>
                     </div>
                     <div className='nc-column'>
-                        <h3 className='header--center'>สถานะ</h3>
+                        <p className='header--center'>สถานะ</p>
                     </div>
                 </div>
                 {ncByStatus.map(item => (
@@ -141,8 +141,8 @@ const HistoryDetail = styled.section`
 
     .header--center {
         margin: 1rem 0;
-        font-weight: 500;
         text-align: center;
+        font-size: 1.1rem;
     }
 `
 

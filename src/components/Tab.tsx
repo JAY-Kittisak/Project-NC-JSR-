@@ -41,6 +41,7 @@ const ParagraphStyled = styled.p`
     margin: 1rem .8rem 1rem 0rem;
     padding: 0;
     text-align: start;
+    font-size: 1.2rem;
     color: ${(props: PropStyled) => getLabelColor(props.label, props.activeTab)};
 
     &:hover {

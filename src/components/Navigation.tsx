@@ -77,6 +77,11 @@ const Navigation: React.FC<Props> = () => {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
+                                    <NavLink to="/admin/nc-report" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                        report nc
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
                                     <NavLink to="/admin/manage-iqa" exact className={(isActive) => isActive ? "active-class" : ""}>
                                         manage iqa
                                     </NavLink>
@@ -103,7 +108,7 @@ const Navigation: React.FC<Props> = () => {
                 )}
             </ul>
             <footer className='footer'>
-                <p>JSR NC System v1.8</p>
+                <p>@JSR NC System V0.1.8</p>
             </footer>
         </NavigationStyled>
     )

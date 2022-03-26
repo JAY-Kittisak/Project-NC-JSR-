@@ -19,7 +19,7 @@ const Button = forwardRef(
             disabled,
             style,
             className,
-            height = '2.7rem',
+            height = '40px',
             width = '9rem',
             loading,
             spinnerColor,
@@ -61,7 +61,7 @@ const ButtonStyled = styled.button`
     color: white;
     background-color: #282c34;
     border: none;
-    border-radius: 2px;
+    border-radius: 5px;
     cursor: pointer;
     transition: 0.4s ease-in;
 

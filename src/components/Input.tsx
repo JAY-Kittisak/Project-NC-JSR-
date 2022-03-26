@@ -25,7 +25,7 @@ const Input = forwardRef(
 
 const InputStyled = styled.div`
     text-align: start;
-    margin: 1rem auto;
+    margin: 0.3rem auto;
     width: 100%;
 
     label {
@@ -34,9 +34,8 @@ const InputStyled = styled.div`
 
     input {
         width: 100%;
-        height: 100%;
         border: 0.6px solid #79849b;
-        padding: 0.5rem;
+        padding: 0.3rem;
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);

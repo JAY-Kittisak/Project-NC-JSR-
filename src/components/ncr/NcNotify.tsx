@@ -135,18 +135,18 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
 
     return (
         <NcNotifyStyled>
-            <div className="nc-notify-title">
+            <div className='nc-notify-title'>
                 <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
             </div>
 
-            <form className="form" onSubmit={handleAddNotifyNc}>
+            <form className='form' onSubmit={handleAddNotifyNc}>
                 <div className='radio-group'>
                     {categories.map((radio, i) => (
                         <RadioStyled key={i}>
-                            <div className="group">
+                            <div className='group'>
                                 <input
-                                    type="radio"
-                                    name="category"
+                                    type='radio'
+                                    name='category'
                                     id={radio}
                                     value={radio}
                                     checked={isRadioSelected(radio)}
@@ -161,12 +161,12 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p>{errors.category?.message}</p>
                 )}
-                <div className="form-field">
-                    <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้ออก NC</label>
+                <div className='form-field'>
+                    <label htmlFor='creatorName'>ชื่อ-นามสกุล ผู้ออก NC</label>
                     <input
-                        type="text"
+                        type='text'
                         name='creatorName'
-                        id="creatorName"
+                        id='creatorName'
                         ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
                     />
                 </div>
@@ -175,12 +175,12 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 )}
                 <div className='flex-between'>
                     {user?.branch === 'ลาดกระบัง' ? (
-                        departments && <div className="form-field">
-                            <label htmlFor="dept">
+                        departments && <div className='form-field'>
+                            <label htmlFor='dept'>
                                 ถึงแผนก
                             </label>
                             <select
-                                name="dept"
+                                name='dept'
                                 onChange={(e) => setDept(e.target.value)}
                                 ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                             >
@@ -193,12 +193,12 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                             </select>
                         </div>
                     ) : (
-                        deptCdc && <div className="form-field">
-                            <label htmlFor="dept">
+                        deptCdc && <div className='form-field'>
+                            <label htmlFor='dept'>
                                 ถึงแผนก
                             </label>
                             <select
-                                name="dept"
+                                name='dept'
                                 onChange={(e) => setDept(e.target.value)}
                                 ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                             >
@@ -211,11 +211,11 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                             </select>
                         </div>
                     )}
-                    <div className="form-field">
-                        <label htmlFor="topicType">
+                    <div className='form-field'>
+                        <label htmlFor='topicType'>
                             ประเภทความไม่สอดคล้อง
                         </label>
-                        <select name="topicType" ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
+                        <select name='topicType' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
                             <option style={{ display: 'none' }}></option>
                             <option value='Product'>Product</option>
                             <option value='Process'>Process</option>
@@ -228,11 +228,11 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.topicType?.message}</p>
                 )}
-                {topic && <div className="form-field">
-                    <label htmlFor="topic">
+                {topic && <div className='form-field'>
+                    <label htmlFor='topic'>
                         ประเด็นความไม่สอดคล้อง
                     </label>
-                    <select name="topic" ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}>
+                    <select name='topic' ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}>
                         <option style={{ display: 'none' }}></option>
                         {topic.map(item => (
                             <option key={item} value={item}>
@@ -244,15 +244,15 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.topic?.message}</p>
                 )}
-                <div className="form-field">
-                    <label htmlFor="name">
+                <div className='form-field'>
+                    <label htmlFor='detail'>
                         รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
                     </label>
                     <textarea
                         cols={30}
                         rows={5}
-                        name="detail"
-                        id="detail"
+                        name='detail'
+                        id='detail'
                         ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
                     />
                 </div>
@@ -395,7 +395,7 @@ const NcNotifyStyled = styled.section`
                 border: 1px solid var(--border-color);
                 outline: none;
                 background: transparent;
-                height: 50px;
+                height: 40px;
                 padding: 0 15px;
                 width: 100%;
                 color: inherit;
@@ -404,7 +404,7 @@ const NcNotifyStyled = styled.section`
             select{
                 border: 1px solid var(--border-color);
                 outline: none;
-                height: 50px;
+                height: 40px;
                 padding: 0 15px 0px 15px;
                 width: 100%;
                 color: inherit;

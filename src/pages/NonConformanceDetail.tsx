@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useReactToPrint } from 'react-to-print'
+import EditIcon from "@material-ui/icons/EditOutlined";
+import PrintRoundedIcon from "@material-ui/icons/PrintRounded";
 
 import ManageNcAnswer from '../components/ncr/ManageNcAnswer'
 import NcFollow from '../components/ncr/NcFollow'
@@ -62,7 +64,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
 
     if (error) return <h2 className='header--center'>{error}</h2>
 
-    if (!nc) return <h2 className='header--center'>Error Non Conformance Detail</h2>
+    if (!nc || !userInfo) return <h2 className='header--center'>Error Non Conformance Detail</h2>
 
     const {
         creatorName,
@@ -96,17 +98,17 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         <FlexStyled>
                             <div>
                                 <p><span>ประเภท : </span></p>
-                                <SpanStyled>{category}</SpanStyled>
+                                <p>{category}</p>
                             </div>
                             <div>
                                 <p><span>เลขที่ :</span></p>
-                                <SpanStyled>{code}</SpanStyled>
+                                <p>{code}</p>
                             </div>
                         </FlexStyled>
                         <FlexStyled>
                             <div>
                                 <p><span> วันที่ :</span></p>
-                                <SpanStyled>{formatDate(createdAt)}</SpanStyled>
+                                <p>{formatDate(createdAt)}</p>
                             </div>
                             <div>
                                 <p><span>เอกสาร :</span></p>
@@ -119,7 +121,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                         ดูเอกสาร / ไฟล์แนบ
                                     </a>
                                 ) : (
-                                    <p><SpanStyled>ไม่มีเอกสาร</SpanStyled></p>
+                                    <p><p>ไม่มีเอกสาร</p></p>
                                 )}
                             </div>
                         </FlexStyled>
@@ -129,9 +131,9 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                     <>
                                         <p><span>ระยะเวลาในการตอบ : </span></p>
                                         <p>
-                                            <SpanStyled style={{ color: diffDay(createdAt, ncAnswer.createdAt) > 7 ? 'red' : undefined }}>
+                                            <p style={{ color: diffDay(createdAt, ncAnswer.createdAt) > 7 ? 'red' : undefined }}>
                                                 {diffDay(createdAt, ncAnswer.createdAt)} วัน
-                                            </SpanStyled>
+                                            </p>
                                         </p>
                                     </>
                                 )}
@@ -143,7 +145,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 </NcStatusStyled>
                             </div>
                         </FlexStyled>
-
                         <div className="form-field">
                             <label htmlFor="name">ชื่อ-นามสกุล ผู้ออก NC</label>
                             <input readOnly type="text" id="name" value={creatorName + ' แผนก ' + creator.dept} />
@@ -169,23 +170,32 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             <textarea
                                 readOnly
                                 cols={30}
-                                rows={3}
+                                rows={5}
                                 name="detail"
                                 id="detail"
                                 value={detail}
                             />
                         </div>
+                        <br />
                         <div className='flex-center'>
-                            {ncStatus === 'ปิดแล้ว' && <Button className='btn--orange' onClick={printNcDetail}>Print</Button>}
-                            {(creator.id === userInfo?.id) && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
+                            {ncStatus === 'ปิดแล้ว' && (
+                                <Button className='btn--orange' onClick={printNcDetail}>
+                                    <span><PrintRoundedIcon /> Print</span>
+                                </Button>
+                            )}
+                                
+                            {(creator.id === userInfo.id) && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
                                 <Button className='btn--orange' onClick={() => setOpenNcForm(true)}>แก้ไข NC</Button>
-                                )}
-                                <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>แก้ไข NC</Button>
+                            )}
+
+                            <Button 
+                                className='btn--darkcyan' 
+                                onClick={() => setOpenNcForm(true)}
+                            >
+                                <span><EditIcon /> แก้ไข NC</span>
+                            </Button>
                         </div>
                     </div>
-                    
-                    {openNcForm && <EditNc setOpenNcForm={setOpenNcForm}/>}
-
                     <section>
                         <ManageNcAnswer
                             ncId={params.id}
@@ -218,7 +228,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
                 </InnerLayout>
             </NcDetailStyled>
 
-
             {(ncAnswer && ncStatus === 'ปิดแล้ว') && (
                 <PrintStyled>
                     <NcPrint
@@ -228,8 +237,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
-            
-
+            {openNcForm && <EditNc branch={userInfo.branch} setOpenNcForm={setOpenNcForm} />}
         </MainLayout>
 
     )
@@ -257,6 +265,7 @@ const FlexStyled = styled.div`
         margin: 0.5rem 0.5rem 0rem 0.5rem;
         width: 50%;
         display: flex;
+        align-items: center;
         justify-content: space-between;
     }
 `
@@ -276,16 +285,13 @@ const GridStyled = styled.div`
     grid-column-gap: 2rem;
     @media screen and (max-width:1800px){
         grid-template-columns: repeat(1, 1fr);
-        .f-button{
-            margin-bottom: 3rem;
-        }
     }
 `
 
 const NcDetailStyled = styled.div`
     .nc-detail-section {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 1fr 1fr;
         grid-column-gap: 2rem;
         @media screen and (max-width:1350px){
             grid-template-columns: repeat(1, 1fr);
@@ -307,6 +313,10 @@ const NcDetailStyled = styled.div`
         
     .btn--orange {
         background-color: chocolate;
+        
+        svg {
+            margin-bottom: -5px;
+        }
     }
 
     .btn--orange:hover {
@@ -315,10 +325,15 @@ const NcDetailStyled = styled.div`
         
     .btn--darkcyan {
         background-color: #008B8B;
+
+        svg {
+            margin-bottom: -5px;
+        }
     }
 
     .btn--darkcyan:hover {
-        background-color: #008B8B;
+        background-color: #055a5a;
+                
     }
 
     .mar-right {
@@ -337,14 +352,6 @@ const NcDetailStyled = styled.div`
         margin: 16px 0;
         border-left: 5px solid #e74c3c;
         padding-left: 16px;
-    }
-    
-    .follow {
-        margin-top: 1rem;
-        margin-bottom: .5rem;
-        padding: 1rem;
-        border: 2px solid var(--border-color);
-        background-color: var(--background-dark-color);
     }
 
     .form-field{
@@ -365,21 +372,11 @@ const NcDetailStyled = styled.div`
             border: 1px solid var(--border-color);
             outline: none;
             background: transparent;
-            height: 50px;
+            height: 40px;
             padding: 0 15px;
             width: 100%;
             color: inherit;
             box-shadow: none;
-        }
-        select{
-            border: 1px solid var(--border-color);
-            outline: none;
-            height: 50px;
-            padding: 0 15px 0px 15px;
-            width: 100%;
-            color: inherit;
-            box-shadow: none;
-            background-color: var(--background-dark-color);
         }
         textarea{
             background-color: transparent;
@@ -391,8 +388,5 @@ const NcDetailStyled = styled.div`
         }
     }
 `
-const SpanStyled = styled.span`
-    color: var(--white-color);
-    border-bottom: 1px solid var(--border-color);
-`
+
 export default NonConformanceDetail

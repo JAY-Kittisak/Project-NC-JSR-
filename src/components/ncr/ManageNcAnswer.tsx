@@ -178,11 +178,32 @@ const ManageNcAnswer: React.FC<Props> = ({
         <NcAnswerStyled>
             <section className='flex-between'>
                 <h4>ผู้รับผิดชอบการแก้ไข</h4>
-                {ncAnswer && (
-                    <p>{formatDate(ncAnswer.createdAt)}</p>
-                ) }
             </section>
             <form className="form" onSubmit={ncAnswer ? handleEditAnswerNc : handleAddAnswerNc}>
+
+
+                {ncAnswer && (
+                    <FlexStyled>
+                        <div>
+                            <p><span>วันที่ตอบ :</span></p>
+                            <p>{formatDate(ncAnswer.createdAt)}</p>
+                        </div>
+                        <div>
+                            <p><span>เอกสาร :</span></p>
+                            {ncAnswer.fileAnswerNcUrl ? (
+                                <a
+                                    href={ncAnswer.fileAnswerNcUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    ดูเอกสาร / ไฟล์แนบ
+                                </a>
+                            ) : (
+                                <p><p>ไม่มีเอกสาร</p></p>
+                            )}
+                        </div>
+                    </FlexStyled>
+                )}
                 <div className="form-field">
                     <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้รับตอบ</label>
                     <input
@@ -201,7 +222,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
-                        rows={2}
+                        rows={3}
                         name="containmentAction"
                         id="containmentAction"
                         defaultValue={ncAnswer ? ncAnswer.containmentAction : ''}
@@ -246,7 +267,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
-                        rows={2}
+                        rows={3}
                         name="rootCause"
                         id="rootCause"
                         defaultValue={ncAnswer ? ncAnswer.rootCause : ''}
@@ -262,7 +283,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
-                        rows={2}
+                        rows={3}
                         name="correctiveAction"
                         id="correctiveAction"
                         defaultValue={ncAnswer ? ncAnswer.correctiveAction : ''}
@@ -423,7 +444,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
-                        rows={2}
+                        rows={3}
                         name="docDetail"
                         id="docDetail"
                         defaultValue={ncAnswer ? ncAnswer.docDetail : ''}
@@ -431,22 +452,10 @@ const ManageNcAnswer: React.FC<Props> = ({
                     />
                 </div>
 
-                {ncAnswer?.fileAnswerNcUrl && (
-                    <div className="flex-end">
-                        <a
-                            href={ncAnswer.fileAnswerNcUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            ไฟล์แนบ / เอกสารอ้างอิง
-                        </a>
-                    </div>
-                )}
-
                 {
                     !((ncStatus === 'รอตอบ') || (ncStatus === 'ไม่อนุมัติ')) ?
                         null : (
-                            <FlexStyled>
+                            <FlexUploadStyled>
                                 <div className='form-field' style={{ width: '70%' }}>
                                     {uploadProgression ? (
                                         <>
@@ -508,7 +517,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                                     style={{ display: 'none' }}
                                     onChange={handleSelectFile}
                                 />
-                            </FlexStyled>
+                            </FlexUploadStyled>
 
                         )}
                 {editBoolean && (
@@ -526,6 +535,33 @@ const ManageNcAnswer: React.FC<Props> = ({
     )
 }
 
+const FlexStyled = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    p span {
+        margin: 0.5rem;
+        font-size: 1.2rem;
+    }
+    
+    a {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    a:hover {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    div {
+        margin: 0.5rem 0.5rem 0rem 0.5rem;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+`
+
 const ButtonStyled = styled.section`
     margin-top: 2rem;
     width: 30%;
@@ -535,7 +571,7 @@ const ButtonStyled = styled.section`
     }
 `
 
-const FlexStyled = styled.div`
+const FlexUploadStyled = styled.div`
     display: flex;
     margin: -1rem 0rem 1rem;
 `
@@ -578,7 +614,7 @@ const NcAnswerStyled = styled.div`
                 border: 1px solid var(--border-color);
                 outline: none;
                 background: transparent;
-                height: 50px;
+                height: 40px;
                 padding: 0 15px;
                 width: 100%;
                 color: inherit;

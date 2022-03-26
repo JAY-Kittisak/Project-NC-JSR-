@@ -5,10 +5,10 @@ import NcAdminProvider from '../state/nc-admin-context'
 import ManageIqAudit from "../pages/ManageIqAudit";
 import ManageIqAuditDetail from "../pages/ManageIqAuditDetail";
 import ManageNc from "../pages/ManageNc";
-import ManageNcDetail from "../pages/ManageNcDetail";
 import ManageDepartments from "../pages/ManageDepartments";
 import ManageDepartmentsCdc from "../pages/ManageDepartmentsCdc";
 import ManageUsers from "../pages/ManageUsers";
+import NcReport from "../pages/NcReport";
 import PageNotFound from "../pages/PageNotFound";
 import DeptContextProvider from '../state/dept-context'
 import DeptCdcContextProvider from '../state/dept-cdc-context'
@@ -25,14 +25,14 @@ const AdminRoutes: React.FC<Props> = (props) => {
 
     return (
         <Switch>
+            <Route path="/admin/nc-report">
+                <NcReport />
+            </Route>
             <Route path="/admin/manage-iqa/:id">
                 <ManageIqAuditDetail />
             </Route>
             <Route path="/admin/manage-iqa">
                 <ManageIqAudit />
-            </Route>
-            <Route path="/admin/manage-nc/:id">
-                <ManageNcDetail />
             </Route>
             <Route path="/admin/manage-nc">
                 <NcAdminProvider>
