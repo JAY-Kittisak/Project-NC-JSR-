@@ -180,8 +180,6 @@ const ManageNcAnswer: React.FC<Props> = ({
                 <h4>ผู้รับผิดชอบการแก้ไข</h4>
             </section>
             <form className="form" onSubmit={ncAnswer ? handleEditAnswerNc : handleAddAnswerNc}>
-
-
                 {ncAnswer && (
                     <FlexStyled>
                         <div>
@@ -199,7 +197,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                                     ดูเอกสาร / ไฟล์แนบ
                                 </a>
                             ) : (
-                                <p><p>ไม่มีเอกสาร</p></p>
+                                <p>ไม่มีเอกสาร</p>
                             )}
                         </div>
                     </FlexStyled>

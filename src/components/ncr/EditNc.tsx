@@ -1,35 +1,42 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 
-import { AddNcrNotifyData, Branch } from '../../types';
+import { EditNcrNotifyData, NcrNotify } from '../../types';
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
-import Input from '../Input';
+import { useManageNcNotify } from '../../hooks/useManageNcNotify'
+import { storageRef } from '../../firebase/config'
+import Input from '../Input'
 import Button from '../Button';
+import { categories, fileType } from '../../helpers';
 
 interface Props {
-    branch: Branch
+    nc: NcrNotify
     setOpenNcForm: (open: boolean) => void
-    //   productToEdit: Product | null
-    //   setNcToEdit: (product: Product | null) => void
 }
 
-const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
-    const [dept, setDept] = useState('SC')
+const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
+    const [dept, setDept] = useState(nc.dept)
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
     const {
         register,
-        // handleSubmit, 
+        handleSubmit,
         errors,
-        // reset 
-    } = useForm<AddNcrNotifyData>()
+    } = useForm<EditNcrNotifyData>()
 
-    // FIXME: 
-    console.log(dept)
-    const uploadProgression = 0
+    const inputRef = useRef<HTMLInputElement>(null)
 
+    const {
+        editNc,
+        uploadImageToStorage,
+        setUploadProgression,
+        editNcFinished,
+        uploadProgression
+    } = useManageNcNotify()
 
     const {
         departmentsState: { departments }
@@ -39,9 +46,78 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
         departmentsState: { departments: deptCdc }
     } = useDepartmentsCdcContext()
 
+    const handleOpenUploadBox = () => {
+        if (inputRef?.current) inputRef.current.click()
+    }
+
+    const handleSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+
+        if (!files || !files[0]) return
+
+        const file = files[0]
+
+        if (!fileType.includes(file.type)) {
+            alert('Wrong file format, allow only ".png",".jpeg",".jpg" and ".pdf".')
+            return
+        }
+
+        setSelectedFile(file)
+    }
+
+    const handleEditNc = handleSubmit(async (data) => {
+        const {
+            id,
+            category,
+            creatorName,
+            dept,
+            topicType,
+            topic,
+            detail,
+            fileNcUrl,
+            fileNcRef,
+            fileNcName
+        } = nc
+
+        const isNotEdited =
+            category === data.creatorName &&
+            creatorName === data.creatorName &&
+            dept === data.creatorName &&
+            topicType === data.topicType &&
+            topic === data.creatorName &&
+            detail === data.creatorName &&
+            fileNcName === data.creatorName
+
+        // 1. Nothing Changed
+        if (isNotEdited) return
+
+        // 2. file NcName is not undefined
+        if (fileNcUrl && fileNcRef && fileNcName) {
+            // 3. Something changed
+            if (fileNcName !== data.fileNcName) {
+                // 3.1 If the iamge changed
+                if (!selectedFile) return
+
+                // Delete the old image
+                const oldImageRef = storageRef.child(fileNcRef)
+                await oldImageRef.delete()
+
+                return uploadImageToStorage(
+                    selectedFile,
+                    editNc(id, data)
+                )
+            } else {
+                // The image has not been changed
+                return editNc(id,data)(fileNcUrl, fileNcRef)
+            }
+        } else {
+            return uploadImageToStorage(selectedFile,editNc(id,data))
+        }
+    })
+
     useEffect(() => {
 
-        if (branch === 'ลาดกระบัง') {
+        if (nc.branch === 'ลาดกระบัง') {
             if (departments) {
                 const filterTopic = departments.filter((value) => value.dept === dept)
                 const mapTopic = filterTopic.map(item => item.topic)
@@ -56,7 +132,15 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                 setTopic(mapIs)
             }
         }
-    }, [branch, departments, deptCdc, dept])
+    }, [nc.branch, departments, deptCdc, dept])
+
+    useEffect(() => {
+        if (editNcFinished) {
+            setSelectedFile(null)
+            setUploadProgression(0)
+            setOpenNcForm(false)
+        }
+    }, [editNcFinished, setUploadProgression, setSelectedFile, setOpenNcForm])
 
     return (
         <>
@@ -70,43 +154,56 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                 >
                     &times;
                 </div>
-
-                <h3>แก้ไขข้อมูล</h3>
-
-                <form className='form'>
+                <h3>แก้ไข NC เลขที่ {nc.code}</h3>
+                <form onSubmit={handleEditNc}>
                     <GridStyled>
                         {/* Category */}
-                        <Input
-                            label='ประเภท'
-                            name='category'
-                            defaultValue={''}
-                            ref={register({ required: 'ประเภท' })}
-                            error={errors.category?.message}
-                        />
+                        <div className='form__input-container'>
+                            <label htmlFor='category' className='form__input-label'>
+                                ประเภท
+                            </label>
+                            <select
+                                name='category'
+                                className='input'
+                                defaultValue={nc.category}
+                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                            >
+                                <option style={{ display: 'none' }}></option>
+                                {categories.map((cat) => (
+                                    <option key={cat} value={cat}>
+                                        {cat}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
                         {/* Creator Name */}
                         <Input
                             label='ชื่อ-นามสกุล ผู้ออก NC'
                             name='creatorName'
-                            defaultValue={''}
+                            defaultValue={nc.creatorName}
                             ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
                             error={errors.creatorName?.message}
                         />
                     </GridStyled>
+                    {errors && (
+                        <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                    )}
 
+                    {/* dept */}
                     <GridStyled>
-                        {/* dept */}
-                        {branch === 'ลาดกระบัง' ? (
+                        {nc.branch === 'ลาดกระบัง' ? (
                             departments && <div className='form__input-container'>
                                 <label htmlFor='dept' className='form__input-label'>
                                     ถึงแผนก
                                 </label>
                                 <select
-                                    className='input'
                                     name='dept'
+                                    className='input'
+                                    defaultValue={nc.dept}
                                     onChange={(e) => setDept(e.target.value)}
                                     ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                                 >
-                                    <option style={{ display: 'none' }}></option>
                                     {departments.map((cat) => (
                                         <option key={cat.id} value={cat.dept}>
                                             {cat.dept}
@@ -120,8 +217,9 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                                     ถึงแผนก
                                 </label>
                                 <select
-                                    className='input'
                                     name='dept'
+                                    className='input'
+                                    defaultValue={nc.dept}
                                     onChange={(e) => setDept(e.target.value)}
                                     ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                                 >
@@ -143,6 +241,7 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                             <select
                                 name='topicType'
                                 className='input'
+                                defaultValue={nc.topicType}
                                 ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
                                 <option style={{ display: 'none' }}></option>
                                 <option value='Product'>Product</option>
@@ -167,6 +266,7 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                             <select
                                 name='topic'
                                 className='input'
+                                defaultValue={nc.topic}
                                 ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}
                             >
                                 <option style={{ display: 'none' }}></option>
@@ -182,7 +282,6 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                         <p className='paragraph-error text-center'>{errors.topic?.message}</p>
                     )}
 
-
                     {/* Detail */}
                     <div className='form__input-container'>
                         <label className='form__input-label'>
@@ -191,9 +290,10 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                         <textarea
                             className='input'
                             cols={30}
-                            rows={5}
+                            rows={4}
                             name='detail'
                             id='detail'
+                            defaultValue={nc.detail}
                             ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
                         />
                     </div>
@@ -203,7 +303,7 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
 
                     {/* Upload File */}
                     <div className='form__input-container'>
-                        <label htmlFor='Image' className='form__input-label'>
+                        <label htmlFor='fileNcName' className='form__input-label'>
                             ชื่อไฟล์ (หากมี)
                         </label>
 
@@ -225,19 +325,19 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                             ) : (
                                 <input
                                     type='text'
-                                    name='imageFileName'
+                                    name='fileNcName'
                                     className='input'
                                     readOnly
                                     style={{ width: '70%', cursor: 'pointer' }}
-                                    // onClick={handleOpenUploadBox}
-                                    // value={
-                                    //     selectedFile
-                                    //         ? selectedFile.name
-                                    //         : productToEdit
-                                    //             ? productToEdit.imageFileName
-                                    //             : ''
-                                    // }
-                                    ref={register({ required: 'Product image is required.' })}
+                                    onClick={handleOpenUploadBox}
+                                    value={
+                                        selectedFile
+                                            ? selectedFile.name
+                                            : nc
+                                                ? nc.fileNcName
+                                                : ''
+                                    }
+                                    ref={register}
                                 />
                             )}
 
@@ -245,7 +345,7 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
                                 <Button
                                     width='100%'
                                     type='button'
-                                    // onClick={handleOpenUploadBox}
+                                    onClick={handleOpenUploadBox}
                                     // disabled={loading}
                                     style={{
                                         borderRadius: '0px',
@@ -259,23 +359,21 @@ const EditNc: React.FC<Props> = ({ branch, setOpenNcForm }) => {
 
                             <input
                                 type='file'
-                                // ref={inputRef}
+                                ref={inputRef}
                                 style={{ display: 'none' }}
-                            // onChange={handleSelectFile}
+                                onChange={handleSelectFile}
                             />
                         </div>
                     </div>
 
-                    <div className='flex-center'>
-                        <Button
-                            // type='submit'
-                            // loading={loading}
-                            width='100%'
-                            style={{ margin: '1rem 0rem 0rem' }}
-                        >
-                            SAVE
-                        </Button>
-                    </div>
+                    <Button
+                        type='submit'
+                        // loading={loading}
+                        width='100%'
+                        style={{ margin: '1rem 0rem 0rem' }}
+                    >
+                        SAVE
+                    </Button>
                 </form>
             </ModalStyled>
         </>
@@ -356,12 +454,7 @@ const ModalStyled = styled.div`
         border-radius: 50px;
         transition: all 0.5s ease-in-out;
     }
-    
-    .form {
-        padding: 0;
-    }
 
-    
     .form__input-container {
         text-align: start;
         margin: .3rem auto;
@@ -379,6 +472,8 @@ const ModalStyled = styled.div`
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);
+        color: var(--font-light-color);
+        background-color: var(--background-dark-color);
     }
 
     .form__input-file-upload {

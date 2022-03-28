@@ -39,14 +39,16 @@ const InputStyled = styled.div`
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);
+        color: var(--font-light-color);
+        background-color: var(--background-dark-color);
     }
     
     p {
         margin: 0;
         padding: 0;
-        text-align: start;
+        text-align: center;
         color: red;
-        font-size: 1.1rem;
+        font-size: .9rem;
     }
 `
 export default Input

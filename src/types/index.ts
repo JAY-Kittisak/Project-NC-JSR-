@@ -71,7 +71,7 @@ export type DemoNcrNotify = {
 }[]
 
 export type CatNc = 'NCR' | 'CCR' | 'SCR'
-type TopicType = 'Product' | 'Product'
+type TopicType = 'Product' | 'Process'
 export type UserCreator = {
     id: string
     username: string
@@ -129,7 +129,7 @@ export type NcrNotify = {
     fileNcRef?: string
     fileNcName?: string
     ncStatus: StatusNc
-    branch: string
+    branch: Branch
     creatorName: string
     creator: UserCreator
     follow?: FollowNc
@@ -139,7 +139,16 @@ export type NcrNotify = {
 }
 
 // NC Notify type used to upload a document in firestore
-export type UploadNcNotify = Omit<NcrNotify, 'id' | 'createdAt'> & {createdAt: firebase.firestore.FieldValue}
+export type UploadNcNotify = Omit<NcrNotify, 'id' | 'createdAt'> & {createdAt?: firebase.firestore.FieldValue}
+export type UploadEditNcNotify = Omit<NcrNotify, 
+    |'id'
+    | 'code'
+    | 'branch'
+    | 'ncStatus'
+    | 'creator'
+    | 'createdAt'
+    | 'updatedAt'
+> & {updatedAt: firebase.firestore.FieldValue}
 export type UploadFollowNc = Omit<FollowNc, 'followedAt'> & {followedAt: firebase.firestore.FieldValue}
 export type UploadApproveNc = Omit<ApproveNc,'approvedAt'> & {approvedAt: firebase.firestore.FieldValue}
 
@@ -147,6 +156,17 @@ export type AddNcrNotifyData = Pick<
     NcrNotify, 
     | 'creatorName' 
     |'code' 
+    | 'category' 
+    | 'dept' 
+    | 'topic' 
+    | 'topicType' 
+    | 'detail' 
+    | 'fileNcName'
+>
+
+export type EditNcrNotifyData = Pick<
+    NcrNotify, 
+    | 'creatorName' 
     | 'category' 
     | 'dept' 
     | 'topic' 

@@ -121,7 +121,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                         ดูเอกสาร / ไฟล์แนบ
                                     </a>
                                 ) : (
-                                    <p><p>ไม่มีเอกสาร</p></p>
+                                    <p>ไม่มีเอกสาร</p>
                                 )}
                             </div>
                         </FlexStyled>
@@ -130,10 +130,8 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 {ncAnswer && (
                                     <>
                                         <p><span>ระยะเวลาในการตอบ : </span></p>
-                                        <p>
-                                            <p style={{ color: diffDay(createdAt, ncAnswer.createdAt) > 7 ? 'red' : undefined }}>
-                                                {diffDay(createdAt, ncAnswer.createdAt)} วัน
-                                            </p>
+                                        <p style={{ color: diffDay(createdAt, ncAnswer.createdAt) > 7 ? 'red' : undefined }}>
+                                            {diffDay(createdAt, ncAnswer.createdAt)} วัน
                                         </p>
                                     </>
                                 )}
@@ -237,9 +235,8 @@ const NonConformanceDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
-            {openNcForm && <EditNc branch={userInfo.branch} setOpenNcForm={setOpenNcForm} />}
+            {openNcForm && <EditNc nc={nc} setOpenNcForm={setOpenNcForm} />}
         </MainLayout>
-
     )
 }
 
