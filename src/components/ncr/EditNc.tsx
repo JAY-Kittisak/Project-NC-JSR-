@@ -35,7 +35,9 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
         uploadImageToStorage,
         setUploadProgression,
         editNcFinished,
-        uploadProgression
+        uploadProgression,
+        loading,
+        error
     } = useManageNcNotify()
 
     const {
@@ -346,7 +348,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                                     width='100%'
                                     type='button'
                                     onClick={handleOpenUploadBox}
-                                    // disabled={loading}
+                                    disabled={loading}
                                     style={{
                                         borderRadius: '0px',
                                         border: '1px solid #007bff',
@@ -368,13 +370,14 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
 
                     <Button
                         type='submit'
-                        // loading={loading}
+                        loading={loading}
                         width='100%'
                         style={{ margin: '1rem 0rem 0rem' }}
                     >
-                        SAVE
+                        บันทึก
                     </Button>
                 </form>
+                {error && <p className='paragraph-error'>{error}</p>}
             </ModalStyled>
         </>
     )
@@ -472,8 +475,8 @@ const ModalStyled = styled.div`
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);
-        color: var(--font-light-color);
-        background-color: var(--background-dark-color);
+        color: inherit;
+        background-color: transparent;
     }
 
     .form__input-file-upload {

@@ -41,6 +41,7 @@ export const initialNc: Nc = {
     รอปิด: [],
     ไม่อนุมัติ: [],
     ปิดแล้ว: [],
+    ยกเลิก: [],
 }
 
 const NcContextProvider: React.FC<Props> = ({ children }) => {

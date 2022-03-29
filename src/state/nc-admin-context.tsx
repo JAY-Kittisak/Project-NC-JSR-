@@ -47,6 +47,7 @@ export const initialNc: Nc = {
     รอปิด: [],
     ไม่อนุมัติ: [],
     ปิดแล้ว: [],
+    ยกเลิก: []
 }
 
 const initialNcCounts: NcCounts = {
@@ -56,6 +57,7 @@ const initialNcCounts: NcCounts = {
     รอปิด: 0,
     ไม่อนุมัติ: 0,
     ปิดแล้ว: 0,
+    ยกเลิก: 0,
     NCR: 0,
     CCR: 0,
     SCR: 0,

@@ -10,16 +10,17 @@ import NcFollow from '../components/ncr/NcFollow'
 import NcApprove from '../components/ncr/NcApprove'
 import NcPrint from '../components/ncr/NcPrint'
 import EditNc from '../components/ncr/EditNc'
+import UpdateNcStatus from '../components/ncr/UpdateNcStatus'
 import Spinner from '../components/Spinner'
 import Title from '../components/Title'
 import Button from '../components/Button'
+import AlertNotification from '../components/dialogs/AlertNotification'
 import { useAuthContext } from '../state/auth-context'
-import { formatDate, diffDay } from '../helpers'
 import { useQueryNc } from '../hooks/useQueryNc'
+import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
 import { InnerLayout, MainLayout, SpinnerStyled } from '../styles/LayoutStyle'
 import { StatusNc, AlertNt, AlertType } from '../types'
-import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
-import AlertNotification from '../components/dialogs/AlertNotification'
+import { formatDate, diffDay, isAdmin } from '../helpers'
 
 interface Props { }
 
@@ -32,6 +33,8 @@ function getStatusColor(value: StatusNc) {
         return '#0cbd0c'
     } else if (value === 'ไม่อนุมัติ') {
         return '#FF0505'
+    } else if (value === 'ยกเลิก') {
+        return '#7a05ff'
     } else return 'var(--primary-color)'
 }
 
@@ -41,7 +44,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
     const [openNcForm, setOpenNcForm] = useState(false)
 
     const params = useParams<{ id: string }>()
-
 
     const { authState: { userInfo } } = useAuthContext()
     const { nc, loading, error } = useQueryNc(params.id)
@@ -137,10 +139,19 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 )}
                             </div>
                             <div>
-                                <p><span>สถานะปัจจุบัน :</span></p>
-                                <NcStatusStyled ncStatus={ncStatus}>
-                                    {ncStatus}
-                                </NcStatusStyled>
+                                <p><span>สถานะ :</span></p>
+                                {isAdmin(userInfo.role) ? (
+                                    <UpdateNcStatus
+                                        ncId={nc.id} 
+                                        ncStatus={ncStatus}
+                                        setAlertWarning={setAlertWarning}
+                                        setAlertState={setAlertState}
+                                    />
+                                ) : (
+                                    <NcStatusStyled ncStatus={ncStatus}>
+                                        {ncStatus}
+                                    </NcStatusStyled>
+                                )}
                             </div>
                         </FlexStyled>
                         <div className="form-field">
@@ -170,7 +181,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 cols={30}
                                 rows={5}
                                 name="detail"
-                                id="detail"
                                 value={detail}
                             />
                         </div>
@@ -181,17 +191,12 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                     <span><PrintRoundedIcon /> Print</span>
                                 </Button>
                             )}
-                                
-                            {(creator.id === userInfo.id) && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
-                                <Button className='btn--orange' onClick={() => setOpenNcForm(true)}>แก้ไข NC</Button>
-                            )}
 
-                            <Button 
-                                className='btn--darkcyan' 
-                                onClick={() => setOpenNcForm(true)}
-                            >
-                                <span><EditIcon /> แก้ไข NC</span>
-                            </Button>
+                            {(userInfo.dept === 'SC') && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
+                                <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
+                                    <span><EditIcon /> แก้ไข NC</span>
+                                </Button>
+                            )}
                         </div>
                     </div>
                     <section>

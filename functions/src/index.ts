@@ -21,7 +21,14 @@ const userCountsDocument = "counts";
 
 type Branch = "ลาดกระบัง" | "ชลบุรี"
 type Role = "SUPER_ADMIN" | "CLIENT" | "ADMIN"
-type StatusNc = "รอตอบ" | "ตอบแล้ว" | "รอปิด" | "ไม่อนุมัติ" | "ปิดแล้ว"
+type StatusNc =
+  |"รอตอบ"
+  | "ตอบแล้ว"
+  | "รอปิด"
+  | "ไม่อนุมัติ"
+  | "ปิดแล้ว"
+  | "ยกเลิก"
+
 type CatNc = "NCR" | "CCR" | "SCR"
 type TopicType = "Product" | "Product"
 type CountsCode = { counts: number }
@@ -265,6 +272,7 @@ export const onNcCreated = functions.firestore
                 รอปิด: nc.ncStatus === "รอปิด" ? 1 : 0,
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ? 1 : 0,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? 1 : 0,
+                ยกเลิก: nc.ncStatus === "ยกเลิก" ? 1 : 0,
                 NCR: nc.category === "NCR" ? 1 : 0,
                 CCR: nc.category === "CCR" ? 1 : 0,
                 SCR: nc.category === "SCR" ? 1 : 0,
@@ -277,6 +285,7 @@ export const onNcCreated = functions.firestore
                 รอปิด,
                 ไม่อนุมัติ,
                 ปิดแล้ว,
+                ยกเลิก,
                 NCR,
                 CCR,
                 SCR,
@@ -290,6 +299,7 @@ export const onNcCreated = functions.firestore
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ?
               ไม่อนุมัติ + 1 : ไม่อนุมัติ,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
+                ยกเลิก: nc.ncStatus === "ยกเลิก" ? ยกเลิก + 1 : ยกเลิก,
                 NCR: nc.category === "NCR" ? NCR + 1 : NCR,
                 CCR: nc.category === "CCR" ? CCR + 1 : CCR,
                 SCR: nc.category === "SCR" ? SCR + 1 : SCR,
@@ -332,6 +342,7 @@ export const onNcCreated = functions.firestore
                 รอปิด: nc.ncStatus === "รอปิด" ? 1 : 0,
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ? 1 : 0,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? 1 : 0,
+                ยกเลิก: nc.ncStatus === "ยกเลิก" ? 1 : 0,
                 NCR: nc.category === "NCR" ? 1 : 0,
                 CCR: nc.category === "CCR" ? 1 : 0,
                 SCR: nc.category === "SCR" ? 1 : 0,
@@ -344,6 +355,7 @@ export const onNcCreated = functions.firestore
                 รอปิด,
                 ไม่อนุมัติ,
                 ปิดแล้ว,
+                ยกเลิก,
                 NCR,
                 CCR,
                 SCR,
@@ -357,6 +369,7 @@ export const onNcCreated = functions.firestore
                 ไม่อนุมัติ: nc.ncStatus === "ไม่อนุมัติ" ?
               ไม่อนุมัติ + 1 : ไม่อนุมัติ,
                 ปิดแล้ว: nc.ncStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
+                ยกเลิก: nc.ncStatus === "ยกเลิก" ? ยกเลิก + 1 : ยกเลิก,
                 NCR: nc.category === "NCR" ? NCR + 1 : NCR,
                 CCR: nc.category === "CCR" ? CCR + 1 : CCR,
                 SCR: nc.category === "SCR" ? SCR + 1 : SCR,
@@ -394,8 +407,8 @@ export const onNcUpdated = functions.firestore
       const beforeProd = snapshot.before.data() as NcrNotify;
       const afterProd = snapshot.after.data() as NcrNotify;
 
-      const message = "message= เลขที่ " + afterProd.code + "\nFrom: " +
-    afterProd.creatorName + "\nTo: " +
+      const message = "message= เลขที่ " + afterProd.code + "\nจาก: " +
+    afterProd.creatorName + " แผนก " + afterProd.creator.dept + "\nถึงแผนก: " +
     afterProd.dept + "\nประเด็น: " + afterProd.topic + "\nสถานะ: " +
       afterProd.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
 

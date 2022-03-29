@@ -14,6 +14,7 @@ const initialNc: Nc = {
     รอปิด: [],
     ไม่อนุมัติ: [],
     ปิดแล้ว: [],
+    ยกเลิก: [],
 }
 
 export const useQueryNcByDept = (dept: string, branch: Branch) => {

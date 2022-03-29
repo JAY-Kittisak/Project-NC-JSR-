@@ -348,6 +348,25 @@ export const useManageNcNotify = () => {
         }
     }
 
+    const updateStatus = async (ncId: string, newStatus: StatusNc) => {
+        try {
+            setLoading(true)
+            
+            await ncNotifyRef.doc(ncId).update({
+                ncStatus: newStatus,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+
+            setLoading(false)
+            return true
+        } catch (err) {
+            setError('Sorry, something went wrong')
+            setLoading(false)
+
+            return false
+        }
+    }
+
     return {
         uploadImageToStorage,
         addNewNcNotify,
@@ -355,6 +374,7 @@ export const useManageNcNotify = () => {
         setUploadProgression,
         updateNcFollow,
         updateNcApprove,
+        updateStatus,
         uploadProgression,
         addNcNotifyFinished,
         editNcFinished,

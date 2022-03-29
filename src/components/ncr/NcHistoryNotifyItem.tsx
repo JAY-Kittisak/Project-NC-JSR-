@@ -35,6 +35,8 @@ const NcHistoryNotifyItem: React.FC<Props> = ({item}) => {
                                             ? '#FF0505'
                                             : item.ncStatus === 'ปิดแล้ว'
                                                 ? '#0cbd0c'
+                                                : item.ncStatus === 'ยกเลิก'
+                                                    ? '#7a05ff'
                                                         : undefined,
                     }}
                 >

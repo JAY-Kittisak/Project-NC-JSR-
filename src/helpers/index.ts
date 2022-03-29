@@ -1,4 +1,4 @@
-import { NcrTab, Role, CatNc, Branch, SelectMonth } from "../types";
+import { NcrTab, Role, CatNc, Branch, SelectMonth, StatusNc } from "../types";
 import { firebase } from '../firebase/config'
 
 export const isAdmin = (role: Role | null) => role === 'ADMIN' || role === 'SUPER_ADMIN'
@@ -55,7 +55,7 @@ export const diffDay = (
     const date1 = value1.toDate().valueOf();
     const date2 = value2.toDate().valueOf();
     const diffTime = Math.abs(date2 - date1);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays
 }
 
@@ -65,12 +65,14 @@ export const orderTabs: NcrTab[] = [
     'รอปิด',
     'ไม่อนุมัติ',
     'ปิดแล้ว',
+    'ยกเลิก',
     'All',
 ]
 
 export const categories: CatNc[] = ['NCR', 'CCR', 'SCR']
+export const selectStatusNC: StatusNc[] = ['รอตอบ', 'ตอบแล้ว', 'รอปิด', 'ไม่อนุมัติ', 'ปิดแล้ว', 'ยกเลิก']
 
 export type AlertNotify = "show" | "hide"
 
 export const calculateTotalPages = (totalItems: number, perPage: number) =>
-  Math.ceil(totalItems / perPage)
+    Math.ceil(totalItems / perPage)

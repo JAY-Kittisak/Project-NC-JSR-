@@ -39,8 +39,8 @@ const InputStyled = styled.div`
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);
-        color: var(--font-light-color);
-        background-color: var(--background-dark-color);
+        color: inherit;
+        background-color: transparent;
     }
     
     p {

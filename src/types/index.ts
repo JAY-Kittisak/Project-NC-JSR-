@@ -59,6 +59,7 @@ export type StatusNc =
   | 'รอปิด'
   | 'ไม่อนุมัติ'
   | 'ปิดแล้ว'
+  | 'ยกเลิก'
 
 export type DemoNcrNotify = {
     id: string;
