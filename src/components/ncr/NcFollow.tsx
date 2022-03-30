@@ -47,7 +47,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
     })
 
     return (
-        <NcFollowStyled>
+        <NcFollowStyled className='box-shadows'>
             <div className="flex-between">
                 <h4>การติดตาม</h4>
                 {follow?.followedAt && (
@@ -122,10 +122,8 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
 }
 
 const NcFollowStyled = styled.section`
-    margin-top: 1rem;
     margin-bottom: .5rem;
     padding: 1rem;
-    border: 2px solid var(--border-color);
     background-color: var(--background-dark-color);
     min-height: 350px;
 `

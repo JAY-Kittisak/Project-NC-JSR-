@@ -209,7 +209,7 @@ const ModalStyled = styled.div`
     }
 
     form p {
-        margin: 0;
+        margin: 10px 5px 0px 5px;
         padding: 0;
         text-align: start;
         color: red;

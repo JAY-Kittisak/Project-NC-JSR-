@@ -151,7 +151,6 @@ const ManageNcAnswer: React.FC<Props> = ({
                 )
             )
         }
-
     })
 
     const editBoolean = (userInfo?.dept === ncToDept) && ((ncStatus === 'รอตอบ') || (ncStatus === 'ไม่อนุมัติ'))
@@ -175,7 +174,7 @@ const ManageNcAnswer: React.FC<Props> = ({
     }, [editAnswerNcFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
 
     return (
-        <NcAnswerStyled>
+        <NcAnswerStyled className='box-shadows'>
             <section className='flex-between'>
                 <h4>ผู้รับผิดชอบการแก้ไข</h4>
             </section>
@@ -511,6 +510,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                                 </ButtonStyled>
                                 <input
                                     type='file'
+                                    disabled={!editBoolean}
                                     ref={inputRef}
                                     style={{ display: 'none' }}
                                     onChange={handleSelectFile}
@@ -541,9 +541,9 @@ const FlexStyled = styled.div`
         margin: 0.5rem;
         font-size: 1.2rem;
     }
-    
+
     a {
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--primary-color);
     }
 
     a:hover {
@@ -583,10 +583,6 @@ const NcAnswerStyled = styled.div`
         margin: 16px 0;
         border-left: 5px solid #e74c3c;
         padding-left: 16px;
-    }
-    
-    a {
-        border-bottom: 3px solid var(--primary-color);
     }
 
     .form{

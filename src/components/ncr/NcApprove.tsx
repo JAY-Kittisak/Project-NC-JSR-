@@ -51,7 +51,7 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
     })
 
     return (
-        <NcApproveStyled>
+        <NcApproveStyled className='box-shadows'>
             <div className="flex-between">
                 <h4>QMR</h4>
                 {approve?.approvedAt && (
@@ -126,10 +126,8 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
 }
 
 const NcApproveStyled = styled.section`
-    margin-top: 1rem;
     margin-bottom: .5rem;
     padding: 1rem;
-    border: 2px solid var(--border-color);
     background-color: var(--background-dark-color);
     min-height: 350px;
 `

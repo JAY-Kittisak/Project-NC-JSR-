@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
-import { StatusNc, AlertNt, AlertType  } from '../../types'
+import { StatusNc, AlertNt, AlertType } from '../../types'
 import { selectStatusNC } from '../../helpers'
 import Button from '../Button'
 
@@ -11,9 +11,10 @@ interface Props {
     ncStatus: StatusNc
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
+    setIsEditing: (value: boolean) => void
 }
 
-const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning ,setAlertState}) => {
+const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning, setAlertState, setIsEditing }) => {
     const [newStatus, setNewStatus] = useState<StatusNc>(ncStatus)
 
     const { updateStatus, loading, error } = useManageNcNotify()
@@ -26,6 +27,7 @@ const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning ,setA
         if (finished) {
             setAlertState('success')
             setAlertWarning('show')
+            setIsEditing(false)
         }
 
         if (error) alert(error)
@@ -48,7 +50,7 @@ const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning ,setA
             </SelectStyled>
             <Button
                 width='70px'
-                height='30px'
+                height='25px'
                 className='btn--confirm'
                 onClick={handleUpdateStatus}
                 loading={loading}
@@ -65,6 +67,7 @@ const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning ,setA
 const SectionStyled = styled.section`
     .btn--confirm {
         background-color: teal;
+        margin-left: 10px;
     }
 
     .btn--confirm:hover {
@@ -75,9 +78,7 @@ const SectionStyled = styled.section`
 const SelectStyled = styled.select`
     color: inherit;
     background: transparent;
-    font-size: 1.2rem;
     border-radius: 5px;
-    margin-right: 10px;
 `
 
 export default UpdateNcStatus

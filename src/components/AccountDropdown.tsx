@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 // import PersonIcon from '@material-ui/icons/Person';
 // import EditIcon from '@material-ui/icons/Edit';
 // import Settings from '@material-ui/icons/Settings';
 import LogoutIcon from '@material-ui/icons/OpenInBrowser';
+import Switch from '@material-ui/core/Switch'
+import Brightness4Icon from '@material-ui/icons/Brightness4'
+
 import { openUserDropdown, useAuthContext, signOutRedirect } from '../state/auth-context';
-import {useAuthenticate} from '../hooks/useAuthenticate'
+import { useAuthenticate } from '../hooks/useAuthenticate'
 
 interface Props {
     // open: boolean
@@ -14,13 +17,30 @@ interface Props {
     email: string | null
 }
 
-const AccountDropdown: React.FC<Props> = ({name,email}) => {
+const AccountDropdown: React.FC<Props> = ({ name, email }) => {
+    const [theme, setTheme] = useState('light-theme')
+    const [checked, setChecked] = useState(false)
+
     const {
-        authState: { isUserDropdownOpen }, 
+        authState: { isUserDropdownOpen },
         authDispatch
     } = useAuthContext()
 
-    const {signOut} = useAuthenticate()
+    const { signOut } = useAuthenticate()
+
+    useEffect(() => {
+        document.documentElement.className = theme;
+    }, [theme])
+
+    const themeToggler = () => {
+        if (theme === 'dark-theme') {
+            setTheme('light-theme')
+            setChecked(false)
+        } else {
+            setTheme('dark-theme')
+            setChecked(true)
+        }
+    }
 
     return (
         <DropdownStyled onMouseLeave={() => authDispatch(openUserDropdown(false))}>
@@ -33,6 +53,17 @@ const AccountDropdown: React.FC<Props> = ({name,email}) => {
                     {/* <li><button><PersonIcon />My Profile</button></li>
                     <li><button><EditIcon />Edit Profile</button></li>
                     <li><button><Settings />Settings</button></li> */}
+                    <li>
+                        <Brightness4Icon />
+                        <Switch
+                            color='default'
+                            value=''
+                            checked={checked}
+                            inputProps={{ 'aria-label': '' }}
+                            size='medium'
+                            onClick={themeToggler}
+                        />
+                    </li>
                     <li>
                         <button onClick={() => {
                             signOut()

@@ -42,6 +42,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
     const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
     const [alertState, setAlertState] = useState<AlertType>('success');
     const [openNcForm, setOpenNcForm] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
 
     const params = useParams<{ id: string }>()
 
@@ -94,9 +95,13 @@ const NonConformanceDetail: React.FC<Props> = () => {
             <Title title={'NCR Detail'} span={'NCR Detail'} />
             <NcDetailStyled>
                 <InnerLayout className='nc-detail-section' >
-                    <div className="left-content">
-                        <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
-
+                    <div className="left-content box-shadows">
+                        <div className='flex-between'>
+                            <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
+                            <SvgStyled>
+                                {isAdmin(userInfo.role) && <EditIcon onClick={() => setIsEditing(!isEditing)} />}
+                            </SvgStyled>
+                        </div>
                         <FlexStyled>
                             <div>
                                 <p><span>ประเภท : </span></p>
@@ -139,13 +144,14 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                 )}
                             </div>
                             <div>
-                                <p><span>สถานะ :</span></p>
-                                {isAdmin(userInfo.role) ? (
+                                <p><span>สถานะ : </span></p>
+                                {isEditing ? (
                                     <UpdateNcStatus
-                                        ncId={nc.id} 
+                                        ncId={nc.id}
                                         ncStatus={ncStatus}
                                         setAlertWarning={setAlertWarning}
                                         setAlertState={setAlertState}
+                                        setIsEditing={setIsEditing}
                                     />
                                 ) : (
                                     <NcStatusStyled ncStatus={ncStatus}>
@@ -185,17 +191,22 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             />
                         </div>
                         <br />
-                        <div className='flex-center'>
+                        <div className='edit-nc flex-center'>
                             {ncStatus === 'ปิดแล้ว' && (
                                 <Button className='btn--orange' onClick={printNcDetail}>
                                     <span><PrintRoundedIcon /> Print</span>
                                 </Button>
                             )}
-
-                            {(userInfo.dept === 'SC') && (!ncAnswer) && (ncStatus === 'รอตอบ') && (
+                            {isEditing ? (
                                 <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
                                     <span><EditIcon /> แก้ไข NC</span>
                                 </Button>
+                            ) : (
+                                (creator.id === userInfo.id) && (!ncAnswer) && (
+                                    <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
+                                        <span><EditIcon /> แก้ไข NC</span>
+                                    </Button>
+                                )
                             )}
                         </div>
                     </div>
@@ -244,7 +255,18 @@ const NonConformanceDetail: React.FC<Props> = () => {
         </MainLayout>
     )
 }
+const SvgStyled = styled.div`
+    svg {
+        cursor: pointer;
+        background-color: #e74c3c;
+        color: #fff;
+        border-radius: 5px;
+    }
 
+    svg:hover {
+        background-color: #ac1403;
+    }
+`
 const FlexStyled = styled.div`
     display: flex;
     justify-content: space-between;
@@ -255,7 +277,7 @@ const FlexStyled = styled.div`
     }
     
     a {
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--primary-color);
     }
 
     a:hover {
@@ -276,7 +298,7 @@ const PrintStyled = styled.div`
     display: none;
 `
 
-const NcStatusStyled = styled.span`
+const NcStatusStyled = styled.section`
     font-size: 1.2rem;
     color: ${(props: { ncStatus: StatusNc }) => getStatusColor(props.ncStatus)};
 `
@@ -294,7 +316,8 @@ const NcDetailStyled = styled.div`
     .nc-detail-section {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-column-gap: 2rem;
+        grid-column-gap: 1.5rem;
+        grid-row-gap: 1.5rem;
         @media screen and (max-width:1350px){
             grid-template-columns: repeat(1, 1fr);
             .f-button{
@@ -346,6 +369,19 @@ const NcDetailStyled = styled.div`
         display: flex;
         flex-direction: column;
         background-color: var(--background-dark-color);
+    }
+
+    .edit-nc {
+        button {
+            margin: 10px;
+        }
+    }
+
+    .box-shadows {
+        border: 2px solid var(--border-color);
+        padding: 0px 20px 20px 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
     
     h4 {
