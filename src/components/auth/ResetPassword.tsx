@@ -56,6 +56,7 @@ const ResetPassStyled = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgb(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
 `;
 
 const ModalStyled = styled.div`

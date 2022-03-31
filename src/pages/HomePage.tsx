@@ -87,7 +87,6 @@ const HomePageStyled = styled.header`
 
         .span-slogan {
             font-weight: 600;
-            text-decoration: underline;
         }
 
         .icons{

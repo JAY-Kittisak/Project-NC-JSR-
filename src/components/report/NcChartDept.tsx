@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid,
-    Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
+    BarChart, Bar, XAxis, CartesianGrid,
+    Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 
 interface Props { }
@@ -68,31 +68,8 @@ const NcChartDept: React.FC<Props> = () => {
                 <h3>แผนก SC ลาดกระบัง</h3>
             </div>
 
-            <div className="chart">
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                        width={500}
-                        height={300}
-                        data={data}
-                        margin={{
-                            top: 20,
-                            right: 30,
-                            left: 0,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="Product" fill="#007bff" />
-                        <Bar dataKey="Process" fill="#78b8fd" />
-                    </BarChart>
-                </ResponsiveContainer>
-            </div>
-
-            <div>
+            <p className="flex-center title">ประเภทความไม่สอดคล้อง</p>
+            <div className='flex-start'>
                 <div className="pie-chart">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart width={300} height={300}>
@@ -113,13 +90,59 @@ const NcChartDept: React.FC<Props> = () => {
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
-                <div className='m-left'>
-                    <h4 className="flex-center">ประเด็นความไม่สอดคล้อง</h4>
-                    <p><SpanStyled colors={COLORS[0]}>33 %</SpanStyled>ลงทะเบียนไม่ครบถ้วน</p>
-                    <p><SpanStyled colors={COLORS[1]}>25 %</SpanStyled>จัดทำใบเสนอราคาไม่ถูกต้อง</p>
-                    <p><SpanStyled colors={COLORS[2]}>25 %</SpanStyled>การสื่อสารผิดพลาด </p>
-                    <p><SpanStyled colors={COLORS[3]}>17 %</SpanStyled>สินค้าเคลม / คืนสินค้า</p>
+                <div>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[0]}></CircleStyled>
+                        <p>ลงทะเบียนไม่ครบถ้วน</p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[1]}></CircleStyled>
+                        <p>จัดทำใบเสนอราคาไม่ถูกต้อง</p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[2]}></CircleStyled>
+                        <p>การสื่อสารผิดพลาด </p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[3]}></CircleStyled>
+                        <p>สินค้าเคลม / คืนสินค้า</p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[1]}></CircleStyled>
+                        <p>จัดทำใบเสนอราคาไม่ถูกต้อง</p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[2]}></CircleStyled>
+                        <p>การสื่อสารผิดพลาด </p>
+                    </TopicStyled>
+                    <TopicStyled>
+                        <CircleStyled colors={COLORS[3]}></CircleStyled>
+                        <p>สินค้าเคลม / คืนสินค้า</p>
+                    </TopicStyled>
                 </div>
+            </div>
+
+            <div className="type-chart">
+            <p className="flex-center title">ประเด็นความไม่สอดคล้อง</p>
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                        width={500}
+                        height={300}
+                        data={data}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 25,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <Tooltip />
+                        <Bar dataKey="Product" fill="#007bff" />
+                        <Bar dataKey="Process" fill="#78b8fd" />
+                    </BarChart>
+                </ResponsiveContainer>
             </div>
         </DeptChartStyled>
     )
@@ -134,7 +157,7 @@ const DeptChartStyled = styled.section`
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
-    &::before{
+    &::before {
         content: '';
         position: absolute;
         height: 45px;
@@ -144,27 +167,39 @@ const DeptChartStyled = styled.section`
     }
 
     .pie-chart {
-        height: 300px;
+        height: 200px;
+        width: 200px;
     }
 
-    .m-left {
-        padding-left: 1.5rem;
+    .type-chart {
+        height: 220px;
+        margin-top: 50px;
+    }
 
-        p {
-            padding-top: 10px;
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .title {
+        color: var(--font-light-color);
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600rem;
     }
 `
-const SpanStyled = styled.span`
-    color: #fff;
-    width: 30px;
-    height: 30px;
+const TopicStyled = styled.div`
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+
+    p {
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+`
+const CircleStyled = styled.div`
+    width: 20px;
+    height: 20px;
     background-color:  ${(props: PropStyled) => props.colors};
-    margin-right: 1rem;
-    padding: 4px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
 `
 
 export default NcChartDept

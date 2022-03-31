@@ -29,6 +29,8 @@ export const CheckboxStyled = styled.div`
     label {
         cursor: pointer;
         position: relative;
+        padding-top: 2px;
+        font-size: 1.1rem;
     }
     
     label::before {
@@ -77,6 +79,8 @@ export const RadioStyled = styled.div`
     label {
         cursor: pointer;
         position: relative;
+        padding-top: 2px;
+        font-size: 1.1rem;
     }
     
     label::before {

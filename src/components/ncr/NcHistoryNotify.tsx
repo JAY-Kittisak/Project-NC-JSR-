@@ -4,21 +4,18 @@ import styled from 'styled-components'
 import NcHistoryNotifyItem from './NcHistoryNotifyItem'
 import Spinner from '../Spinner'
 import { useNcContext } from '../../state/nc-context'
-import { SpinnerStyled } from '../../styles/LayoutStyle'
 import Button from '../Button'
 
-interface Props {}
+interface Props { }
 
 const NcHistoryNotify: React.FC<Props> = () => {
-    const { ncState: { ncNotify, loading, error,queryMoreNc, btnLoading  } } = useNcContext()
+    const { ncState: { ncNotify, loading, error, queryMoreNc, btnLoading } } = useNcContext()
 
     if (loading) return (
-        <SpinnerStyled>
-            <div className='typography'>
-                <Spinner color='#007bff' height={50} width={50} />
-                <span>Loading... </span>
-            </div>
-        </SpinnerStyled>
+        <div className='flex-center'>
+            <Spinner color='#007bff' height={50} width={50} />
+            <span>Loading... </span>
+        </div>
     )
 
     if (error) return <h2 className='header--center'>{error}</h2>
@@ -27,9 +24,6 @@ const NcHistoryNotify: React.FC<Props> = () => {
         <NcHistory>
             <HistoryHeader>
                 <h4>ประวัติการออก NC</h4>
-                {/* <NcPaginationStyled>
-
-                </NcPaginationStyled> */}
             </HistoryHeader>
 
             <HistoryDetail>
@@ -47,6 +41,7 @@ const NcHistoryNotify: React.FC<Props> = () => {
                         <h3 className='header--center'>สถานะ</h3>
                     </div>
                 </div>
+                
                 {(!ncNotify || ncNotify.All.length === 0) ? (
                     <p className='flex-center'>ยังไม่มีประวัติการออก NC</p>
                 ) : ncNotify.All.map(item => (
@@ -65,7 +60,7 @@ const NcHistoryNotify: React.FC<Props> = () => {
                         โหลดเพิ่ม
                     </Button>
                 </div>
-            )} 
+            )}
         </NcHistory>
     )
 }

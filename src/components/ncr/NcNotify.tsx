@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, ChangeEvent } from 'react'
-import { useForm } from 'react-hook-form';
 import styled from 'styled-components'
+import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import Button from '../Button';
@@ -167,6 +167,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                         type='text'
                         name='creatorName'
                         id='creatorName'
+                        placeholder='โปรดใส่ชื่อ และ นามสกุล'
                         ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
                     />
                 </div>

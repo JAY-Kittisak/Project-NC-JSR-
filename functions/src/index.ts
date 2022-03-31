@@ -218,8 +218,9 @@ export const onNcCreated = functions.firestore
         async (snapshot, context) => {
           const nc = snapshot.data() as NcrNotify;
 
-          const message = "message= เลขที่ " + nc.code + "\nFrom: " +
-          nc.creatorName +"\nTo: " + nc.dept + "\nประเด็น: " + nc.topic +
+          const message = "message= เลขที่ " + nc.code + "\nจาก: " +
+          nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " + 
+          nc.dept + "\nประเด็น: " + nc.topic +
         "\nสถานะ: " + nc.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
 
           let counts: Counts;

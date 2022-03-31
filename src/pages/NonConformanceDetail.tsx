@@ -185,7 +185,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             <textarea
                                 readOnly
                                 cols={30}
-                                rows={5}
+                                rows={7}
                                 name="detail"
                                 value={detail}
                             />
