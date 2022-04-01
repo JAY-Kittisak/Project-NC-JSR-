@@ -50,7 +50,7 @@ const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
                                                         : undefined,
                     }}
                 >
-                    <p>{item.ncStatus}</p>
+                    <p className='font-focus'>{item.ncStatus}</p>
                 </div>
             </NotifyItem>
         </Link>

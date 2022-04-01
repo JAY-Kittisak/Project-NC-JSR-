@@ -151,6 +151,10 @@ const GlobalStyled = createGlobalStyle`
         text-align: center;
     }
 
+    .font-focus {
+        font-weight: 600;
+    }
+
     .flex-between {
         display: flex;
         align-items: center;

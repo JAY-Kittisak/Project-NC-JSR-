@@ -1,27 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 
-import { AddNcrNotifyData, UserInfo } from '../../types'
+import { AddIqaTypeData, UserInfo } from '../../types'
+import { requirements } from '../../helpers';
 
-const requirements = [
-    '4.1',
-    '4.2',
-    '4.3',
-    '4.4.1',
-    '5.1.1',
-    '5.1.2',
-    '5.2.1',
-    '5.2.2',
-    '5.3',
-    '6.1',
-    '6.1.2',
-    '6.2.1',
-    '6.2.2',
-    '6.3',
-    '7.1.1',
-    '7.1.2',
-]
 
 interface Props {
     userInfo: UserInfo | null
@@ -29,7 +12,23 @@ interface Props {
 
 const AddIqa: React.FC<Props> = ({ userInfo }) => {
 
-    const { register, handleSubmit, errors } = useForm<AddNcrNotifyData>()
+    const {
+        register,
+        control,
+        handleSubmit,
+        // errors,
+        formState: { errors }
+    } = useForm<AddIqaTypeData>({
+        defaultValues: {
+            inspector: [{ name: "test"}]
+        },
+        mode: "onBlur"
+      })
+
+    const { fields, append, remove } = useFieldArray({
+        name: "inspector",
+        control
+    });
 
     const today = new Date()
     const currentFullYear = today.getFullYear().toString()
@@ -50,7 +49,7 @@ const AddIqa: React.FC<Props> = ({ userInfo }) => {
 
         const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
 
-        return console.log({ ...creator, code })
+        return console.log(data)
     })
 
     return (
@@ -61,11 +60,73 @@ const AddIqa: React.FC<Props> = ({ userInfo }) => {
 
             <form className='form' onSubmit={handleAddIqa}>
 
+                {/* ผู้ตรวจ */}
+                {fields.map((field, index) => {
+                    return (
+                        <div key={field.id}>
+                            <section className={"section"} key={field.id}>
+                                <input
+                                    placeholder="name"
+                                    {...register(`inspector.${index}.name` as const, {
+                                        required: true
+                                    })}
+                                    className={errors?.inspector?.[index]?.name ? "error" : ""}
+                                    defaultValue={field.name}
+                                />
+                                <button type="button" onClick={() => remove(index)}>
+                                    DELETE
+                                </button>
+                            </section>
+                        </div>
+
+                        //     <div className='form-field'>
+                        //     <label htmlFor='inspector'>ผู้ตรวจ/พบ</label>
+                        //     <input
+                        //         name='inspector'
+                        //         id='inspector'
+                        //         ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก IQA' })}
+                        //         {...register(`cart.${index}.name` as const, {
+                        //             required: true
+                        //           })}
+                        //     />
+                        // </div>
+                    )
+                })}
+
+                {/* CAR หรือ OBS */}
                 <div className='flex-between'>
                     <div className='form-field'>
-                        <label htmlFor='creatorName'>ชื่อ-นามสกุล ผู้ออก NC</label>
+                        <label htmlFor='team'>ทีม</label>
                         <input
-                            type='text'
+                            name='team'
+                            id='team'
+                            ref={register({ required: 'โปรดใส่เลือกทีม' })}
+                        />
+                    </div>
+                    <div className='form-field'>
+                        <label htmlFor='category'>
+                            เป็น CAR หรือ OBS
+                        </label>
+                        <select name='category' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
+                            <option style={{ display: 'none' }}></option>
+                            <option value='CAR'>CAR</option>
+                            <option value='OBS'>OBS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                {errors && (
+                    <p className='paragraph-error text-center'>{errors.team?.message}</p>
+                )}
+                {errors && (
+                    <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                )}
+
+                {/* กระบวนการถูกตรวจ */}
+                {/* <div className='flex-between'>
+                    <div className='form-field'>
+                        <label htmlFor='creatorName'>กระบวนการถูกตรวจ</label>
+                        <input
                             name='creatorName'
                             id='creatorName'
                             ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
@@ -73,25 +134,23 @@ const AddIqa: React.FC<Props> = ({ userInfo }) => {
                     </div>
                     <div className='form-field'>
                         <label htmlFor='topicType'>
-                            เป็น CAR หรือ OBS
+                            ผิดข้อกำหนด ISO 9001 ข้อที่
                         </label>
                         <select name='topicType' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
                             <option style={{ display: 'none' }}></option>
-                            <option value='Product'>CAR</option>
-                            <option value='Process'>OBS</option>
+                            {requirements.map((item, i) => (
+                                <option key={i} value={item}>{item}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
                 {errors && (
-                    <p className='paragraph-error text-center'>{errors.dept?.message}</p>
-                )}
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
-                )}
+                    <p className='paragraph-error text-center'>{errors.requirements?.message}</p>
+                )} */}
 
+                {/* กระบวนการถูกตรวจ */}
 
-
-                <div className='flex-between'>
+                {/* <div className='flex-between'>
                     <div className='form-field'>
                         <label htmlFor='creatorName'>กระบวนการถูกตรวจ</label>
                         <input
@@ -107,18 +166,29 @@ const AddIqa: React.FC<Props> = ({ userInfo }) => {
                         </label>
                         <select name='topicType' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
                             <option style={{ display: 'none' }}></option>
-                            {requirements.map((item,i) => (
+                            {requirements.map((item, i) => (
                                 <option key={i} value={item}>{item}</option>
                             ))}
                         </select>
                     </div>
                 </div>
                 {errors && (
-                    <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
-                )}
+                    <p className='paragraph-error text-center'>{errors.requirements?.message}</p>
+                )} */}
 
 
-                <button>Submit</button>
+                <button
+                    type="button"
+                    onClick={() =>
+                        append({
+                            name: "",
+                        })
+                    }
+                >
+                    APPEND
+                </button>
+
+                <button type="submit">Submit</button>
             </form>
         </AddIqaStyled>
     )

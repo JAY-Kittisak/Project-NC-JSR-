@@ -155,8 +155,7 @@ export type UploadApproveNc = Omit<ApproveNc,'approvedAt'> & {approvedAt: fireba
 
 export type AddNcrNotifyData = Pick<
     NcrNotify, 
-    | 'creatorName' 
-    |'code' 
+    | 'creatorName'
     | 'category' 
     | 'dept' 
     | 'topic' 
@@ -221,3 +220,53 @@ export type AlertNt = "show" | "hide"
 export type AlertType = 'success' | 'warning'
 
 export type Nc = { [key in NcrTab]: NcrNotify[] }
+
+// TODO: IQA
+export type CatIqa = 'CAR' | 'OBS'
+export type Team = 'Team A' | 'Team B' | 'Team C' |'Team B'
+
+export type Requirements = 
+    | '4.1' | '4.2' | '4.3' | '4.4.1' | '5.1.1' | '5.1.2' | '5.2.1' | '5.2.2' | '5.3' | '6.1'
+    | '6.1.2' | '6.2.1' | '6.2.2' | '6.3' | '7.1.1' | '7.1.2' | '7.1.3' | '7.1.4' | '7.1.5.1'
+    | '7.1.5.2' | '7.1.6' | '7.2' | '7.3' | '7.4' | '7.5.1' | '7.5.2' | '7.5.3.1' | '7.5.3.2'
+    | '8.2.1' | '8.2.2' | '8.2.3.1' | '8.2.3.2' | '8.2.4' | '8.3' | '8.4' | '8.4.1' | '8.4.2'
+    | '8.4.3' | '8.5.1' | '8.5.2' | '8.5.3' | '8.5.4' | '8.5.5' | '8.5.6' | '8.6' | '8.7.1'
+    | '8.7.2' | '9.1.1' | '9.1.2' | '9.1.3' | '9.2.1' | '9.2.2' | '9.3.1' | '9.3.2' | '9.3.3'
+    | '10.1' | '10.2.1' | '10.2.2' | '10.3' 
+
+export type IqaType = {
+    id: string
+    code: string
+    category: CatIqa
+    toName: string
+    dept: string
+    checkedProcess: string
+    requirements: Requirements
+    inspector: {name: string}[]
+    team: Team
+    detail: string
+    fileNcUrl?: string
+    fileNcRef?: string
+    fileNcName?: string
+    iqaStatus: StatusNc
+    branch: Branch
+    creator: UserCreator
+
+    follow?: FollowNc
+    approve?: ApproveNc
+    createdAt: firebase.firestore.Timestamp
+    updatedAt?: firebase.firestore.Timestamp
+}
+
+export type AddIqaTypeData = Pick<
+    IqaType,
+    | 'inspector' 
+    | 'team'
+    | 'category'
+    | 'toName'
+    | 'dept'
+    | 'checkedProcess'
+    | 'requirements' 
+    | 'detail' 
+    | 'fileNcName'
+>

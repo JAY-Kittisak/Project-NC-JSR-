@@ -29,6 +29,7 @@ const IqAudit: React.FC<Props> = () => {
                     ) : (
                         <>
                             <AddIqa userInfo={userInfo} />
+                            <h4>ประวัติการออก IQA</h4>
                         </>
                     )}
                 </InnerLayout>
@@ -41,6 +42,17 @@ const IqAuditStyled = styled.div`
     button {
         margin: 1rem;
         padding: .5rem;
+    }
+    .iqa {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 2rem;
+        @media screen and (max-width:978px){
+            grid-template-columns: repeat(1, 1fr);
+            .f-button{
+                margin-bottom: 3rem;
+            }
+        }
     }
 `
 export default IqAudit
