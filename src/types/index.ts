@@ -242,12 +242,12 @@ export type IqaType = {
     dept: string
     checkedProcess: string
     requirements: Requirements
-    inspector: {name: string}[]
+    inspector: string[]
     team: Team
     detail: string
-    fileNcUrl?: string
-    fileNcRef?: string
-    fileNcName?: string
+    fileIqaUrl?: string
+    fileIqaRef?: string
+    fileIqaName?: string
     iqaStatus: StatusNc
     branch: Branch
     creator: UserCreator
@@ -260,13 +260,17 @@ export type IqaType = {
 
 export type AddIqaTypeData = Pick<
     IqaType,
-    | 'inspector' 
     | 'team'
     | 'category'
     | 'toName'
     | 'dept'
     | 'checkedProcess'
-    | 'requirements' 
-    | 'detail' 
-    | 'fileNcName'
+    | 'requirements'
+    | 'detail'
+    | 'fileIqaName'
 >
+
+export type UploadIqa = Omit<IqaType, 'id' | 'createdAt' | 'updatedAt'> & {
+    createdAt?: firebase.firestore.FieldValue
+    updatedAt?: firebase.firestore.FieldValue
+}
