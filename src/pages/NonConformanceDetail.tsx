@@ -20,23 +20,9 @@ import { useQueryNc } from '../hooks/useQueryNc'
 import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
 import { InnerLayout, MainLayout, SpinnerStyled } from '../styles/LayoutStyle'
 import { StatusNc, AlertNt, AlertType } from '../types'
-import { formatDate, diffDay, isAdmin } from '../helpers'
+import { formatDate, diffDay, isAdmin, getStatusColor } from '../helpers'
 
 interface Props { }
-
-function getStatusColor(value: StatusNc) {
-    if (value === 'ตอบแล้ว') {
-        return 'chocolate'
-    } else if (value === 'รอปิด') {
-        return '#ff5d94'
-    } else if (value === 'ปิดแล้ว') {
-        return '#0cbd0c'
-    } else if (value === 'ไม่อนุมัติ') {
-        return '#FF0505'
-    } else if (value === 'ยกเลิก') {
-        return '#7a05ff'
-    } else return 'var(--primary-color)'
-}
 
 const NonConformanceDetail: React.FC<Props> = () => {
     const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');

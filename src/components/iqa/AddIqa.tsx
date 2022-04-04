@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import Button from '../Button';
-import { AddIqaTypeData, UserInfo, AlertType, AlertNt } from '../../types'
+import { AddIqaTypeData, UserInfo, AlertType, AlertNt, CountsCode } from '../../types'
 import { requirements, fileType } from '../../helpers';
-import AddInspector from './AddInspector';
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 import { useManageIqa } from '../../hooks/useManageIqa';
+import { iqaCountsCodeRef, iqaCountsCodeCdcRef} from '../../firebase'
 
 interface Props {
     userInfo: UserInfo | null
@@ -18,16 +18,23 @@ interface Props {
 }
 
 const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) => {
-    const [ inspector, setInspector ] = useState<string[]>([])
-
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [nameTwo, setNameTwo] = useState(false)
+    const [nameThree, setNameThree] = useState(false)
+    const [nameFour, setNameFour] = useState(false)
 
     const {
         register,
         handleSubmit,
         reset,
         errors
-    } = useForm<AddIqaTypeData>()
+    } = useForm<AddIqaTypeData>({
+        defaultValues: {
+            inspector2: null,
+            inspector3: null,
+            inspector4: null
+        }
+    })
 
     const {
         departmentsState: { departments }
@@ -46,7 +53,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
         loading,
         error
     } = useManageIqa()
-    
+
     const inputRef = useRef<HTMLInputElement>(null)
 
     const handleSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -68,18 +75,13 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
         if (inputRef?.current) inputRef.current.click()
     }
 
-    // const today = new Date()
-    // const currentFullYear = today.getFullYear().toString()
-    // const currentMonth = today.getMonth() + 1
-    // const padCurrentMonth = currentMonth.toString().padStart(2, '0')
+    const today = new Date()
+    const currentFullYear = today.getFullYear().toString()
 
     const handleAddIqa = handleSubmit(async (data) => {
         if (!userInfo) return
-        if (inspector.length < 1) return alert('โปรดเพิ่มชื่อผู้ตรวจ/พบ')
 
         let codeFinished: string
-        // FIXME:
-        codeFinished = ''
 
         const creator = {
             id: userInfo.id,
@@ -88,41 +90,40 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
             email: userInfo.email
         }
 
-        // const initial = userInfo.branch === 'ลาดกระบัง' ? 'J' : 'C'
+        const initial = userInfo.branch === 'ลาดกระบัง' ? 'J' : 'C'
 
-        // const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
+        const code = `${initial}-${data.category}${data.round}${data.team}${currentFullYear}`
 
-        // if (userInfo.branch === 'ลาดกระบัง') {
-        //     const codeCountsItem = ncCountsCodeRef.doc(code)
-        //     const codeCount = await codeCountsItem.get()
+        if (userInfo.branch === 'ลาดกระบัง') {
+            const codeCountsItem = iqaCountsCodeRef.doc(code)
+            const codeCount = await codeCountsItem.get()
 
-        //     if (!codeCount.exists) {
-        //         codeFinished = code + '001'
-        //     } else {
-        //         const { counts } = codeCount.data() as CountsCode
+            if (!codeCount.exists) {
+                codeFinished = code + '001'
+            } else {
+                const { counts } = codeCount.data() as CountsCode
 
-        //         const sumCountCode = counts + 1
-        //         codeFinished = code + sumCountCode.toString().padStart(3, '0')
-        //     }
-        // } else {
-        //     const codeCountsItemCdc = ncCountsCodeCdcRef.doc(code)
-        //     const codeCount = await codeCountsItemCdc.get()
+                const sumCountCode = counts + 1
+                codeFinished = code + sumCountCode.toString().padStart(3, '0')
+            }
+        } else {
+            const codeCountsItemCdc = iqaCountsCodeCdcRef.doc(code)
+            const codeCount = await codeCountsItemCdc.get()
 
-        //     if (!codeCount.exists) {
-        //         codeFinished = code + '001'
-        //     } else {
-        //         const { counts } = codeCount.data() as CountsCode
+            if (!codeCount.exists) {
+                codeFinished = code + '001'
+            } else {
+                const { counts } = codeCount.data() as CountsCode
 
-        //         const sumCountCode = counts + 1
-        //         codeFinished = code + sumCountCode.toString().padStart(3, '0')
-        //     }
-        // }
+                const sumCountCode = counts + 1
+                codeFinished = code + sumCountCode.toString().padStart(3, '0')
+            }
+        }
 
         return uploadImageToStorage(
             selectedFile,
             addNewIqa(
                 data,
-                inspector,
                 creator,
                 codeFinished,
                 userInfo.branch
@@ -150,34 +151,132 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
         <AddIqaStyled>
             <h4>คำขอให้ปฏิบัติการแก้ไข</h4>
 
-            {/* ผู้ตรวจ */}
-            <h5>ขั้นตอนที่ 1</h5>
-            <hr />
-            <AddInspector inspector={inspector} setInspector={setInspector} />
-            
-            <h5>ขั้นตอนที่ 2</h5>
-            <hr />
             <form className='form' onSubmit={handleAddIqa}>
-                {/* team & CAR หรือ OBS */}
+                {/* ผู้ตรวจ */}
+                <div className='flex-between'>
+                    <div className='form-field'>
+                        <label htmlFor='inspector1'>*ชื่อผู้ตรวจ/พบ 1 </label>
+                        <input
+                            name='inspector1'
+                            id='inspector1'
+                            ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
+                        />
+                    </div>
+                    {!nameTwo && (
+                        <Button
+                            type='button'
+                            className='btn--darkcyan'
+                            onClick={() => setNameTwo(true)}
+                        >
+                            เพิ่ม
+                        </Button>
+                    )}
+                </div>
+                {nameTwo && (
+                    <div className='flex-between'>
+                        <div className='form-field'>
+                            <label htmlFor='inspector2'>ชื่อผู้ตรวจ/พบ 2 (หากมี)</label>
+                            <input
+                                name='inspector2'
+                                id='inspector2'
+                                ref={register}
+                            />
+                        </div>
+                        <Button 
+                            type='button' 
+                            className='btn--darkcyan' 
+                            onClick={() => setNameThree(true)}
+                        >
+                            เพิ่ม
+                        </Button>
+                        <Button 
+                        type='button' 
+                        className='btn--red' 
+                        onClick={() => setNameTwo(false)}
+                        >
+                            ลบ
+                        </Button>
+                    </div>
+                )}
+
+                {nameThree && (
+                    <div className='flex-between'>
+                        <div className='form-field'>
+                            <label htmlFor='inspector3'>ชื่อผู้ตรวจ/พบ 3 (หากมี)</label>
+                            <input
+                                name='inspector3'
+                                id='inspector3'
+                                ref={register}
+                            />
+                        </div>
+                        <Button 
+                            type='button' 
+                            className='btn--darkcyan' 
+                            onClick={() => setNameFour(true)}
+                        >
+                            เพิ่ม
+                        </Button>
+                        <Button 
+                        type='button' 
+                        className='btn--red' 
+                        onClick={() => setNameThree(false)}
+                        >
+                            ลบ
+                        </Button>
+                    </div>
+                )
+                }
+
+                {nameFour && (
+                    <div className='flex-between'>
+                        <div className='form-field'>
+                            <label htmlFor='inspector4'>ชื่อผู้ตรวจ/พบ 4 (หากมี)</label>
+                            <input
+                                name='inspector4'
+                                id='inspector4'
+                                ref={register}
+                            />
+                        </div>
+                        <Button type='button' className='btn--darkcyan' >เพิ่ม</Button>
+                        <Button 
+                        type='button' 
+                        className='btn--red' 
+                        onClick={() => setNameFour(false)}
+                        >
+                            ลบ
+                        </Button>
+                    </div>
+                )}
+
                 <div className='flex-between'>
                     <div className='form-field'>
                         <label htmlFor='team'>ทีม</label>
                         <select name='team' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
                             <option style={{ display: 'none' }}></option>
-                            <option value='Team A'>Team A</option>
-                            <option value='Team B'>Team B</option>
-                            <option value='Team C'>Team C</option>
-                            <option value='Team D'>Team D</option>
+                            <option value='A'>Team A</option>
+                            <option value='B'>Team B</option>
+                            <option value='C'>Team C</option>
+                            <option value='D'>Team D</option>
                         </select>
                     </div>
                     <div className='form-field'>
                         <label htmlFor='category'>
-                            เป็น CAR หรือ OBS
+                            CAR หรือ OBS
                         </label>
                         <select name='category' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
                             <option style={{ display: 'none' }}></option>
                             <option value='CAR'>CAR</option>
                             <option value='OBS'>OBS</option>
+                        </select>
+                    </div>
+                    <div className='form-field'>
+                        <label htmlFor='round'>
+                            รอบที่ตรวจประจำปี {currentFullYear}
+                        </label>
+                        <select name='round' ref={register({ required: 'โปรดเลือกประเภทรอบที่ตรวจ' })}>
+                            <option style={{ display: 'none' }}></option>
+                            <option value='1'>รอบที่ 1</option>
+                            <option value='2'>รอบที่ 2</option>
                         </select>
                     </div>
                 </div>
@@ -389,12 +488,6 @@ const AddIqaStyled = styled.section`
         padding-left: 16px;
     }
 
-    h5 {
-        color: var(--white-color);
-        font-size: 1.2rem;
-        margin-top: 16px;
-    }
-
     .grid-inspector {
         padding: 1rem 0rem 0rem 6rem;
         display: grid;
@@ -425,6 +518,21 @@ const AddIqaStyled = styled.section`
 
     .btn--darkcyan:hover {
         background-color: #0c4b8f;
+                
+    }
+        
+    .btn--red {
+        background-color: #e74c3c;
+        margin: 2rem 0rem 0rem 1rem;
+        font-weight: 600;
+
+        svg {
+            margin-bottom: -5px;
+        }
+    }
+
+    .btn--red:hover {
+        background-color: #d31f0b;
                 
     }
 

@@ -19,6 +19,12 @@ const usersCollection = "users";
 const userCountsCollection = "user-counts";
 const userCountsDocument = "counts";
 
+const iqaCollection = "iqa";
+const iqaCountsCollection = "iqa-counts";
+const iqaCountsCdcCollection = "iqa-counts-cdc";
+const iqaCodeCountsCollection = "iqa-code-counts";
+const iqaCodeCountsCdcCollection = "iqa-code-counts-cdc";
+
 type Branch = "ลาดกระบัง" | "ชลบุรี"
 type Role = "SUPER_ADMIN" | "CLIENT" | "ADMIN"
 type StatusNc =
@@ -34,6 +40,9 @@ type TopicType = "Product" | "Product"
 type CountsCode = { counts: number }
 type Counts = {
   [key in "All" | CatNc | StatusNc]: number
+}
+type IqaCounts = {
+  [key in "All" | StatusNc]: number
 }
 type UserCreator = {
   id: string
@@ -55,6 +64,43 @@ type NcrNotify = {
   ncStatus: StatusNc
   branch: string
   creator: UserCreator
+}
+
+type CatIqa = "CAR" | "OBS"
+type Team = "A" | "B" | "C" |"B"
+
+type Requirements =
+    | "4.1" | "4.2" | "4.3" | "4.4.1" | "5.1.1" | "5.1.2" | "5.2.1" | "5.2.2"
+    | "5.3" | "6.1"| "6.1.2" | "6.2.1" | "6.2.2" | "6.3" | "7.1.1" | "7.1.2"
+    | "7.1.3" | "7.1.4" | "7.1.5.1" | "7.1.5.2" | "7.1.6" | "7.2" | "7.3"
+    | "7.4" | "7.5.1" | "7.5.2" | "7.5.3.1" | "7.5.3.2"| "8.2.1" | "8.2.2"
+    | "8.2.3.1" | "8.2.3.2" | "8.2.4" | "8.3" | "8.4" | "8.4.1" | "8.4.2"
+    | "8.4.3" | "8.5.1" | "8.5.2" | "8.5.3" | "8.5.4" | "8.5.5" | "8.5.6"
+    | "8.6" | "8.7.1"| "8.7.2" | "9.1.1" | "9.1.2" | "9.1.3" | "9.2.1"
+    | "9.2.2" | "9.3.1" | "9.3.2" | "9.3.3"| "10.1" | "10.2.1" | "10.2.2"
+    | "10.3"
+
+type IqaType = {
+    id: string
+    code: string
+    category: CatIqa
+    toName: string
+    dept: string
+    checkedProcess: string
+    requirements: Requirements
+    inspector1: string
+    inspector2: string | null
+    inspector3: string | null
+    inspector4: string | null
+    team: Team
+    round: string
+    detail: string
+    fileIqaUrl?: string
+    fileIqaRef?: string
+    fileIqaName?: string
+    iqaStatus: StatusNc
+    branch: Branch
+    creator: UserCreator
 }
 
 export const onSignup = functions.https.onCall(async (data, context) => {
@@ -219,7 +265,7 @@ export const onNcCreated = functions.firestore
           const nc = snapshot.data() as NcrNotify;
 
           const message = "message= เลขที่ " + nc.code + "\nจาก: " +
-          nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " + 
+          nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " +
           nc.dept + "\nประเด็น: " + nc.topic +
         "\nสถานะ: " + nc.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
 
@@ -463,4 +509,169 @@ export const onNcUpdated = functions.firestore
         }
       }
     }
+    );
+
+export const onIqaCreated = functions.firestore
+    .document(`${iqaCollection}/{iqaId}`)
+    .onCreate(
+        async (snapshot, context) => {
+          const iqa = snapshot.data() as IqaType;
+
+          let counts: IqaCounts;
+          let countsCode: CountsCode;
+
+          // Query the nc-counts collection
+          const countsData = await admin
+              .firestore()
+              .collection(iqaCountsCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          // Query the nc-counts-cdc collection
+          const countsDataCdc = await admin
+              .firestore()
+              .collection(iqaCountsCdcCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          // Query the nc-code-counts collection
+          const today = new Date();
+          const currentFullYear = today.getFullYear().toString();
+
+          const countsDataCode = await admin
+              .firestore()
+              .collection(iqaCodeCountsCollection)
+              .doc(`J-${iqa.category}${iqa.round}${iqa.team}${currentFullYear}`)
+              .get();
+
+          const countsDataCodeCdc = await admin
+              .firestore()
+              .collection(iqaCodeCountsCdcCollection)
+              .doc(`C-${iqa.category}${iqa.round}${iqa.team}${currentFullYear}`)
+              .get();
+
+          if (iqa.branch === "ลาดกระบัง") {
+            // lineNotify(message);
+
+            if (!countsData.exists) {
+              // First nc item
+
+              // Construct the counts object
+              counts = {
+                All: 1,
+                รอตอบ: iqa.iqaStatus === "รอตอบ" ? 1 : 0,
+                ตอบแล้ว: iqa.iqaStatus === "ตอบแล้ว" ? 1 : 0,
+                รอปิด: iqa.iqaStatus === "รอปิด" ? 1 : 0,
+                ไม่อนุมัติ: iqa.iqaStatus === "ไม่อนุมัติ" ? 1 : 0,
+                ปิดแล้ว: iqa.iqaStatus === "ปิดแล้ว" ? 1 : 0,
+                ยกเลิก: iqa.iqaStatus === "ยกเลิก" ? 1 : 0,
+              };
+            } else {
+              const {
+                All,
+                รอตอบ,
+                ตอบแล้ว,
+                รอปิด,
+                ไม่อนุมัติ,
+                ปิดแล้ว,
+                ยกเลิก,
+              } = countsData.data() as IqaCounts;
+
+              counts = {
+                All: All + 1,
+                รอตอบ: iqa.iqaStatus === "รอตอบ" ? รอตอบ + 1 : รอตอบ,
+                ตอบแล้ว: iqa.iqaStatus === "ตอบแล้ว" ? ตอบแล้ว + 1 : ตอบแล้ว,
+                รอปิด: iqa.iqaStatus === "รอปิด" ? รอปิด + 1 : รอปิด,
+                ไม่อนุมัติ: iqa.iqaStatus === "ไม่อนุมัติ" ?
+                  ไม่อนุมัติ + 1 : ไม่อนุมัติ,
+                ปิดแล้ว: iqa.iqaStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
+                ยกเลิก: iqa.iqaStatus === "ยกเลิก" ? ยกเลิก + 1 : ยกเลิก,
+              };
+            }
+
+            // Counts Code
+            if (!countsDataCode.exists) {
+              countsCode = {counts: 1};
+            } else {
+              const {counts} = countsDataCode.data() as CountsCode;
+              countsCode = {counts: counts + 1};
+            }
+
+            const updateCount = admin
+                .firestore()
+                .collection(iqaCountsCollection)
+                .doc(ncCountsDocument)
+                .set(counts);
+
+            const updateCountCode = admin
+                .firestore()
+                .collection(iqaCodeCountsCollection)
+                .doc("J-"+iqa.category+iqa.round+iqa.team+currentFullYear)
+                .set(countsCode);
+
+            // Update the counts document in the nc-counts collection
+            return {updateCount, updateCountCode};
+          } else {
+            // lineNotifyCdc(message);
+
+            if (!countsDataCdc.exists) {
+              // First nc item
+
+              // Construct the counts object
+              counts = {
+                All: 1,
+                รอตอบ: iqa.iqaStatus === "รอตอบ" ? 1 : 0,
+                ตอบแล้ว: iqa.iqaStatus === "ตอบแล้ว" ? 1 : 0,
+                รอปิด: iqa.iqaStatus === "รอปิด" ? 1 : 0,
+                ไม่อนุมัติ: iqa.iqaStatus === "ไม่อนุมัติ" ? 1 : 0,
+                ปิดแล้ว: iqa.iqaStatus === "ปิดแล้ว" ? 1 : 0,
+                ยกเลิก: iqa.iqaStatus === "ยกเลิก" ? 1 : 0,
+              };
+            } else {
+              const {
+                All,
+                รอตอบ,
+                ตอบแล้ว,
+                รอปิด,
+                ไม่อนุมัติ,
+                ปิดแล้ว,
+                ยกเลิก,
+              } = countsDataCdc.data() as IqaCounts;
+
+              counts = {
+                All: All + 1,
+                รอตอบ: iqa.iqaStatus === "รอตอบ" ? รอตอบ + 1 : รอตอบ,
+                ตอบแล้ว: iqa.iqaStatus === "ตอบแล้ว" ? ตอบแล้ว + 1 : ตอบแล้ว,
+                รอปิด: iqa.iqaStatus === "รอปิด" ? รอปิด + 1 : รอปิด,
+                ไม่อนุมัติ: iqa.iqaStatus === "ไม่อนุมัติ" ?
+                  ไม่อนุมัติ + 1 : ไม่อนุมัติ,
+                ปิดแล้ว: iqa.iqaStatus === "ปิดแล้ว" ? ปิดแล้ว + 1 : ปิดแล้ว,
+                ยกเลิก: iqa.iqaStatus === "ยกเลิก" ? ยกเลิก + 1 : ยกเลิก,
+              };
+            }
+
+            // Counts Code
+            if (!countsDataCodeCdc.exists) {
+              countsCode = {counts: 1};
+            } else {
+              const {counts} = countsDataCodeCdc.data() as CountsCode;
+              countsCode = {counts: counts + 1};
+            }
+
+            const updateCountCdc = admin
+                .firestore()
+                .collection(iqaCountsCdcCollection)
+                .doc(ncCountsDocument)
+                .set(counts);
+
+            const updateCountCodeCdc = admin
+                .firestore()
+                .collection(iqaCodeCountsCdcCollection)
+                .doc("C-"+iqa.category+iqa.round+iqa.team+currentFullYear)
+                .set(countsCode);
+
+            // Update the counts document in the nc-counts collection
+            return {updateCountCdc, updateCountCodeCdc};
+          }
+        }
     );

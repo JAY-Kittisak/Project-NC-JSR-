@@ -223,7 +223,7 @@ export type Nc = { [key in NcrTab]: NcrNotify[] }
 
 // TODO: IQA
 export type CatIqa = 'CAR' | 'OBS'
-export type Team = 'Team A' | 'Team B' | 'Team C' |'Team B'
+export type Team = 'A' | 'B' | 'C' |'B'
 
 export type Requirements = 
     | '4.1' | '4.2' | '4.3' | '4.4.1' | '5.1.1' | '5.1.2' | '5.2.1' | '5.2.2' | '5.3' | '6.1'
@@ -242,8 +242,12 @@ export type IqaType = {
     dept: string
     checkedProcess: string
     requirements: Requirements
-    inspector: string[]
+    inspector1: string
+    inspector2: string | null
+    inspector3: string | null
+    inspector4: string | null
     team: Team
+    round: string
     detail: string
     fileIqaUrl?: string
     fileIqaRef?: string
@@ -260,7 +264,12 @@ export type IqaType = {
 
 export type AddIqaTypeData = Pick<
     IqaType,
+    | 'inspector1'
+    | 'inspector2'
+    | 'inspector3'
+    | 'inspector4'
     | 'team'
+    | 'round'
     | 'category'
     | 'toName'
     | 'dept'
@@ -274,3 +283,5 @@ export type UploadIqa = Omit<IqaType, 'id' | 'createdAt' | 'updatedAt'> & {
     createdAt?: firebase.firestore.FieldValue
     updatedAt?: firebase.firestore.FieldValue
 }
+
+export type IqaTabAll = { [key in NcrTab]: IqaType[] }

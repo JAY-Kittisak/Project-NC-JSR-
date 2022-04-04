@@ -49,7 +49,6 @@ export const useManageIqa = () => {
 
     const addNewIqa = (
         data: AddIqaTypeData,
-        inspector: string[],
         creator: UserCreator,
         code: string,
         branch: Branch,
@@ -59,13 +58,18 @@ export const useManageIqa = () => {
     ) => {
         const {
             team,
+            round,
             category,
             toName,
             dept,
             checkedProcess,
             requirements,
             detail,
-            fileIqaName
+            fileIqaName,
+            inspector1,
+            inspector2,
+            inspector3,
+            inspector4
         } = data
         
         setLoading(true)
@@ -75,13 +79,17 @@ export const useManageIqa = () => {
             const newIqa: UploadIqa = {
                 code,
                 team,
+                round,
                 category,
                 toName,
                 dept,
                 checkedProcess,
                 requirements,
                 detail,
-                inspector,
+                inspector1,
+                inspector2: inspector2 ? inspector2 : null,
+                inspector3: inspector3 ? inspector3 : null,
+                inspector4: inspector4 ? inspector4 : null,
                 iqaStatus: 'รอตอบ',
                 branch: branch,
                 creator,
@@ -106,13 +114,17 @@ export const useManageIqa = () => {
             const newIqa: UploadIqa = {
                 code,
                 team,
+                round,
                 category,
                 toName,
                 dept,
                 checkedProcess,
                 requirements,
                 detail,
-                inspector,
+                inspector1,
+                inspector2: inspector2 ? inspector2 : null,
+                inspector3: inspector3 ? inspector3 : null,
+                inspector4: inspector4 ? inspector4 : null,
                 iqaStatus: 'รอตอบ',
                 branch: branch,
                 creator,

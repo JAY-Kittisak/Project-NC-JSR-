@@ -7,6 +7,7 @@ import { useAuthContext } from '../state/auth-context'
 import AddIqa from '../components/iqa/AddIqa'
 import AlertNotification from '../components/dialogs/AlertNotification'
 import { AlertNt, AlertType } from '../types'
+import IqaHistory from '../components/iqa/IqaHistory'
 
 interface Props { }
 
@@ -30,8 +31,12 @@ const IqAudit: React.FC<Props> = () => {
                         <p className='paragraph-null'>User ของคุณยังไม่ได้รับการอนุมัติใช้งาน โปรดแจ้งผู้ดูแลระบบ</p>
                     ) : (
                         <>
-                            <AddIqa userInfo={userInfo} setAlertWarning={setAlertWarning} setAlertState={setAlertState}/>
-                            <h4>ประวัติการออก IQA</h4>
+                            <AddIqa 
+                                userInfo={userInfo} 
+                                setAlertWarning={setAlertWarning} 
+                                setAlertState={setAlertState}
+                            />
+                            <IqaHistory/>
                         </>
                     )}
                 </InnerLayout>

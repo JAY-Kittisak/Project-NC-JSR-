@@ -5,6 +5,7 @@ import {
     NcrNotify,
     UserInfo,
     NcAnswer,
+    IqaType,
 } from '../types'
 import { db, firebase, storageRef } from './config'
 
@@ -24,9 +25,11 @@ export const ncNotifyFileFolder = 'nc-notify'
 export const ncAnswerFileFolder = 'nc-answer'
 
 export const iqaRef = db.collection('iqa')
+export const iqaCountsCodeRef = db.collection('iqa-code-counts')
+export const iqaCountsCodeCdcRef = db.collection('iqa-code-counts-cdc')
 export const iqaFileFolder = 'iqa'
 
-export const snapshotToDoc = <T extends| UserInfo| NcrNotify| Department| NcAnswer>(
+export const snapshotToDoc = <T extends| UserInfo| NcrNotify| Department| NcAnswer | IqaType>(
     doc: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
 ) => {
     const docData = doc.data() as T

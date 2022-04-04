@@ -87,3 +87,18 @@ export const requirements: Requirements[] = [
     '8.7.2','9.1.1','9.1.2','9.1.3','9.2.1','9.2.2','9.3.1','9.3.2','9.3.3',
     '10.1','10.2.1','10.2.2','10.3',
 ]
+
+
+export function getStatusColor(value: StatusNc) {
+    if (value === 'ตอบแล้ว') {
+        return 'chocolate'
+    } else if (value === 'รอปิด') {
+        return '#ff5d94'
+    } else if (value === 'ปิดแล้ว') {
+        return '#0cbd0c'
+    } else if (value === 'ไม่อนุมัติ') {
+        return '#FF0505'
+    } else if (value === 'ยกเลิก') {
+        return '#7a05ff'
+    } else return 'var(--primary-color)'
+}
