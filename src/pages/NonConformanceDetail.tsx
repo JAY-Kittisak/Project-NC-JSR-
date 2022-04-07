@@ -205,7 +205,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             setAlertWarning={setAlertWarning}
                             setAlertState={setAlertState}
                         />
-                        {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError.length}</p>}
+                        {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError}</p>}
                     </section>
 
                     <NcFollow

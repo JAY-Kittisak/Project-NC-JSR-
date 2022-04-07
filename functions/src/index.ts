@@ -675,3 +675,63 @@ export const onIqaCreated = functions.firestore
           }
         }
     );
+
+export const onIqaUpdated = functions.firestore
+    .document(`${iqaCollection}/{iqaId}`)
+    .onUpdate(async (snapshot, context) => {
+      const beforeProd = snapshot.before.data() as IqaType;
+      const afterProd = snapshot.after.data() as IqaType;
+
+      // FIXME:  const message =
+
+      // Check if the status has been changed
+      if (beforeProd.iqaStatus !== afterProd.iqaStatus) {
+        // If status is changed
+        if (afterProd.branch === "ลาดกระบัง") {
+          // FIXME: lineNotify(message);
+
+          const countsData = await admin
+              .firestore()
+              .collection(iqaCountsCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          if (!countsData.exists) return;
+
+          const counts = countsData.data() as IqaCounts;
+
+          // Update the counts object
+          counts[beforeProd.iqaStatus] = counts[beforeProd.iqaStatus] - 1;
+          counts[afterProd.iqaStatus] = counts[afterProd.iqaStatus] + 1;
+
+          await admin
+              .firestore()
+              .collection(iqaCountsCollection)
+              .doc(ncCountsDocument)
+              .set(counts);
+        } else {
+          // FIXME: lineNotifyCdc(message);
+
+          const countsDataCdc = await admin
+              .firestore()
+              .collection(iqaCountsCdcCollection)
+              .doc(ncCountsDocument)
+              .get();
+
+          if (!countsDataCdc.exists) return;
+
+          const countsCdc = countsDataCdc.data() as IqaCounts;
+
+          // Update the counts object
+          countsCdc[beforeProd.iqaStatus] = countsCdc[beforeProd.iqaStatus] - 1;
+          countsCdc[afterProd.iqaStatus] = countsCdc[afterProd.iqaStatus] + 1;
+
+          await admin
+              .firestore()
+              .collection(iqaCountsCdcCollection)
+              .doc(ncCountsDocument)
+              .set(countsCdc);
+        }
+      }
+    }
+    );

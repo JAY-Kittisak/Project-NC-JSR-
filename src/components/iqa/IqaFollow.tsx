@@ -3,39 +3,44 @@ import styled from 'styled-components'
 import { useForm } from 'react-hook-form';
 
 import Button from '../Button'
-import { useManageNcNotify } from '../../hooks/useManageNcNotify'
+import { FollowIqa, StatusNc, AlertNt, AlertType, FoundFix, AddFollowIqaData } from '../../types'
 import { formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
-import { FollowNc, AddFollowNcData, FoundFix, StatusNc, AlertNt, AlertType } from '../../types'
+import { useManageIqa } from '../../hooks/useManageIqa';
 
 interface Props {
-    ncId: string
-    follow: FollowNc | undefined
-    ncStatus: StatusNc
+    iqaId: string
+    follow: FollowIqa | undefined
+    iqaStatus: StatusNc
     creatorId: string
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlertWarning, setAlertState }) => {
-    const [radioBtn, setRadioBtn] = useState<FoundFix | undefined>(follow?.followNc)
+const IqaFollow: React.FC<Props> = ({
+    iqaId,
+    follow,
+    iqaStatus,
+    creatorId,
+    setAlertWarning,
+    setAlertState
+}) => {
+    const [radioBtn, setRadioBtn] = useState<FoundFix | undefined>(follow?.followIqa)
 
-    const { register, handleSubmit, errors } = useForm<AddFollowNcData>()
+    const { register, handleSubmit, errors } = useForm<AddFollowIqaData>()
 
     const { authState: { userInfo } } = useAuthContext()
 
-    const {
-        updateNcFollow,
-        loading,
-        error
-    } = useManageNcNotify()
+    const { updateIqaFollow, loading, error} = useManageIqa()
 
     const isRadioSelected = (value: FoundFix): boolean => radioBtn === value
     const handleRadioClick = (e: React.ChangeEvent<HTMLInputElement>): void => setRadioBtn(e.currentTarget.value as FoundFix)
 
-    const handleUpdateNcFollow = handleSubmit(async (data) => {
-        const finished = await updateNcFollow(ncId,data)
+    const handleUpdateIqaFollow = handleSubmit(async (data) => {
+
+        console.log('handleUpdateIqaFollow',data)
+        const finished = await updateIqaFollow(iqaId,data)
 
         if (finished) {
             setAlertState('success')
@@ -46,19 +51,20 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
     })
 
     return (
-        <NcFollowStyled className='box-shadows'>
+        <IqaFollowStyled className='box-shadows'>
             <div className="flex-between">
                 <h4>การติดตาม</h4>
                 {follow?.followedAt && (
                     <p>{formatDate(follow.followedAt)}</p>
                 )}
             </div>
-            <form onSubmit={handleUpdateNcFollow} >
+
+            <form onSubmit={handleUpdateIqaFollow} >
                 <RadioStyled>
                     <div className="group">
                         <input
                             type="radio"
-                            name="followNc"
+                            name="followIqa"
                             id="foundAFix"
                             value='Found fix'
                             disabled={creatorId !== userInfo?.id}
@@ -71,7 +77,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                     <div className="group">
                         <input
                             type="radio"
-                            name="followNc"
+                            name="followIqa"
                             id="canNotFix"
                             value='Can not fix'
                             disabled={creatorId !== userInfo?.id}
@@ -83,7 +89,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                     </div>
                 </RadioStyled>
                 {errors && (
-                    <p className='paragraph-error text-center'>{errors.followNc?.message}</p>
+                    <p className='paragraph-error text-center'>{errors.followIqa?.message}</p>
                 )}
                 <div className="form-field">
                     <label htmlFor="followDetail">
@@ -103,10 +109,11 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                     )}
                 </div>
                 {creatorId === userInfo?.id && (
-                    (ncStatus === 'ตอบแล้ว') && (
+                    (iqaStatus === 'ตอบแล้ว') && (
                         <Button
                             type='submit'
                             loading={loading}
+                            disabled={loading}
                             width='100%'
                             style={{ margin: '0.5rem 0' }}
                         >
@@ -116,15 +123,14 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                 )}
             </form>
             {error && <p className='paragraph-error'>{error}</p>}
-        </NcFollowStyled>
+        </IqaFollowStyled>
     )
 }
 
-const NcFollowStyled = styled.section`
+const IqaFollowStyled = styled.div`
     margin-bottom: .5rem;
     padding: 1rem;
     background-color: var(--background-dark-color);
     min-height: 350px;
 `
-
-export default NcFollow
+export default IqaFollow

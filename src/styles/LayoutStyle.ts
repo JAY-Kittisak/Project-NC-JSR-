@@ -19,7 +19,7 @@ export const InnerLayout = styled.div`
 export const CheckboxStyled = styled.div`
     .group {
         padding: 8px 48px;
-        margin: 8px;
+        margin: 5px;
     }
 
     input[type="checkbox"] {
@@ -30,7 +30,7 @@ export const CheckboxStyled = styled.div`
         cursor: pointer;
         position: relative;
         padding-top: 2px;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     
     label::before {

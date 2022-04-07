@@ -3,11 +3,12 @@ import { Route, Switch } from "react-router-dom";
 
 import NonConformances from "../pages/NonConformances";
 import NonConformanceDetail from "../pages/NonConformanceDetail";
+import AnswerNc from "../pages/AnswerNc";
+import DashboardNc from "../pages/DashboardNc";
+import PageNotFound from "../pages/PageNotFound";
 import NcContextProvider from '../state/nc-context'
 import DeptContextProvider from '../state/dept-context'
 import DeptCdcContextProvider from '../state/dept-cdc-context'
-import AnswerNc from "../pages/AnswerNc";
-import PageNotFound from "../pages/PageNotFound";
 import { UserInfo } from '../types';
 
 interface Props { }
@@ -20,6 +21,9 @@ const NcRouter: React.FC<Props> = (props) => {
             <DeptCdcContextProvider>
                 <NcContextProvider>
                     <Switch>
+                        <Route path="/nc/dashboard">
+                            <DashboardNc />
+                        </Route>
                         <Route path="/nc/answer">
                             <AnswerNc />
                         </Route>

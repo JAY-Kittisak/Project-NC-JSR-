@@ -202,13 +202,13 @@ const ManageNcAnswer: React.FC<Props> = ({
                     </FlexStyled>
                 )}
                 <div className="form-field">
-                    <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้รับตอบ</label>
+                    <label htmlFor="containmentName">ชื่อ-นามสกุล ผู้ตอบ</label>
                     <input
                         readOnly={!editBoolean}
                         name='answerName'
                         id="answerName"
                         defaultValue={ncAnswer ? ncAnswer.answerName : ''}
-                        ref={register({ required: 'โปรดใส่ชื่อผู้รับผิดชอบ' })}
+                        ref={register({ required: 'โปรดใส่ชื่อผู้ตอบ' })}
                     />
                 </div>
                 {errors && (
@@ -229,7 +229,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.containmentAction?.message}</p>
                 )}
-                <div className="form-field-flex">
+                <div className="flex-between">
                     <div className="form-field">
                         <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
                         <input
@@ -290,7 +290,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.correctiveAction?.message}</p>
                 )}
-                <div className="form-field-flex">
+                <div className="flex-between">
                     <div className="form-field">
                         <label htmlFor="correctiveDueDate">กำหนดเสร็จ</label>
                         <input
@@ -638,15 +638,6 @@ const NcAnswerStyled = styled.div`
                 border: 0.6px solid #79849b;
                 background-color: chocolate;
                 outline: none;
-            }
-        }
-
-        .form-field-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            div + div {
-                margin-left: 1rem;
             }
         }
         

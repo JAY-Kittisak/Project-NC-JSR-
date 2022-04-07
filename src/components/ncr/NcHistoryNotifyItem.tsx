@@ -80,12 +80,6 @@ const NotifyItem = styled.div`
         }
     }
 
-    .truncated {
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
     .font-small {
         font-size: 0.8rem;
     }

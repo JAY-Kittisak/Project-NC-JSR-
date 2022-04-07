@@ -8,7 +8,6 @@ import ManageNc from "../pages/ManageNc";
 import ManageDepartments from "../pages/ManageDepartments";
 import ManageDepartmentsCdc from "../pages/ManageDepartmentsCdc";
 import ManageUsers from "../pages/ManageUsers";
-import NcReport from "../pages/NcReport";
 import PageNotFound from "../pages/PageNotFound";
 import DeptContextProvider from '../state/dept-context'
 import DeptCdcContextProvider from '../state/dept-cdc-context'
@@ -25,9 +24,6 @@ const AdminRoutes: React.FC<Props> = (props) => {
 
     return (
         <Switch>
-            <Route path="/admin/nc-report">
-                <NcReport />
-            </Route>
             <Route path="/admin/manage-iqa/:id">
                 <ManageIqAuditDetail />
             </Route>

@@ -20,7 +20,7 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
     const { users,userCounts, loading, error, queryMoreUsers} = useFetchUsers(userInfo)
     const {page, totalPages} = usePagination(userCounts, usersPerPage, undefined, users as UserInfo[])
     const [ usersByPage, setUserByPage] = useState(users)
-
+    
     useEffect(() => {
         if (!users) return
 
@@ -29,7 +29,6 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
 
         if (users.length < userCounts && users.length < usersPerPage * page) {
             queryMoreUsers()
-            return
         }
 
         setUserByPage(users.slice(startIndex, endIndex))

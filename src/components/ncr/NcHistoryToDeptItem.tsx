@@ -90,11 +90,5 @@ const NotifyItem = styled.div`
             font-size: 0.9rem;
         }
     }
-
-    .truncated {
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 `
 export default NcHistoryToDeptItem

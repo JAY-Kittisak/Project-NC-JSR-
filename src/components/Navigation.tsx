@@ -58,8 +58,14 @@ const Navigation: React.FC<Props> = () => {
                                         ตอบ ncr
                                     </NavLink>
                                 </li>
+                                <li className="nav-item">
+                                    <NavLink to="/nc/dashboard" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                        แดชบอร์ด ncr
+                                    </NavLink>
+                                </li>
+                                <hr />
                                 <li className="nav-item ">
-                                    <NavLink to="/iqa/internal-quality" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                    <NavLink to="/iqa/internal-quality" className={(isActive) => isActive ? "active-class" : ""}>
                                         ออก iqa
                                     </NavLink>
                                 </li>
@@ -74,11 +80,6 @@ const Navigation: React.FC<Props> = () => {
                                 <li className="nav-item">
                                     <NavLink to="/admin/manage-nc" exact className={(isActive) => isActive ? "active-class" : ""}>
                                         manage nc
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/nc-report" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        report nc
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">

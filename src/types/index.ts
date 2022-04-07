@@ -54,12 +54,12 @@ export type UserInfo = {
 
 export type NcrTab = 'All' | StatusNc
 export type StatusNc =
-  | 'รอตอบ'
-  | 'ตอบแล้ว'
-  | 'รอปิด'
-  | 'ไม่อนุมัติ'
-  | 'ปิดแล้ว'
-  | 'ยกเลิก'
+    | 'รอตอบ'
+    | 'ตอบแล้ว'
+    | 'รอปิด'
+    | 'ไม่อนุมัติ'
+    | 'ปิดแล้ว'
+    | 'ยกเลิก'
 
 export type DemoNcrNotify = {
     id: string;
@@ -105,9 +105,9 @@ export type NcAnswer = {
     updatedAt?: firebase.firestore.Timestamp
 }
 
-export type FoundFixNc = 'Found fix' | 'Can not fix'
+export type FoundFix = 'Found fix' | 'Can not fix'
 export type FollowNc = {
-    followNc: FoundFixNc
+    followNc: FoundFix
     followDetail?: string
     followedAt: firebase.firestore.Timestamp
 }
@@ -140,38 +140,38 @@ export type NcrNotify = {
 }
 
 // NC Notify type used to upload a document in firestore
-export type UploadNcNotify = Omit<NcrNotify, 'id' | 'createdAt'> & {createdAt?: firebase.firestore.FieldValue}
-export type UploadEditNcNotify = Omit<NcrNotify, 
-    |'id'
+export type UploadNcNotify = Omit<NcrNotify, 'id' | 'createdAt'> & { createdAt?: firebase.firestore.FieldValue }
+export type UploadEditNcNotify = Omit<NcrNotify,
+    | 'id'
     | 'code'
     | 'branch'
     | 'ncStatus'
     | 'creator'
     | 'createdAt'
     | 'updatedAt'
-> & {updatedAt: firebase.firestore.FieldValue}
-export type UploadFollowNc = Omit<FollowNc, 'followedAt'> & {followedAt: firebase.firestore.FieldValue}
-export type UploadApproveNc = Omit<ApproveNc,'approvedAt'> & {approvedAt: firebase.firestore.FieldValue}
+> & { updatedAt: firebase.firestore.FieldValue }
+export type UploadFollowNc = Omit<FollowNc, 'followedAt'> & { followedAt: firebase.firestore.FieldValue }
+export type UploadApproveNc = Omit<ApproveNc, 'approvedAt'> & { approvedAt: firebase.firestore.FieldValue }
 
 export type AddNcrNotifyData = Pick<
-    NcrNotify, 
+    NcrNotify,
     | 'creatorName'
-    | 'category' 
-    | 'dept' 
-    | 'topic' 
-    | 'topicType' 
-    | 'detail' 
+    | 'category'
+    | 'dept'
+    | 'topic'
+    | 'topicType'
+    | 'detail'
     | 'fileNcName'
 >
 
 export type EditNcrNotifyData = Pick<
-    NcrNotify, 
-    | 'creatorName' 
-    | 'category' 
-    | 'dept' 
-    | 'topic' 
-    | 'topicType' 
-    | 'detail' 
+    NcrNotify,
+    | 'creatorName'
+    | 'category'
+    | 'dept'
+    | 'topic'
+    | 'topicType'
+    | 'detail'
     | 'fileNcName'
 >
 
@@ -192,9 +192,9 @@ export type UploadAnswerNc = Omit<NcAnswer, 'id' | 'createdAt' | 'updatedAt'> & 
 export type AddAnswerNcData = Pick<
     NcAnswer,
     | 'answerName'
-    | 'containmentAction' 
-    | 'containmentDueDate' 
-    | 'containmentName' 
+    | 'containmentAction'
+    | 'containmentDueDate'
+    | 'containmentName'
     | 'rootCause'
     | 'correctiveAction'
     | 'correctiveDueDate'
@@ -223,17 +223,29 @@ export type Nc = { [key in NcrTab]: NcrNotify[] }
 
 // TODO: IQA
 export type CatIqa = 'CAR' | 'OBS'
-export type Team = 'A' | 'B' | 'C' |'B'
+export type Team = 'A' | 'B' | 'C' | 'B'
 
-export type Requirements = 
+export type Requirements =
     | '4.1' | '4.2' | '4.3' | '4.4.1' | '5.1.1' | '5.1.2' | '5.2.1' | '5.2.2' | '5.3' | '6.1'
     | '6.1.2' | '6.2.1' | '6.2.2' | '6.3' | '7.1.1' | '7.1.2' | '7.1.3' | '7.1.4' | '7.1.5.1'
     | '7.1.5.2' | '7.1.6' | '7.2' | '7.3' | '7.4' | '7.5.1' | '7.5.2' | '7.5.3.1' | '7.5.3.2'
     | '8.2.1' | '8.2.2' | '8.2.3.1' | '8.2.3.2' | '8.2.4' | '8.3' | '8.4' | '8.4.1' | '8.4.2'
     | '8.4.3' | '8.5.1' | '8.5.2' | '8.5.3' | '8.5.4' | '8.5.5' | '8.5.6' | '8.6' | '8.7.1'
     | '8.7.2' | '9.1.1' | '9.1.2' | '9.1.3' | '9.2.1' | '9.2.2' | '9.3.1' | '9.3.2' | '9.3.3'
-    | '10.1' | '10.2.1' | '10.2.2' | '10.3' 
+    | '10.1' | '10.2.1' | '10.2.2' | '10.3'
 
+export type FollowIqa = {
+    followIqa: FoundFix
+    followDetail?: string
+    followedAt: firebase.firestore.Timestamp
+}
+
+export type ApproveIqa = {
+    approveIqa: Approve
+    approveDetail?: string
+    qmrName: string
+    approvedAt: firebase.firestore.Timestamp
+}
 export type IqaType = {
     id: string
     code: string
@@ -255,9 +267,8 @@ export type IqaType = {
     iqaStatus: StatusNc
     branch: Branch
     creator: UserCreator
-
-    follow?: FollowNc
-    approve?: ApproveNc
+    follow?: FollowIqa
+    approve?: ApproveIqa
     createdAt: firebase.firestore.Timestamp
     updatedAt?: firebase.firestore.Timestamp
 }
@@ -285,3 +296,66 @@ export type UploadIqa = Omit<IqaType, 'id' | 'createdAt' | 'updatedAt'> & {
 }
 
 export type IqaTabAll = { [key in NcrTab]: IqaType[] }
+
+
+export type EditedRootDoc =
+    | 'ด้านเอกสาร'
+    | 'การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด'
+    | 'การประสานงาน/สื่อสาร'
+    | 'อุปกรณ์/เครื่องมือ'
+    | 'ความบกพร่องจากมาตรฐาน'
+    | 'อื่นๆ...'
+
+export type IqaAnswer = {
+    id: string
+    iqaId: string
+    answerName: string
+    containmentAction: string
+    containmentDueDate: string
+    containmentName: string
+
+    editedRootDoc: EditedRootDoc[]
+    rootCause: string
+
+    correctiveAction: string
+    correctiveDueDate: string
+    correctiveName: string
+
+    editedDoc: EditedDoc[]
+    docDetail?: string
+
+    fileAnswerIqaUrl?: string
+    fileAnswerIqaRef?: string
+    fileAnswerIqaName?: string
+    createdAt: firebase.firestore.Timestamp
+    updatedAt?: firebase.firestore.Timestamp
+}
+export type AddAnswerIqaData = Pick<
+    IqaAnswer,
+    | 'answerName'
+    | 'containmentAction'
+    | 'containmentDueDate'
+    | 'containmentName'
+    | 'editedRootDoc'
+    | 'rootCause'
+    | 'correctiveAction'
+    | 'correctiveDueDate'
+    | 'correctiveName'
+    | 'fileAnswerIqaName'
+    | 'editedDoc'
+    | 'docDetail'
+>
+export type UploadAnswerIqa = Omit<IqaAnswer, 'id' | 'createdAt' | 'updatedAt'> & {
+    createdAt?: firebase.firestore.FieldValue
+    updatedAt?: firebase.firestore.FieldValue
+}
+export type AddFollowIqaData = Pick<
+    FollowIqa,
+    'followIqa' | 'followDetail'
+>
+export type AddApproveIqaData = Pick<
+    ApproveIqa,
+    'approveIqa' | 'approveDetail' | 'qmrName'
+>
+export type UploadFollowIqa = Omit<FollowIqa, 'followedAt'> & { followedAt: firebase.firestore.FieldValue }
+export type UploadApproveIqa = Omit<ApproveIqa, 'approvedAt'> & { approvedAt: firebase.firestore.FieldValue }

@@ -45,7 +45,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
     } = useDepartmentsCdcContext()
 
     const {
-        uploadImageToStorage,
+        uploadFileToStorage,
         addNewIqa,
         setUploadProgression,
         uploadProgression,
@@ -55,6 +55,13 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
     } = useManageIqa()
 
     const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleOpenUploadBox = () => {
+        if (inputRef?.current) inputRef.current.click()
+    }
+
+    const today = new Date()
+    const currentFullYear = today.getFullYear().toString()
 
     const handleSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
@@ -70,13 +77,6 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
 
         setSelectedFile(file)
     }
-
-    const handleOpenUploadBox = () => {
-        if (inputRef?.current) inputRef.current.click()
-    }
-
-    const today = new Date()
-    const currentFullYear = today.getFullYear().toString()
 
     const handleAddIqa = handleSubmit(async (data) => {
         if (!userInfo) return
@@ -120,7 +120,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
             }
         }
 
-        return uploadImageToStorage(
+        return uploadFileToStorage(
             selectedFile,
             addNewIqa(
                 data,
@@ -248,17 +248,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                     </div>
                 )}
 
-                <div className='flex-between'>
-                    <div className='form-field'>
-                        <label htmlFor='team'>ทีม</label>
-                        <select name='team' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
-                            <option style={{ display: 'none' }}></option>
-                            <option value='A'>Team A</option>
-                            <option value='B'>Team B</option>
-                            <option value='C'>Team C</option>
-                            <option value='D'>Team D</option>
-                        </select>
-                    </div>
+                <div className='grid-add'>
                     <div className='form-field'>
                         <label htmlFor='category'>
                             CAR หรือ OBS
@@ -267,6 +257,16 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                             <option style={{ display: 'none' }}></option>
                             <option value='CAR'>CAR</option>
                             <option value='OBS'>OBS</option>
+                        </select>
+                    </div>
+                    <div className='form-field'>
+                        <label htmlFor='team'>ทีม</label>
+                        <select name='team' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
+                            <option style={{ display: 'none' }}></option>
+                            <option value='A'>Team A</option>
+                            <option value='B'>Team B</option>
+                            <option value='C'>Team C</option>
+                            <option value='D'>Team D</option>
                         </select>
                     </div>
                     <div className='form-field'>
@@ -397,7 +397,6 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                                         color: 'white',
                                         textAlign: 'center',
                                     }}
-                                    // uploadProgression={uploadProgression}
                                     value={`${uploadProgression}%`}
                                 />
                             </>
@@ -409,7 +408,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                                 <input
                                     readOnly
                                     type='text'
-                                    name='fileNcName'
+                                    name='fileIqaName'
                                     style={{ cursor: 'pointer' }}
                                     onClick={handleOpenUploadBox}
                                     value={selectedFile ? selectedFile.name : ''}
@@ -471,8 +470,6 @@ const FlexStyled = styled.div`
 `
 
 const AddIqaStyled = styled.section`
-    display: grid;
-    grid-template-columns: repeat(1,1fr);
     background-color: var(--background-dark-color);
     max-height: 722px;
 
@@ -488,15 +485,13 @@ const AddIqaStyled = styled.section`
         padding-left: 16px;
     }
 
-    .grid-inspector {
-        padding: 1rem 0rem 0rem 6rem;
+    .grid-add {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-column-gap: 1.5rem;
-        grid-row-gap: 1.5rem;
-
-        p {
-            margin-bottom: 1rem;
+        grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 1rem;
+        
+        @media screen and (max-width: 1400px){
+            grid-template-columns: repeat(1, 1fr);
         }
     }
 

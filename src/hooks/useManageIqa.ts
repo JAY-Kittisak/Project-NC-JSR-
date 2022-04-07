@@ -1,9 +1,19 @@
 import { useState } from 'react'
 
 import { useAsyncCall } from './useAsyncCall'
-import { createFileRef, iqaRef } from '../firebase'
+import { createFileIqaRef, iqaRef } from '../firebase'
 import { firebase } from '../firebase/config'
-import { AddIqaTypeData, UploadIqa, UserCreator, Branch } from "../types"
+import { 
+    AddIqaTypeData, 
+    UploadIqa, 
+    UserCreator, 
+    Branch, 
+    AddFollowIqaData, 
+    UploadFollowIqa, 
+    AddApproveIqaData,
+    UploadApproveIqa,
+    StatusNc
+} from "../types"
 
 
 export const useManageIqa = () => {
@@ -12,15 +22,15 @@ export const useManageIqa = () => {
 
     const { loading, setLoading, error, setError } = useAsyncCall()
 
-    const uploadImageToStorage = (
-        fileNc: File | null,
-        cb: (fileNcUrl: string | undefined, filePath: string | undefined) => void
+    const uploadFileToStorage = (
+        fileIqa: File | null,
+        cb: (fileIqaUrl: string | undefined, filePath: string | undefined) => void
     ) => {
         setLoading(true)
 
-        if (fileNc) {
-            const fileNcRef = createFileRef(fileNc.name)
-            const uploadTask = fileNcRef.put(fileNc)
+        if (fileIqa) {
+            const fileIqaRef = createFileIqaRef(fileIqa.name)
+            const uploadTask = fileIqaRef.put(fileIqa)
 
             uploadTask.on('state_changed', (snapshot) => {
                 const progression = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -33,8 +43,8 @@ export const useManageIqa = () => {
                 // Success case
 
                 // Get the file Url
-                uploadTask.snapshot.ref.getDownloadURL().then((fileNcUrl) => {
-                    cb(fileNcUrl, fileNcRef.fullPath)
+                uploadTask.snapshot.ref.getDownloadURL().then((fileIqaUrl) => {
+                    cb(fileIqaUrl, fileIqaRef.fullPath)
                 }).catch(err => {
                     const { message } = err as { message: string }
 
@@ -93,10 +103,9 @@ export const useManageIqa = () => {
                 iqaStatus: 'รอตอบ',
                 branch: branch,
                 creator,
-
                 fileIqaUrl,
-                fileIqaRef: filePath,
                 fileIqaName,
+                fileIqaRef: filePath,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             }
 
@@ -143,9 +152,116 @@ export const useManageIqa = () => {
         }
     }
 
+    const updateIqaFollow = async (iqaId: string, data: AddFollowIqaData) => {
+        try {
+            setLoading(true)
+            
+            const { followIqa, followDetail } = data
+
+            const upFollowIqa: UploadFollowIqa = {
+                followIqa,
+                followDetail,
+                followedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            }
+
+            if (followIqa === 'Found fix') {
+                await iqaRef.doc(iqaId).update({
+                    iqaStatus: 'รอปิด',
+                    follow: upFollowIqa
+                })
+
+                setLoading(false)
+                return true
+            } 
+
+            if (followIqa === 'Can not fix') {
+                await iqaRef.doc(iqaId).update({
+                    iqaStatus: 'รอตอบ',
+                    follow: upFollowIqa
+                })
+
+                setLoading(false)
+                return true
+            }
+
+        } catch (err) {
+            const { message } = err as { message: string }
+
+            setError(message)
+            setLoading(false)
+
+            return false
+        }
+    }
+
+    const updateIqaApprove = async (iqaId: string, data: AddApproveIqaData) => {
+        try {
+            setLoading(true)
+
+            const { approveIqa, approveDetail, qmrName } = data
+
+            const upApproveIqa: UploadApproveIqa = {
+                approveIqa,
+                approveDetail,
+                qmrName,
+                approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
+
+            if (approveIqa === 'Yes') {
+                await iqaRef.doc(iqaId).update({
+                    iqaStatus: 'ปิดแล้ว',
+                    approve: upApproveIqa
+                })
+
+                setLoading(false)
+                return true
+            }
+
+            if (approveIqa === 'No') {
+                await iqaRef.doc(iqaId).update({
+                    iqaStatus: 'ไม่อนุมัติ',
+                    approve: upApproveIqa
+                })
+
+                setLoading(false)
+                return true
+            }
+
+        } catch (err) {
+            const { message } = err as { message: string }
+
+            setError(message)
+            setLoading(false)
+
+            return false
+        }
+    }
+
+    const updateIqaStatus = async (iqaId: string, newStatus: StatusNc) => {
+        try {
+            setLoading(true)
+            
+            await iqaRef.doc(iqaId).update({
+                iqaStatus: newStatus,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+
+            setLoading(false)
+            return true
+        } catch (err) {
+            setError('Sorry, something went wrong')
+            setLoading(false)
+
+            return false
+        }
+    }
+
     return {
-        uploadImageToStorage,
+        uploadFileToStorage,
         addNewIqa,
+        updateIqaFollow,
+        updateIqaApprove,
+        updateIqaStatus,
         setUploadProgression,
         uploadProgression,
         addIqaFinished,

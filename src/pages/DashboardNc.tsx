@@ -6,10 +6,10 @@ import Title from '../components/Title'
 
 interface Props { }
 
-const NcReport: React.FC<Props> = () => {
+const DashboardNc: React.FC<Props> = () => {
     return (
         <MainLayout>
-            <Title title={'Report Nc'} span={'Report Nc'} />
+            <Title title={'Dashboard Nc'} span={'Dashboard Nc'} />
             <InnerLayout>
 
                 <NcChart />
@@ -19,4 +19,4 @@ const NcReport: React.FC<Props> = () => {
     )
 }
 
-export default NcReport
+export default DashboardNc

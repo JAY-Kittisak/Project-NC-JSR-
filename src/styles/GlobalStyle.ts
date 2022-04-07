@@ -182,6 +182,12 @@ const GlobalStyled = createGlobalStyle`
         align-items: center;
         justify-content: start;
     }
+    
+    .truncated {
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 `
 

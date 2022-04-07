@@ -6,6 +6,7 @@ import {
     UserInfo,
     NcAnswer,
     IqaType,
+    IqaAnswer
 } from '../types'
 import { db, firebase, storageRef } from './config'
 
@@ -25,11 +26,20 @@ export const ncNotifyFileFolder = 'nc-notify'
 export const ncAnswerFileFolder = 'nc-answer'
 
 export const iqaRef = db.collection('iqa')
+export const iqaAnswerRef = db.collection('iqa-answer')
 export const iqaCountsCodeRef = db.collection('iqa-code-counts')
 export const iqaCountsCodeCdcRef = db.collection('iqa-code-counts-cdc')
 export const iqaFileFolder = 'iqa'
+export const iqaAnswerFileFolder = 'iqa-answer'
 
-export const snapshotToDoc = <T extends| UserInfo| NcrNotify| Department| NcAnswer | IqaType>(
+export const snapshotToDoc = <T extends
+    | UserInfo
+    | NcrNotify
+    | Department
+    | NcAnswer 
+    | IqaType 
+    | IqaAnswer
+>(
     doc: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
 ) => {
     const docData = doc.data() as T
@@ -57,4 +67,10 @@ export const createFileIqaRef = (fileName: string) => {
     const uuid = uuidV4()
 
     return storageRef.child(`${iqaFileFolder}/${fileName}-${uuid}`)
+}
+
+export const createFileIqaAnswerRef = (fileName: string) => {
+    const uuid = uuidV4()
+
+    return storageRef.child(`${iqaAnswerFileFolder}/${fileName}-${uuid}`)
 }
