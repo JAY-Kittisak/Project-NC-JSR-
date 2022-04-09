@@ -5,10 +5,10 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 
 import Button from '../Button'
-import { CheckboxStyled } from '../../styles/LayoutStyle';
+// import { CheckboxStyled } from '../../styles/LayoutStyle';
 import { storageRef } from '../../firebase/config'
 import { AddAnswerIqaData, StatusNc, IqaAnswer, AlertNt, AlertType } from '../../types';
-import { fileType, formatDate } from '../../helpers';
+import { fileType, formatDate, selectEditedDoc, selectRootDoc } from '../../helpers';
 import { useManageAnswerIqa } from '../../hooks/useManageAnswerIqa'
 import { useAuthContext } from '../../state/auth-context';
 
@@ -37,7 +37,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
 
     const { authState: { userInfo } } = useAuthContext()
 
-    const { 
+    const {
         uploadFileToStorage,
         addNewAnswerIqa,
         editAnswerIqa,
@@ -46,10 +46,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
         addAnswerIqaFinished,
         editAnswerIqaFinished,
         loading,
-        error 
+        error
     } = useManageAnswerIqa()
-
-    console.log('iqaAnswer',iqaAnswer)
 
     const handleOpenUploadBox = () => {
         if (inputRef?.current) inputRef.current.click()
@@ -71,6 +69,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
     }
 
     const handleAddAnswerIqa = handleSubmit(async (data) => {
+        console.table(data)
         return uploadFileToStorage(
             selectedFile,
             addNewAnswerIqa(
@@ -87,7 +86,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
             containmentAction,
             containmentDueDate,
             containmentName,
-            editedRootDoc,
             rootCause,
             correctiveAction,
             correctiveDueDate,
@@ -103,7 +101,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
             containmentAction === data.containmentAction &&
             containmentDueDate === data.containmentDueDate &&
             containmentName === data.containmentName &&
-            editedRootDoc === data.editedRootDoc &&
             rootCause === data.rootCause &&
             correctiveAction === data.correctiveAction &&
             correctiveDueDate === data.correctiveDueDate &&
@@ -112,12 +109,12 @@ const ManageIqaAnswer: React.FC<Props> = ({
             editedDoc === data.editedDoc &&
             docDetail === data.docDetail
 
-            // 1. Nothing Changed
-            if (isNotEdited) return
+        // 1. Nothing Changed
+        if (isNotEdited) return
 
-            // 2. fileAnswerNcName is not undefined
-            if (fileAnswerIqaUrl && fileAnswerIqaName && fileAnswerIqaRef) {
-                // 3. Something changed
+        // 2. fileAnswerNcName is not undefined
+        if (fileAnswerIqaUrl && fileAnswerIqaName && fileAnswerIqaRef) {
+            // 3. Something changed
             if (fileAnswerIqaName !== data.fileAnswerIqaName) {
                 // 3.1 If the file changed
                 if (!selectedFile) return
@@ -145,19 +142,19 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 )(fileAnswerIqaUrl, fileAnswerIqaRef)
             }
 
-            } else {
-                return uploadFileToStorage(
-                    selectedFile,
-                    editAnswerIqa(
-                        iqaAnswer.id,
-                        data,
-                        iqaAnswer.iqaId,
-                        iqaStatus
-                    )
+        } else {
+            return uploadFileToStorage(
+                selectedFile,
+                editAnswerIqa(
+                    iqaAnswer.id,
+                    data,
+                    iqaAnswer.iqaId,
+                    iqaStatus
                 )
-            }
+            )
+        }
     })
-    
+
     const editBoolean = (userInfo?.dept === iqaToDept) && ((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ'))
 
     useEffect(() => {
@@ -269,101 +266,24 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 )}
 
                 {/* สาเหตุของปัญหา */}
-                {/* <p className='title-select-doc'>สาเหตุของปัญหา</p>
-                <div className='flex-root'>
-                    <div className="select-doc-root">
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc1'
-                                    value='ด้านเอกสาร'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('ด้านเอกสาร')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc1'>ด้านเอกสาร</label>
-                            </div>
-                        </CheckboxStyled>
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc2'
-                                    value='การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc2' className='truncated' >การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด</label>
-                            </div>
-                        </CheckboxStyled>
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc3'
-                                    value='การประสานงาน/สื่อสาร'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('การประสานงาน/สื่อสาร')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc3'>การประสานงาน/สื่อสาร</label>
-                            </div>
-                        </CheckboxStyled>
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc4'
-                                    value='อุปกรณ์/เครื่องมือ'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('อุปกรณ์/เครื่องมือ')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc4'>อุปกรณ์/เครื่องมือ</label>
-                            </div>
-                        </CheckboxStyled>
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc5'
-                                    value='ความบกพร่องจากมาตรฐาน'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('ความบกพร่องจากมาตรฐาน')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc5'>ความบกพร่องจากมาตรฐาน</label>
-                            </div>
-                        </CheckboxStyled>
-                        <CheckboxStyled>
-                            <div className="group" style={{ paddingRight: '0px', margin: '0px' }}>
-                                <input
-                                    disabled={!editBoolean}
-                                    type="checkbox"
-                                    name="editedRootDoc"
-                                    id='editedRootDoc6'
-                                    value='อื่นๆ...'
-                                    defaultChecked={iqaAnswer?.editedRootDoc.includes('อื่นๆ...')}
-                                    ref={register}
-                                />
-                                <label htmlFor='editedRootDoc6'>อื่นๆ...</label>
-                            </div>
-                        </CheckboxStyled>
+                
+                <div className='form-field'>
+                        <label htmlFor='editedRootDoc'>สาเหตุ</label>
+                        <select name='editedRootDoc' ref={register({ required: 'โปรดเลือกสาเหตุ' })}>
+                            <option style={{ display: 'none' }}></option>
+                            {selectRootDoc.map((item, i) => (
+                                <option key={i} value={item}>{item}</option>
+                            ))}
+                        </select>
                     </div>
-                </div> */}
+
+
                 <div className="form-field">
                     <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
-                        rows={10}
+                        rows={5}
                         name="rootCause"
                         id="rootCause"
                         defaultValue={iqaAnswer ? iqaAnswer.rootCause : ''}
@@ -422,8 +342,75 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.correctiveName?.message}</p>
                 )}
+                
+                    <div className='form-field'>
+                        <label htmlFor='editedDoc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</label>
+                        <select name='editedDoc' ref={register({ required: 'โปรดเลือกเอกสารที่ต้องปรับปรุงแก้ไข' })}>
+                            <option style={{ display: 'none' }}></option>
+                            {selectEditedDoc.map((item, i) => (
+                                <option key={i} value={item}>{item}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</p>
+                    {/* {selectEditedDoc.map((item, i) => (
+                        <CheckboxStyled key={i}>
+                            <div className="group">
+                                <input
+                                    disabled={!editBoolean}
+                                    type="checkbox"
+                                    name="editedDoc"
+                                    id={item}
+                                    value={item}
+                                    defaultChecked={iqaAnswer?.editedDoc?.includes(item)}
+                                    ref={register}
+                                />
+                                <label htmlFor={item}>{item}</label>
+                            </div>
+                        </CheckboxStyled>
+                    ))} */}
+
+                    {/* {iqaAnswer ? (
+                        selectEditedDoc.map((item, i) => {
+                            return (
+                                <CheckboxStyled key={i}>
+                                    <div className="group">
+                                        <input
+                                            disabled={!editBoolean}
+                                            type="checkbox"
+                                            name="editedDoc"
+                                            id={item}
+                                            value={item}
+                                            defaultChecked={iqaAnswer.editedDoc.includes(item)}
+                                            ref={register}
+                                        />
+                                        <label htmlFor={item}>{item}</label>
+                                    </div>
+                                </CheckboxStyled>
+                            )
+                        })
+                    ) : (
+                        selectEditedDoc.map((item, i) => {
+                            return (
+                                <CheckboxStyled key={i}>
+                                    <div className="group">
+                                        <input
+                                            disabled={!editBoolean}
+                                            type="checkbox"
+                                            name="editedDoc"
+                                            id={item}
+                                            value={item}
+                                            ref={register}
+                                        />
+                                        <label htmlFor={item}>{item}</label>
+                                    </div>
+                                </CheckboxStyled>
+                            )
+                        })
+                    )} 
+                    */}
+
+                {/* <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</p>
                 <div className="select-doc">
                     <CheckboxStyled>
                         <div className="group">
@@ -537,7 +524,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                             <label htmlFor='อื่น'>อื่นๆ...</label>
                         </div>
                     </CheckboxStyled>
-                </div>
+                </div> */}
 
                 <div className="form-field mb-one">
                     <label htmlFor="docDetail">เลขที่เอกสาร/เอกสารอื่นๆ(หากมี)</label>
@@ -550,7 +537,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                         defaultValue={iqaAnswer ? iqaAnswer.docDetail : ''}
                         ref={register}
                     />
-                </div>
+                </div> 
 
                 {/* URL */}
                 {!((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ')) ?
@@ -659,13 +646,6 @@ const IqaAnswerStyled = styled.div`
         border: 1px solid var(--border-color);
         display: grid;
         grid-template-columns: repeat(4,1fr);
-    }
-
-    .select-doc-root {
-        margin: 2rem 1rem .4rem 0rem;
-        padding: .5rem;
-        border: 1px solid var(--border-color);
-        width: 97%;
     }
 
     .flex-root {

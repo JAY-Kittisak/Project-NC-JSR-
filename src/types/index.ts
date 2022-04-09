@@ -297,15 +297,13 @@ export type UploadIqa = Omit<IqaType, 'id' | 'createdAt' | 'updatedAt'> & {
 
 export type IqaTabAll = { [key in NcrTab]: IqaType[] }
 
-
-export type EditedRootDoc =
-    | 'ด้านเอกสาร'
-    | 'การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด'
-    | 'การประสานงาน/สื่อสาร'
-    | 'อุปกรณ์/เครื่องมือ'
-    | 'ความบกพร่องจากมาตรฐาน'
-    | 'อื่นๆ...'
-
+export type EditedRootDoc = 
+    |"ด้านเอกสาร" 
+    | "การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด" 
+    | "การประสานงาน/สื่อสาร"
+    | "อุปกรณ์/เครื่องมือ"
+    | "ความบกพร่องจากมาตรฐาน"
+    | "อื่นๆ..."
 export type IqaAnswer = {
     id: string
     iqaId: string
@@ -314,14 +312,14 @@ export type IqaAnswer = {
     containmentDueDate: string
     containmentName: string
 
-    editedRootDoc: EditedRootDoc[]
+    editedRootDoc: EditedRootDoc
     rootCause: string
 
     correctiveAction: string
     correctiveDueDate: string
     correctiveName: string
 
-    editedDoc: EditedDoc[]
+    editedDoc: EditedDoc
     docDetail?: string
 
     fileAnswerIqaUrl?: string
@@ -359,3 +357,14 @@ export type AddApproveIqaData = Pick<
 >
 export type UploadFollowIqa = Omit<FollowIqa, 'followedAt'> & { followedAt: firebase.firestore.FieldValue }
 export type UploadApproveIqa = Omit<ApproveIqa, 'approvedAt'> & { approvedAt: firebase.firestore.FieldValue }
+
+export type SidebarType = {
+    title: string;
+    path: string;
+    iconClosed: JSX.Element;
+    iconOpened: JSX.Element;
+    subNav: {
+        title: string;
+        path: string;
+    }[];
+}

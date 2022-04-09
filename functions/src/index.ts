@@ -267,7 +267,7 @@ export const onNcCreated = functions.firestore
           const message = "message= เลขที่ " + nc.code + "\nจาก: " +
           nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " +
           nc.dept + "\nประเด็น: " + nc.topic +
-        "\nสถานะ: " + nc.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
+        "\nสถานะ: " + nc.ncStatus + "\nดูรายละเอียดที่: https://jsr-nc.web.app";
 
           let counts: Counts;
           let countsCode: CountsCode;
@@ -457,7 +457,7 @@ export const onNcUpdated = functions.firestore
       const message = "message= เลขที่ " + afterProd.code + "\nจาก: " +
     afterProd.creatorName + " แผนก " + afterProd.creator.dept + "\nถึงแผนก: " +
     afterProd.dept + "\nประเด็น: " + afterProd.topic + "\nสถานะ: " +
-      afterProd.ncStatus + "\nตอบ NC คลิก: jsr-nc.web.app";
+      afterProd.ncStatus + "\nดูรายละเอียดที่: https://jsr-nc.web.app";
 
       // Check if the status has been changed
       if (beforeProd.ncStatus !== afterProd.ncStatus) {

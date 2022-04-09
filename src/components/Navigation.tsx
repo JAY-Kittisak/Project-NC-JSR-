@@ -1,18 +1,59 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { NavLink,useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowDropUp";
+
 
 import avatar from '../assets/image/demo-user.png'
 import avatarJsr from '../assets/image/JSR-Logo-new-PNG.png'
-import {openUserDropdown, useAuthContext} from '../state/auth-context'
+import { openUserDropdown, useAuthContext } from '../state/auth-context'
 import { isAdmin, isClient } from '../helpers'
 import AccountDropdown from './AccountDropdown'
+import SubMenu from './SubMenu';
+
+const sidebarClient = [
+    {
+        title: "ncr",
+        path: "/nc/notify",
+        iconClosed: <ArrowUpwardIcon />,
+        iconOpened: <ArrowDropDownIcon />,
+
+        subNav: [
+            {
+                title: "ตอบ ncr",
+                path: "/nc/answer"
+            },
+            {
+                title: "แดชบอร์ด ncr",
+                path: "/nc/dashboard"
+            }
+        ]
+    },
+    {
+        title: "iqa",
+        path: "/iqa/notify",
+        iconClosed: <ArrowUpwardIcon />,
+        iconOpened: <ArrowDropDownIcon />,
+
+        subNav: [
+            {
+                title: "ตอบ iqa",
+                path: "/iqa/answer"
+            },
+            {
+                title: "แดชบอร์ด iqa",
+                path: "/iqa/dashboard"
+            }
+        ]
+    }
+];
 
 interface Props { }
 
 const Navigation: React.FC<Props> = () => {
     const {
-        authState: { authUser,isUserDropdownOpen, userInfo }, 
+        authState: { authUser, isUserDropdownOpen, userInfo },
         authDispatch
     } = useAuthContext()
 
@@ -28,14 +69,14 @@ const Navigation: React.FC<Props> = () => {
             {authUser ? (
                 <div className='avatar'>
                     <img src={avatar} alt="" onMouseOver={() => authDispatch(openUserDropdown(true))} />
-                        <AccountDropdown
-                            name={authUser.displayName}
-                            email={authUser.email}
-                        />
+                    <AccountDropdown
+                        name={authUser.displayName}
+                        email={authUser.email}
+                    />
                 </div>
-            ): (
+            ) : (
                 <div className='avatar'>
-                    <img src={avatarJsr} alt=""/>
+                    <img src={avatarJsr} alt="" />
                 </div>
             )}
             <ul className="nav-items">
@@ -47,29 +88,11 @@ const Navigation: React.FC<Props> = () => {
                 {userInfo?.role && (
                     <>
                         {(isClient(userInfo.role) || isAdmin(userInfo.role)) && (
-                            <>
-                                <li className="nav-item">
-                                    <NavLink to="/nc/notify" className={(isActive) => isActive ? "active-class" : ""}>
-                                        ออก ncr
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/nc/answer" className={(isActive) => isActive ? "active-class" : ""}>
-                                        ตอบ ncr
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/nc/dashboard" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        แดชบอร์ด ncr
-                                    </NavLink>
-                                </li>
-                                <hr />
-                                <li className="nav-item ">
-                                    <NavLink to="/iqa/internal-quality" className={(isActive) => isActive ? "active-class" : ""}>
-                                        ออก iqa
-                                    </NavLink>
-                                </li>
-                            </>
+                            <li className="nav-item">
+                                {sidebarClient.map((item, i) => (
+                                    <SubMenu item={item} key={i} />
+                                ))}
+                            </li>
                         )}
                         {isAdmin(userInfo.role) && (
                             <>

@@ -1,4 +1,14 @@
-import { NcrTab, Role, CatNc, Branch, SelectMonth, StatusNc, Requirements } from "../types";
+import {
+    NcrTab, 
+    Role, 
+    CatNc, 
+    Branch, 
+    SelectMonth, 
+    StatusNc, 
+    Requirements, 
+    EditedDoc, 
+    EditedRootDoc
+} from "../types";
 import { firebase } from '../firebase/config'
 
 export const isAdmin = (role: Role | null) => role === 'ADMIN' || role === 'SUPER_ADMIN'
@@ -71,6 +81,24 @@ export const orderTabs: NcrTab[] = [
 
 export const categories: CatNc[] = ['NCR', 'CCR', 'SCR']
 export const selectStatusNC: StatusNc[] = ['รอตอบ', 'ตอบแล้ว', 'รอปิด', 'ไม่อนุมัติ', 'ปิดแล้ว', 'ยกเลิก']
+export const selectEditedDoc: EditedDoc[] = [
+    'QP',
+    'SD',
+    'WI',
+    'KM',
+    'OPL',
+    'Risk',
+    'Kaizen',
+    'อื่นๆ...',
+]
+export const selectRootDoc: EditedRootDoc[] = [
+    'ด้านเอกสาร',
+    'การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด',
+    'การประสานงาน/สื่อสาร',
+    'อุปกรณ์/เครื่องมือ',
+    'ความบกพร่องจากมาตรฐาน',
+    'อื่นๆ...',
+]
 
 export type AlertNotify = "show" | "hide"
 
@@ -87,7 +115,6 @@ export const requirements: Requirements[] = [
     '8.7.2','9.1.1','9.1.2','9.1.3','9.2.1','9.2.2','9.3.1','9.3.2','9.3.3',
     '10.1','10.2.1','10.2.2','10.3',
 ]
-
 
 export function getStatusColor(value: StatusNc) {
     if (value === 'ตอบแล้ว') {

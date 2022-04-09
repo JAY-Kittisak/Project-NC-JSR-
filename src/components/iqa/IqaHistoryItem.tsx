@@ -10,7 +10,7 @@ interface Props {
 
 const IqaHistoryItem: React.FC<Props> = ({ item }) => {
     return (
-        <Link to={`/iqa/internal-quality/${item.id}`}>
+        <Link to={`/iqa/notify/${item.id}`}>
             <NotifyItem>
                 <div className="nc-column">
                     <p className='font-small'>{item.code}</p>

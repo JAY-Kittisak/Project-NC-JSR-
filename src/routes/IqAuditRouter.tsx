@@ -16,10 +16,10 @@ const IqAuditRouter: React.FC<Props> = () => {
             <DeptCdcContextProvider>
                 <IqaContextProvider>
                     <Switch>
-                        <Route path="/iqa/internal-quality/:id">
+                        <Route path="/iqa/notify/:id">
                             <IqAuditDetail />
                         </Route>
-                        <Route path="/iqa/internal-quality">
+                        <Route path="/iqa/notify">
                             <IqAudit />
                         </Route>
                         <Route path='*'>

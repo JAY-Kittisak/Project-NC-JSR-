@@ -202,6 +202,16 @@ const IqaDetailStyled = styled.div`
             color: inherit;
             box-shadow: none;
         }
+        select{
+            border: 1px solid var(--border-color);
+            outline: none;
+            height: 40px;
+            padding: 0 15px 0px 15px;
+            width: 100%;
+            color: inherit;
+            box-shadow: none;
+            background-color: var(--background-dark-color);
+        }
         textarea{
             background-color: transparent;
             border: 1px solid var(--border-color);
