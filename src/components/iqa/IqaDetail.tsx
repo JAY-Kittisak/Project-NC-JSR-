@@ -5,13 +5,14 @@ import PrintRoundedIcon from "@material-ui/icons/PrintRounded";
 
 import Button from '../Button'
 import { formatDate, isAdmin, diffDay, getStatusColor } from '../../helpers'
-import { IqaType, UserInfo, IqaAnswer, AlertNt, AlertType, StatusNc } from '../../types'
+import { IqaType, UserInfo, AlertNt, AlertType, StatusNc } from '../../types'
+import { firebase } from '../../firebase/config'
 import UpdateIqaStatus from './UpdateIqaStatus';
 
 interface Props {
     iqa: IqaType
     userInfo: UserInfo
-    iqaAnswer: IqaAnswer | null
+    answerDateAt: firebase.firestore.Timestamp | undefined
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
     setOpenNcForm: React.Dispatch<React.SetStateAction<boolean>>
@@ -21,7 +22,7 @@ interface Props {
 const IqaDetail: React.FC<Props> = ({ 
     iqa, 
     userInfo, 
-    iqaAnswer, 
+    answerDateAt, 
     setAlertWarning,
     setAlertState, 
     setOpenNcForm,
@@ -90,11 +91,11 @@ const IqaDetail: React.FC<Props> = ({
             </div>
             <div className='flex-iqa'>
                             <div>
-                                {iqaAnswer && (
+                                {answerDateAt && (
                                     <>
                                         <p><span>ระยะเวลาในการตอบ : </span></p>
-                                        <p style={{ color: diffDay(createdAt, iqaAnswer.createdAt) > 7 ? 'red' : undefined }}>
-                                            {diffDay(createdAt, iqaAnswer.createdAt)} วัน
+                                        <p style={{ color: diffDay(createdAt, answerDateAt) > 7 ? 'red' : undefined }}>
+                                            {diffDay(createdAt, answerDateAt)} วัน
                                         </p>
                                     </>
                                 )}
@@ -185,7 +186,7 @@ const IqaDetail: React.FC<Props> = ({
                                     <span><EditIcon /> แก้ไข NC</span>
                                 </Button>
                             ) : (
-                                (creator.id === userInfo.id) && (!iqaAnswer) && (
+                                (creator.id === userInfo.id) && (!answerDateAt) && (
                                     <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
                                         <span><EditIcon /> แก้ไข NC</span>
                                     </Button>

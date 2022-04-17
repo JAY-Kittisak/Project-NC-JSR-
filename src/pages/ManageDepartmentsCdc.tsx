@@ -122,7 +122,7 @@ const ManageDeptStyled = styled.div`
             margin-top: 1rem;
         }
 
-        div(:first-child) {
+        div:first-child {
             margin-left: 1rem;
             margin-right: 1rem;
         }

@@ -108,10 +108,6 @@ const GlobalStyled = createGlobalStyle`
             font-size: 2rem;
         }
     }
-
-    .span-primary {
-        color: var(--primary-color);
-    }
     
     h6{
         color: var(--white-color);

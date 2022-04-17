@@ -299,7 +299,7 @@ export type IqaTabAll = { [key in NcrTab]: IqaType[] }
 
 export type EditedRootDoc = 
     |"ด้านเอกสาร" 
-    | "การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด" 
+    | "การไม่ปฏิบัติตามแผนงาน" 
     | "การประสานงาน/สื่อสาร"
     | "อุปกรณ์/เครื่องมือ"
     | "ความบกพร่องจากมาตรฐาน"
@@ -312,14 +312,14 @@ export type IqaAnswer = {
     containmentDueDate: string
     containmentName: string
 
-    editedRootDoc: EditedRootDoc
+    editedRootDoc: EditedRootDoc[]
     rootCause: string
 
     correctiveAction: string
     correctiveDueDate: string
     correctiveName: string
 
-    editedDoc: EditedDoc
+    editedDoc: EditedDoc[]
     docDetail?: string
 
     fileAnswerIqaUrl?: string
@@ -368,3 +368,6 @@ export type SidebarType = {
         path: string;
     }[];
 }
+
+export type ChartColor = '#007bff' | '#0bce46'
+export type ChartColorType = '#78b8fd' | '#6fcc8b'

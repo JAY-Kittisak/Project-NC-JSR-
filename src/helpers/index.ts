@@ -93,7 +93,7 @@ export const selectEditedDoc: EditedDoc[] = [
 ]
 export const selectRootDoc: EditedRootDoc[] = [
     'ด้านเอกสาร',
-    'การไม่ปฏิบัติตามแผนงาน/ข้อกำหนด',
+    'การไม่ปฏิบัติตามแผนงาน',
     'การประสานงาน/สื่อสาร',
     'อุปกรณ์/เครื่องมือ',
     'ความบกพร่องจากมาตรฐาน',
@@ -114,6 +114,10 @@ export const requirements: Requirements[] = [
     '8.4.3','8.5.1','8.5.2','8.5.3','8.5.4','8.5.5','8.5.6','8.6','8.7.1',
     '8.7.2','9.1.1','9.1.2','9.1.3','9.2.1','9.2.2','9.3.1','9.3.2','9.3.3',
     '10.1','10.2.1','10.2.2','10.3',
+]
+
+export const selectTeams = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'
 ]
 
 export function getStatusColor(value: StatusNc) {

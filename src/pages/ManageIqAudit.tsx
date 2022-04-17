@@ -1,24 +1,24 @@
 import React from 'react'
-import styled from 'styled-components'
+
 import { MainLayout,InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
+import IqaAdminView from '../components/iqa/IqaAdminView'
+
+export const prodTabType = 'ncStatus'
+export const ncPerPage = 10
 
 interface Props { }
 
 const ManageIqAudit: React.FC<Props> = () => {
-
     return (
         <MainLayout>
             <Title title={'Manage IQA'} span={'Manage IQA'} />
-            <ManageIqAStyled>
+            <div>
                 <InnerLayout className='manage-iqa'>
+                    <IqaAdminView />
                 </InnerLayout>
-            </ManageIqAStyled>
+            </div>
         </MainLayout>
     )
 }
-
-const ManageIqAStyled = styled.div`
-    
-`
 export default ManageIqAudit

@@ -2,8 +2,8 @@ import React from 'react'
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import NcAdminProvider from '../state/nc-admin-context'
+import IqaAdminProvider from '../state/iqa-admin-context'
 import ManageIqAudit from "../pages/ManageIqAudit";
-import ManageIqAuditDetail from "../pages/ManageIqAuditDetail";
 import ManageNc from "../pages/ManageNc";
 import ManageDepartments from "../pages/ManageDepartments";
 import ManageDepartmentsCdc from "../pages/ManageDepartmentsCdc";
@@ -24,11 +24,10 @@ const AdminRoutes: React.FC<Props> = (props) => {
 
     return (
         <Switch>
-            <Route path="/admin/manage-iqa/:id">
-                <ManageIqAuditDetail />
-            </Route>
             <Route path="/admin/manage-iqa">
-                <ManageIqAudit />
+                <IqaAdminProvider>
+                    <ManageIqAudit />
+                </IqaAdminProvider>
             </Route>
             <Route path="/admin/manage-nc">
                 <NcAdminProvider>

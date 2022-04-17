@@ -57,13 +57,13 @@ const IqAuditDetail: React.FC<Props> = () => {
                 alert={alertState}
             />
             <Title title={'IQA Detail'} span={'IQA Detail'} />
-            <IqaDetailStyled>
+            <IqAuditDetailStyled>
                 <InnerLayout className='iqa-detail-section'>
 
                     <IqaDetail
                         iqa={iqa}
                         userInfo={userInfo}
-                        iqaAnswer={iqaAnswer}
+                        answerDateAt={undefined}
                         setAlertWarning={setAlertWarning}
                         setAlertState={setAlertState}
                         setOpenNcForm={setOpenNcForm}
@@ -100,7 +100,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                     />
 
                 </InnerLayout>
-            </IqaDetailStyled>
+            </IqAuditDetailStyled>
 
             {(iqaAnswer && iqa.iqaStatus === 'ปิดแล้ว') && (
                 <PrintStyled>
@@ -121,7 +121,7 @@ const PrintStyled = styled.div`
     display: none;
 `
 
-const IqaDetailStyled = styled.div`
+const IqAuditDetailStyled = styled.div`
     .iqa-detail-section {
         display: grid;
         grid-template-columns: 1fr 1fr;

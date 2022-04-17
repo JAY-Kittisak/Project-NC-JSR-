@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
+
+import React, { useState, useRef, useEffect, ChangeEvent} from 'react'
 import styled from 'styled-components'
 import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
-
-import Button from '../Button'
-// import { CheckboxStyled } from '../../styles/LayoutStyle';
-import { storageRef } from '../../firebase/config'
-import { AddAnswerIqaData, StatusNc, IqaAnswer, AlertNt, AlertType } from '../../types';
-import { fileType, formatDate, selectEditedDoc, selectRootDoc } from '../../helpers';
+import { CheckboxStyled } from '../../styles/LayoutStyle';
+import { IqaAnswer, AddAnswerIqaData, StatusNc, AlertNt, AlertType } from '../../types';
+import Button from '../Button';
 import { useManageAnswerIqa } from '../../hooks/useManageAnswerIqa'
+import { selectEditedDoc, selectRootDoc, fileType, formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
+import { storageRef } from '../../firebase/config'
 
 interface Props {
     iqaId: string
@@ -21,14 +21,15 @@ interface Props {
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const ManageIqaAnswer: React.FC<Props> = ({
-    iqaId,
-    iqaAnswer,
-    iqaStatus,
+const ManageIqaAnswer: React.FC<Props> = ({ 
+    iqaId, 
+    iqaAnswer, 
+    iqaStatus, 
     iqaToDept,
     setAlertWarning,
-    setAlertState,
-}) => {
+    setAlertState
+ }) => {
+    
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const { register, handleSubmit, errors } = useForm<AddAnswerIqaData>()
@@ -69,7 +70,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
     }
 
     const handleAddAnswerIqa = handleSubmit(async (data) => {
-        console.table(data)
         return uploadFileToStorage(
             selectedFile,
             addNewAnswerIqa(
@@ -93,7 +93,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
             fileAnswerIqaUrl,
             fileAnswerIqaName,
             fileAnswerIqaRef,
-            editedDoc,
             docDetail,
         } = iqaAnswer
 
@@ -106,7 +105,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
             correctiveDueDate === data.correctiveDueDate &&
             correctiveName === data.correctiveName &&
             fileAnswerIqaName === data.fileAnswerIqaName &&
-            editedDoc === data.editedDoc &&
             docDetail === data.docDetail
 
         // 1. Nothing Changed
@@ -179,8 +177,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
         <IqaAnswerStyled className='box-shadows'>
             <h4>ผู้รับผิดชอบการแก้ไข/ป้องกัน</h4>
             <form className="form" onSubmit={iqaAnswer ? handleEditAnswerIqa : handleAddAnswerIqa}>
-                {iqaAnswer && (
-                    <div className='flex-iqa'>
+            {iqaAnswer?.createdAt && (
+                    <FlexStyled>
                         <div>
                             <p><span>วันที่ตอบ :</span></p>
                             <p>{formatDate(iqaAnswer.createdAt)}</p>
@@ -199,10 +197,10 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                 <p>ไม่มีเอกสาร</p>
                             )}
                         </div>
-                    </div>
+                    </FlexStyled>
                 )}
 
-                {/* ชื่อ-นามสกุล ผู้ตอบ */}
+                {/* answerName */}
                 <div className="form-field">
                     <label htmlFor="answerName">ชื่อ-นามสกุล ผู้ตอบ</label>
                     <input
@@ -217,37 +215,39 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <p className='paragraph-error text-center'>{errors.answerName?.message}</p>
                 )}
 
-                {/* การแก้ไขเบื้องต้น */}
+                {/* containmentAction */}
                 <div className="form-field">
                     <label htmlFor="containmentAction">การแก้ไขเบื้องต้น</label>
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
                         rows={3}
-                        name="containmentAction"
+                        name='containmentAction'
                         id="containmentAction"
                         defaultValue={iqaAnswer ? iqaAnswer.containmentAction : ''}
-                        ref={register({ required: 'โปรดใส่การแก้ไขเบื้องต้น' })}
+                        ref={register({ required: 'โปรดใส่ containmentAction' })}
                     />
                 </div>
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.containmentAction?.message}</p>
                 )}
 
-                {/* กำหนดเสร็จ */}
-                <div className="flex-between">
+                {/* containmentDueDate */}
+                <div className='flex-between'>
                     <div className="form-field">
                         <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
                         <input
                             readOnly={!editBoolean}
                             type="date"
+                            min="2022-01-01"
                             name='containmentDueDate'
                             id="containmentDueDate"
-                            min="2022-01-01"
                             defaultValue={iqaAnswer ? iqaAnswer.containmentDueDate : ''}
-                            ref={register({ required: 'โปรดใส่วันที่กำหนดเสร็จ' })}
+                            ref={register({ required: 'โปรดใส่ containmentDueDate' })}
                         />
                     </div>
+
+                    {/* containmentName */}
                     <div className="form-field">
                         <label htmlFor="containmentName">ผู้รับผิดชอบ</label>
                         <input
@@ -255,76 +255,89 @@ const ManageIqaAnswer: React.FC<Props> = ({
                             name='containmentName'
                             id="containmentName"
                             defaultValue={iqaAnswer ? iqaAnswer.containmentName : ''}
-                            ref={register({ required: 'โปรดใส่ชื่อผู้รับผิดชอบ' })}
+                            ref={register({ required: 'โปรดใส่ containmentName' })}
                         />
                     </div>
                 </div>
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.containmentDueDate?.message}</p>
-                )}{errors && (
+                )}
+                {errors && (
                     <p className='paragraph-error text-center'>{errors.containmentName?.message}</p>
                 )}
 
-                {/* สาเหตุของปัญหา */}
-                
-                <div className='form-field'>
-                        <label htmlFor='editedRootDoc'>สาเหตุ</label>
-                        <select name='editedRootDoc' ref={register({ required: 'โปรดเลือกสาเหตุ' })}>
-                            <option style={{ display: 'none' }}></option>
-                            {selectRootDoc.map((item, i) => (
-                                <option key={i} value={item}>{item}</option>
-                            ))}
-                        </select>
+                {/* editedRootDoc */}
+                <div className="flex-root">
+                    <p className='title-select-doc'>สาเหตุ</p>
+                    <div className="select-root">
+                        {selectRootDoc.map((item, i) => (
+                            <CheckboxStyled key={i}>
+                                <div className="group" style={{ padding: '8px 0px 8px 38px' }}>
+                                    <input
+                                        disabled={!editBoolean}
+                                        type="checkbox"
+                                        name="editedRootDoc"
+                                        id={item}
+                                        value={item}
+                                        defaultChecked={iqaAnswer?.editedRootDoc?.includes(item)}
+                                        ref={register}
+                                    />
+                                    <label htmlFor={item}>{item}</label>
+                                </div>
+                            </CheckboxStyled>
+                        ))}
                     </div>
 
-
-                <div className="form-field">
-                    <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
-                    <textarea
-                        readOnly={!editBoolean}
-                        cols={30}
-                        rows={5}
-                        name="rootCause"
-                        id="rootCause"
-                        defaultValue={iqaAnswer ? iqaAnswer.rootCause : ''}
-                        ref={register({ required: 'โปรดใส่สาเหตุของปัญหา' })}
-                    />
+                    {/* rootCause */}
+                    <div className="form-field">
+                        <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
+                        <textarea
+                            readOnly={!editBoolean}
+                            cols={30}
+                            rows={11}
+                            name="rootCause"
+                            id="rootCause"
+                            defaultValue={iqaAnswer ? iqaAnswer.rootCause : ''}
+                            ref={register({ required: 'โปรดใส่ rootCause' })}
+                        />
+                    </div>
                 </div>
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.rootCause?.message}</p>
                 )}
 
-                {/* การแก้ไขปัญหาและการป้องกัน */}
+                {/* correctiveAction */}
                 <div className="form-field">
                     <label htmlFor="correctiveAction">การแก้ไขปัญหาและการป้องกัน</label>
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
                         rows={3}
-                        name="correctiveAction"
+                        name='correctiveAction'
                         id="correctiveAction"
                         defaultValue={iqaAnswer ? iqaAnswer.correctiveAction : ''}
-                        ref={register({ required: 'โปรดใส่การแก้ไขปัญหาและการป้องกัน' })}
+                        ref={register({ required: 'โปรดใส่ correctiveAction' })}
                     />
                 </div>
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.correctiveAction?.message}</p>
                 )}
 
-                {/* กำหนดเสร็จ */}
-                <div className="flex-between">
+                {/* correctiveDueDate */}
+                <div className='flex-between'>
                     <div className="form-field">
                         <label htmlFor="correctiveDueDate">กำหนดเสร็จ</label>
                         <input
                             readOnly={!editBoolean}
                             type="date"
+                            min="2022-01-01"
                             name='correctiveDueDate'
                             id="correctiveDueDate"
-                            min="2022-01-01"
                             defaultValue={iqaAnswer ? iqaAnswer.correctiveDueDate : ''}
-                            ref={register({ required: 'โปรดใส่วันที่กำหนดเสร็จ' })}
+                            ref={register({ required: 'โปรดใส่ correctiveDueDate' })}
                         />
                     </div>
+                    {/* correctiveName */}
                     <div className="form-field">
                         <label htmlFor="correctiveName">ผู้รับผิดชอบ</label>
                         <input
@@ -332,7 +345,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                             name='correctiveName'
                             id="correctiveName"
                             defaultValue={iqaAnswer ? iqaAnswer.correctiveName : ''}
-                            ref={register({ required: 'โปรดใส่ชื่อผู้รับผิดชอบ' })}
+                            ref={register({ required: 'โปรดใส่ correctiveName' })}
                         />
                     </div>
                 </div>
@@ -342,18 +355,11 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.correctiveName?.message}</p>
                 )}
-                
-                    <div className='form-field'>
-                        <label htmlFor='editedDoc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</label>
-                        <select name='editedDoc' ref={register({ required: 'โปรดเลือกเอกสารที่ต้องปรับปรุงแก้ไข' })}>
-                            <option style={{ display: 'none' }}></option>
-                            {selectEditedDoc.map((item, i) => (
-                                <option key={i} value={item}>{item}</option>
-                            ))}
-                        </select>
-                    </div>
 
-                    {/* {selectEditedDoc.map((item, i) => (
+                {/* editedDoc */}
+                <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</p>
+                <div className="select-doc">
+                    {selectEditedDoc.map((item, i) => (
                         <CheckboxStyled key={i}>
                             <div className="group">
                                 <input
@@ -368,247 +374,97 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                 <label htmlFor={item}>{item}</label>
                             </div>
                         </CheckboxStyled>
-                    ))} */}
+                    ))}
+                </div>
 
-                    {/* {iqaAnswer ? (
-                        selectEditedDoc.map((item, i) => {
-                            return (
-                                <CheckboxStyled key={i}>
-                                    <div className="group">
-                                        <input
-                                            disabled={!editBoolean}
-                                            type="checkbox"
-                                            name="editedDoc"
-                                            id={item}
-                                            value={item}
-                                            defaultChecked={iqaAnswer.editedDoc.includes(item)}
-                                            ref={register}
-                                        />
-                                        <label htmlFor={item}>{item}</label>
-                                    </div>
-                                </CheckboxStyled>
-                            )
-                        })
-                    ) : (
-                        selectEditedDoc.map((item, i) => {
-                            return (
-                                <CheckboxStyled key={i}>
-                                    <div className="group">
-                                        <input
-                                            disabled={!editBoolean}
-                                            type="checkbox"
-                                            name="editedDoc"
-                                            id={item}
-                                            value={item}
-                                            ref={register}
-                                        />
-                                        <label htmlFor={item}>{item}</label>
-                                    </div>
-                                </CheckboxStyled>
-                            )
-                        })
-                    )} 
-                    */}
-
-                {/* <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</p>
-                <div className="select-doc">
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='qp'
-                                value='QP'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('QP')}
-                                ref={register}
-                            />
-                            <label htmlFor='qp'>QP</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='sd'
-                                value='SD'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('SD')}
-                                ref={register}
-                            />
-                            <label htmlFor='sd'>SD</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='wi'
-                                value='WI'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('WI')}
-                                ref={register}
-                            />
-                            <label htmlFor='wi'>WI</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='km'
-                                value='KM'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('KM')}
-                                ref={register}
-                            />
-                            <label htmlFor='km'>KM</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='opl'
-                                value='OPL'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('OPL')}
-                                ref={register}
-                            />
-                            <label htmlFor='opl'>OPL</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='risk'
-                                value='Risk'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('Risk')}
-                                ref={register}
-                            />
-                            <label htmlFor='risk'>Risk</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='kaizen'
-                                value='Kaizen'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('Kaizen')}
-                                ref={register}
-                            />
-                            <label htmlFor='kaizen'>Kaizen</label>
-                        </div>
-                    </CheckboxStyled>
-                    <CheckboxStyled>
-                        <div className="group">
-                            <input
-                                disabled={!editBoolean}
-                                type="checkbox"
-                                name="editedDoc"
-                                id='อื่น'
-                                value='อื่นๆ...'
-                                defaultChecked={iqaAnswer?.editedDoc.includes('อื่นๆ...')}
-                                ref={register}
-                            />
-                            <label htmlFor='อื่น'>อื่นๆ...</label>
-                        </div>
-                    </CheckboxStyled>
-                </div> */}
-
-                <div className="form-field mb-one">
+                {/* docDetail */}
+                <div className="form-field">
                     <label htmlFor="docDetail">เลขที่เอกสาร/เอกสารอื่นๆ(หากมี)</label>
                     <textarea
                         readOnly={!editBoolean}
                         cols={30}
                         rows={3}
-                        name="docDetail"
+                        name='docDetail'
                         id="docDetail"
                         defaultValue={iqaAnswer ? iqaAnswer.docDetail : ''}
                         ref={register}
                     />
-                </div> 
+                </div>
 
-                {/* URL */}
-                {!((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ')) ?
-                    null : (
+                {errors && (
+                    <p className='paragraph-error text-center'>{errors.docDetail?.message}</p>
+                )}
 
-                        <FlexUploadStyled>
-                            <div className='form-field' style={{ width: '70%' }}>
-                                {uploadProgression ? (
-                                    <>
-                                        <input
-                                            readOnly
-                                            type='text'
-                                            className='upload-progression'
-                                            style={{
-                                                width: `${uploadProgression}%`,
-                                                color: 'white',
-                                                textAlign: 'center',
-                                            }}
-                                            // uploadProgression={uploadProgression}
-                                            value={`${uploadProgression}%`}
-                                        />
-                                    </>
-                                ) : (
-                                    <>
-                                        <label>
-                                            ชื่อไฟล์ (หากมี)
-                                        </label>
-                                        <input
-                                            readOnly
-                                            type='text'
-                                            name='fileAnswerIqaName'
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={handleOpenUploadBox}
-                                            value={
-                                                selectedFile
-                                                    ? selectedFile.name
-                                                    : iqaAnswer?.fileAnswerIqaName
-                                                        ? iqaAnswer.fileAnswerIqaName
-                                                        : ''
-                                            }
-                                            ref={register}
-                                        />
-                                    </>
-                                )}
+{
+                    !((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ')) ?
+                        null : (
+                            <FlexUploadStyled>
+                                <div className='form-field' style={{ width: '70%' }}>
+                                    {uploadProgression ? (
+                                        <>
+                                            <input
+                                                readOnly
+                                                type='text'
+                                                className='upload-progression'
+                                                style={{
+                                                    width: `${uploadProgression}%`,
+                                                    color: 'white',
+                                                    textAlign: 'center',
+                                                }}
+                                                // uploadProgression={uploadProgression}
+                                                value={`${uploadProgression}%`}
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <label>
+                                                ชื่อไฟล์ (หากมี)
+                                            </label>
+                                            <input
+                                                readOnly
+                                                type='text'
+                                                name='fileAnswerIqaName'
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={handleOpenUploadBox}
+                                                value={
+                                                    selectedFile
+                                                        ? selectedFile.name
+                                                        : iqaAnswer?.fileAnswerIqaName
+                                                            ? iqaAnswer.fileAnswerIqaName
+                                                            : ''
+                                                }
+                                                ref={register}
+                                            />
+                                        </>
+                                    )}
 
-                            </div>
-                            <ButtonStyled>
-                                <Button
-                                    width='100%'
-                                    type='button'
-                                    onClick={handleOpenUploadBox}
-                                    disabled={loading}
-                                    style={{
-                                        borderRadius: '0',
-                                        border: '1px solid #007bff',
-                                        background: '#007bff'
-                                    }}
-                                >
-                                    <span>แนบไฟล์<AttachFileIcon /></span>
-                                </Button>
-                            </ButtonStyled>
-                            <input
-                                type='file'
-                                disabled={!editBoolean}
-                                ref={inputRef}
-                                style={{ display: 'none' }}
-                                onChange={handleSelectFile}
-                            />
-                        </FlexUploadStyled>
+                                </div>
+                                <ButtonStyled>
+                                    <Button
+                                        width='100%'
+                                        type='button'
+                                        onClick={handleOpenUploadBox}
+                                        disabled={loading}
+                                        style={{
+                                            borderRadius: '0',
+                                            border: '1px solid #007bff',
+                                            background: '#007bff'
+                                        }}
+                                    >
+                                        <span>แนบไฟล์<AttachFileIcon /></span>
+                                    </Button>
+                                </ButtonStyled>
+                                <input
+                                    type='file'
+                                    disabled={!editBoolean}
+                                    ref={inputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleSelectFile}
+                                />
+                            </FlexUploadStyled>
 
-                    )}
+                        )}
+
                 {editBoolean && (
                     <Button
                         type='submit'
@@ -627,7 +483,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
 const IqaAnswerStyled = styled.div`
     background-color: var(--background-dark-color);
     
-        
     .title-select-doc {
         margin-top: 19px; 
         margin-left: 17px; 
@@ -648,6 +503,13 @@ const IqaAnswerStyled = styled.div`
         grid-template-columns: repeat(4,1fr);
     }
 
+    .select-root {
+        margin: 1.9rem 1rem .5rem 0rem;
+        padding: .5rem 0rem 0rem .5rem;
+        border: 1px solid var(--border-color);
+        width: 450px;
+    }
+
     .flex-root {
         display: flex;
         width: 100%;
@@ -662,9 +524,37 @@ const FlexUploadStyled = styled.div`
 const ButtonStyled = styled.section`
     margin-top: 2rem;
     width: 30%;
-                
+
     svg {
         margin-bottom: -5px;
     }
 `
+
+const FlexStyled = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    p span {
+        margin: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    a {
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    a:hover {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    div {
+        margin: 0.5rem 0.5rem 0rem 0.5rem;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+`
+
 export default ManageIqaAnswer

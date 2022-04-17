@@ -66,71 +66,73 @@ const Navigation: React.FC<Props> = () => {
 
     return (
         <NavigationStyled>
-            {authUser ? (
-                <div className='avatar'>
-                    <img src={avatar} alt="" onMouseOver={() => authDispatch(openUserDropdown(true))} />
-                    <AccountDropdown
-                        name={authUser.displayName}
-                        email={authUser.email}
-                    />
-                </div>
-            ) : (
-                <div className='avatar'>
-                    <img src={avatarJsr} alt="" />
-                </div>
-            )}
-            <ul className="nav-items">
-                <li className="nav-item">
-                    <NavLink to="/" exact className={(isActive) => isActive ? "active-class" : ""}>
-                        Home
-                    </NavLink>
-                </li>
-                {userInfo?.role && (
-                    <>
-                        {(isClient(userInfo.role) || isAdmin(userInfo.role)) && (
-                            <li className="nav-item">
-                                {sidebarClient.map((item, i) => (
-                                    <SubMenu item={item} key={i} />
-                                ))}
-                            </li>
-                        )}
-                        {isAdmin(userInfo.role) && (
-                            <>
-                                <hr />
-                                <div className="admin-view">
-                                    Admin View
-                                </div>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/manage-nc" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        manage nc
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/manage-iqa" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        manage iqa
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/manage-dept" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        manage dept
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/manage-dept-cdc" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        manage dept Cdc
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/admin/manage-users" exact className={(isActive) => isActive ? "active-class" : ""}>
-                                        manage users
-                                    </NavLink>
-                                </li>
-                                <hr />
-                            </>
-                        )}
-                    </>
+            <div>
+                {authUser ? (
+                    <div className='avatar'>
+                        <img src={avatar} alt="" onMouseOver={() => authDispatch(openUserDropdown(true))} />
+                        <AccountDropdown
+                            name={authUser.displayName}
+                            email={authUser.email}
+                        />
+                    </div>
+                ) : (
+                    <div className='avatar'>
+                        <img src={avatarJsr} alt="" />
+                    </div>
                 )}
-            </ul>
+                <ul className="nav-items">
+                    <li className="nav-item">
+                        <NavLink to="/" exact className={(isActive) => isActive ? "active-class" : ""}>
+                            Home
+                        </NavLink>
+                    </li>
+                    {userInfo?.role && (
+                        <>
+                            {(isClient(userInfo.role) || isAdmin(userInfo.role)) && (
+                                <li className="nav-item">
+                                    {sidebarClient.map((item, i) => (
+                                        <SubMenu item={item} key={i} />
+                                    ))}
+                                </li>
+                            )}
+                            {isAdmin(userInfo.role) && (
+                                <>
+                                    <hr />
+                                    <div className="admin-view">
+                                        Admin View
+                                    </div>
+                                    <li className="nav-item">
+                                        <NavLink to="/admin/manage-nc" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                            manage nc
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/admin/manage-iqa" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                            manage iqa
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/admin/manage-dept" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                            manage dept
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/admin/manage-dept-cdc" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                            manage dept Cdc
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/admin/manage-users" exact className={(isActive) => isActive ? "active-class" : ""}>
+                                            manage users
+                                        </NavLink>
+                                    </li>
+                                    <hr />
+                                </>
+                            )}
+                        </>
+                    )}
+                </ul>
+            </div>
             <footer className='footer'>
                 <p>@JSR NC System V0.2.1</p>
             </footer>
@@ -167,8 +169,34 @@ const NavigationStyled = styled.nav`
         }
     }
     .nav-items{
+        margin-top: 30px;
         width: 100%;
         text-align: center;
+
+        .sub-menu {
+            border-left: 2px solid var(--primary-color);
+            margin-left: 20px;
+            text-align: start;
+        }
+
+        .left-content {
+            width: 20%;
+            padding-left: 15px;
+
+            &::before{
+                content: "";
+                position: absolute;
+                left: -8px;
+                top: 11px;
+                height: 10px;
+                width: 10px;
+                border-radius: 50%;
+                border: 2px solid var(--primary-color);
+                background-color: var(--background-dark-color);
+            }
+
+        }
+
         .active-class{
                 background-color: var(--primary-color-light);
                 color: var(--white-color);

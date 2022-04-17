@@ -34,10 +34,11 @@ const SubMenu: React.FC<Props> = ({ item }) => {
                 item.subNav.map((item, i) => {
                     return (
                         <NavLink
-                            key={i} to={item.path}
-                            className={(isActive) => isActive ? "active-class" : ""}
+                            key={i} 
+                            to={item.path}
+                            className={(isActive) => isActive ? "active-class sub-menu" : "sub-menu"}
                         >
-                            <span>{item.title}</span>
+                            <span className='left-content'>{item.title}</span>
                         </NavLink>
                     );
                 })}

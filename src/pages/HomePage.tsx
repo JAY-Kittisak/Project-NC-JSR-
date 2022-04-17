@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useHistory } from "react-router-dom";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import YouTubeIcon from "@material-ui/icons/YouTube";
@@ -15,7 +15,9 @@ function HomePage() {
     const { setModalType } = useModalContext()
     const { authState: { authUser, signOutRedirect } } = useAuthContext()
 
-    const history = useHistory<{from: string}>()
+    const nameArray = 'NC'.split('')
+
+    const history = useHistory<{ from: string }>()
     const { state } = history.location
 
     useEffect(() => {
@@ -35,7 +37,16 @@ function HomePage() {
             <HomePageStyled>
                 <div className="typography">
                     <h1>
-                        <span className="span-primary">JSR</span> NC System
+                        <span className="span-primary">JSR</span>
+                        &nbsp;
+                        <Wrapper>
+                            {nameArray.map((item, i) => {
+                                return (
+                                    <span key={i}>{item}</span>
+                                )
+                            })}
+                        </Wrapper>
+                        <span> System</span>
                     </h1>
                     {/* <h1>
                         บริษัท <span className="span-primary">จ.ศรีรุ่งเรื่องอิมเป็กซ์</span> จำกัด
@@ -47,7 +58,7 @@ function HomePage() {
                         ตลอดจนการคัดสรรผลิตภัณฑ์ให้มีคุณภาพสูงสุดโดยการพัฒนาศักยภาพยุคลากร และ ระบบงานอย่างต่อเนื่อง
                     </p>
                     <p>
-                    <span className="span-slogan">ดังสโลแกน</span> "ผู้นำด้านเครื่องเมืออุตสาหกรรม ผลิตภัณฑ์ครอบคลุมคุณภาพมาตรฐานบริการประทับใจ พร้อมก้าวไปกับทุกอุตสาหกรรม ของประเทศไทย"
+                        <span className="span-slogan">ดังสโลแกน</span> "ผู้นำด้านเครื่องเมืออุตสาหกรรม ผลิตภัณฑ์ครอบคลุมคุณภาพมาตรฐานบริการประทับใจ พร้อมก้าวไปกับทุกอุตสาหกรรม ของประเทศไทย"
                     </p>
 
                     <div className="icons">
@@ -71,6 +82,49 @@ function HomePage() {
         </>
     );
 }
+
+const animation = keyframes`
+    0% { 
+        opacity: 0; 
+        transform: translateY(-100px) skewY(10deg) skewX(10deg) rotateZ(30deg); 
+        filter: blur(10px);
+    }
+    25% { 
+        opacity: 1; 
+        transform: translateY(0px) skewY(0deg) skewX(0deg) rotateZ(0deg); 
+        filter: blur(0px);
+    }
+    75% { 
+        opacity: 1; 
+        transform: translateY(0px) skewY(0deg) skewX(0deg) rotateZ(0deg); 
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 0; 
+        transform: translateY(-100px) skewY(10deg) skewX(10deg) rotateZ(30deg); 
+        filter: blur(10px);
+    }
+`
+
+const Wrapper = styled.span`
+    display: inline-block;
+    
+    span {
+        display: inline-block;
+        opacity: 0;
+        animation-name: ${animation};
+        animation-duration: 6s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    span:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+`
 
 const HomePageStyled = styled.header`
     width: 100%;
@@ -121,6 +175,10 @@ const HomePageStyled = styled.header`
                 }
             }
         }
+    }
+
+    .span-primary {
+        color: var(--primary-color);
     }
 `;
 export default HomePage;

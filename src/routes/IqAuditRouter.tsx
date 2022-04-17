@@ -3,6 +3,8 @@ import { Route, Switch } from "react-router-dom";
 
 import IqAudit from "../pages/IqAudit";
 import IqAuditDetail from "../pages/IqAuditDetail";
+import DashboardIqa from '../pages/DashboardIqa';
+import AnswerIqa from '../pages/AnswerIqa';
 import PageNotFound from "../pages/PageNotFound";
 import DeptContextProvider from '../state/dept-context'
 import DeptCdcContextProvider from '../state/dept-cdc-context'
@@ -16,6 +18,12 @@ const IqAuditRouter: React.FC<Props> = () => {
             <DeptCdcContextProvider>
                 <IqaContextProvider>
                     <Switch>
+                        <Route path="/iqa/dashboard">
+                            <DashboardIqa />
+                        </Route>
+                        <Route path="/iqa/answer">
+                            <AnswerIqa />
+                        </Route>
                         <Route path="/iqa/notify/:id">
                             <IqAuditDetail />
                         </Route>

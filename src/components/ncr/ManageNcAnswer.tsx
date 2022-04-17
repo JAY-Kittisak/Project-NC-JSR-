@@ -175,9 +175,7 @@ const ManageNcAnswer: React.FC<Props> = ({
 
     return (
         <NcAnswerStyled className='box-shadows'>
-            <section className='flex-between'>
-                <h4>ผู้รับผิดชอบการแก้ไข</h4>
-            </section>
+            <h4>ผู้รับผิดชอบการแก้ไข</h4>
             <form className="form" onSubmit={ncAnswer ? handleEditAnswerNc : handleAddAnswerNc}>
                 {ncAnswer && (
                     <FlexStyled>

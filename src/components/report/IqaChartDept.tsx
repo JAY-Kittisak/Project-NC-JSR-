@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import {
     BarChart, Bar, XAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 
-import { Branch, ChartColor, ChartColorType } from '../../types';
-
-interface Props {
-    dept: string
-    branch: Branch
-}
+interface Props { }
 
 interface PropStyled {
     colors: string
@@ -66,24 +61,11 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const NcChartDept: React.FC<Props> = ({ dept, branch}) => {
-    const [chartColor, setChartColor] = useState<ChartColor>('#007bff')
-    const [chartColorType, setChartColorType] = useState<ChartColorType>('#78b8fd')
-
-    useEffect(() => {
-        if (branch === 'ลาดกระบัง') {
-            setChartColor('#007bff')
-            setChartColorType('#78b8fd')
-        } else {
-            setChartColor('#0bce46')
-            setChartColorType('#6fcc8b')
-        }
-    } ,[branch])
-
+const IqaChartDept: React.FC<Props> = () => {
     return (
-        <DeptChartStyled colors={chartColor}>
+        <DeptChartStyled>
             <div className="flex-center">
-                <h3>แผนก {dept} {branch}</h3>
+                <h3>แผนก SC ลาดกระบัง</h3>
             </div>
 
             <p className="flex-center title">ประเภทความไม่สอดคล้อง</p>
@@ -157,8 +139,8 @@ const NcChartDept: React.FC<Props> = ({ dept, branch}) => {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
                         <Tooltip />
-                        <Bar dataKey="Product" fill={chartColor} />
-                        <Bar dataKey="Process" fill={chartColorType} />
+                        <Bar dataKey="Product" fill="#007bff" />
+                        <Bar dataKey="Process" fill="#78b8fd" />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -180,7 +162,7 @@ const DeptChartStyled = styled.section`
         position: absolute;
         height: 45px;
         width: 100%;
-        background-color: ${(props: PropStyled) => props.colors};
+        background-color: #007bff;
         border-radius: 20px 20px 0 0;
     }
 
@@ -220,4 +202,4 @@ const CircleStyled = styled.div`
     margin-right: 0.5rem;
 `
 
-export default NcChartDept
+export default IqaChartDept

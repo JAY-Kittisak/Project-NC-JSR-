@@ -5,7 +5,7 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import Button from '../Button';
 import { AddIqaTypeData, UserInfo, AlertType, AlertNt, CountsCode } from '../../types'
-import { requirements, fileType } from '../../helpers';
+import { requirements, fileType, selectTeams } from '../../helpers';
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 import { useManageIqa } from '../../hooks/useManageIqa';
@@ -263,10 +263,11 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                         <label htmlFor='team'>ทีม</label>
                         <select name='team' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
                             <option style={{ display: 'none' }}></option>
-                            <option value='A'>Team A</option>
-                            <option value='B'>Team B</option>
-                            <option value='C'>Team C</option>
-                            <option value='D'>Team D</option>
+                            {selectTeams.map((item,i) => {
+                                return (
+                                    <option key={i} value={item}>ทีม {item}</option>
+                                )
+                            })}
                         </select>
                     </div>
                     <div className='form-field'>

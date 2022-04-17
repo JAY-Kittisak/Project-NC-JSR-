@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 interface Props {
     title: string
@@ -14,8 +14,17 @@ const Title: React.FC<Props> = ({ title, span }) => {
     )
 }
 
+const animation = keyframes`
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+`
+
 const TitleStyled = styled.div`
     position: relative;
+
+    animation-name: ${animation};
+    animation-duration: 4s;
+
     h2{
         color: var(--white-color);
         font-size: 3.1rem;

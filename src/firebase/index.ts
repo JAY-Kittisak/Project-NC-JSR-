@@ -27,6 +27,8 @@ export const ncAnswerFileFolder = 'nc-answer'
 
 export const iqaRef = db.collection('iqa')
 export const iqaAnswerRef = db.collection('iqa-answer')
+export const iqaCountsRef = db.collection('iqa-counts')
+export const iqaCountsCdcRef = db.collection('iqa-counts-cdc')
 export const iqaCountsCodeRef = db.collection('iqa-code-counts')
 export const iqaCountsCodeCdcRef = db.collection('iqa-code-counts-cdc')
 export const iqaFileFolder = 'iqa'
