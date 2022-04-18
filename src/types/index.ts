@@ -366,8 +366,23 @@ export type SidebarType = {
     subNav: {
         title: string;
         path: string;
+        icon:  JSX.Element;
     }[];
 }
 
 export type ChartColor = '#007bff' | '#0bce46'
 export type ChartColorType = '#78b8fd' | '#6fcc8b'
+
+// TODO: Chart
+export type DataDemo = {
+    id: string
+    dept: string
+    NCR: number
+    CCR: number
+    SCR: number
+    category: CatNc
+    topic: string
+    topicType: string
+    branch: Branch
+    ncStatus: StatusNc
+}

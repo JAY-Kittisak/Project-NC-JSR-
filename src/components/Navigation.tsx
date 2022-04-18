@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { NavLink, useLocation } from 'react-router-dom'
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowDropUp";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+import BarChartIcon from "@material-ui/icons/BarChart";
 
 
 import avatar from '../assets/image/demo-user.png'
@@ -22,11 +24,13 @@ const sidebarClient = [
         subNav: [
             {
                 title: "ตอบ ncr",
-                path: "/nc/answer"
+                path: "/nc/answer",
+                icon: <QuestionAnswerIcon />
             },
             {
                 title: "แดชบอร์ด ncr",
-                path: "/nc/dashboard"
+                path: "/nc/dashboard",
+                icon: <BarChartIcon />
             }
         ]
     },
@@ -39,11 +43,13 @@ const sidebarClient = [
         subNav: [
             {
                 title: "ตอบ iqa",
-                path: "/iqa/answer"
+                path: "/iqa/answer",
+                icon: <QuestionAnswerIcon />
             },
             {
                 title: "แดชบอร์ด iqa",
-                path: "/iqa/dashboard"
+                path: "/iqa/dashboard",
+                icon: <BarChartIcon />
             }
         ]
     }
@@ -174,32 +180,22 @@ const NavigationStyled = styled.nav`
         text-align: center;
 
         .sub-menu {
-            border-left: 2px solid var(--primary-color);
-            margin-left: 20px;
+            padding-left: 20px;
             text-align: start;
-        }
-
-        .left-content {
-            width: 20%;
-            padding-left: 15px;
-
-            &::before{
-                content: "";
+            position: relative;
+            
+            svg {
                 position: absolute;
-                left: -8px;
-                top: 11px;
-                height: 10px;
-                width: 10px;
-                border-radius: 50%;
-                border: 2px solid var(--primary-color);
-                background-color: var(--background-dark-color);
             }
-
+            
+            span {
+                padding-left: 30px;
+            }
         }
 
         .active-class{
-                background-color: var(--primary-color-light);
-                color: var(--white-color);
+            background-color: var(--primary-color-light);
+            color: var(--white-color);
         }
         li{
             display: block;

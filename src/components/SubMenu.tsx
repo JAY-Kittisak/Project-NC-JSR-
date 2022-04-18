@@ -38,7 +38,8 @@ const SubMenu: React.FC<Props> = ({ item }) => {
                             to={item.path}
                             className={(isActive) => isActive ? "active-class sub-menu" : "sub-menu"}
                         >
-                            <span className='left-content'>{item.title}</span>
+                            {item.icon}
+                            <span>{item.title}</span>
                         </NavLink>
                     );
                 })}

@@ -1,24 +1,41 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-    Tooltip, Legend, ResponsiveContainer, Cell
+    Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import styled from 'styled-components';
-import { Branch, CatNc, StatusNc } from '../../types';
+import { Branch, DataDemo } from '../../types';
+// import NcBarChartJsr from './NcBarChartJsr';
 // import { useQueryNcReport } from '../../hooks/useQueryNcReport';
 import NcChartDept from './NcChartDept';
 
-type DataDemo = {
-    id: string
-    dept: string
-    NCR: number
-    CCR: number
-    SCR: number
-    category: CatNc
-    topic: string
-    topicType: string
-    branch: Branch
-    ncStatus: StatusNc
+type DeptCdc =  
+    | 'SC'
+    | 'SA'
+    | 'QMR'
+    | 'PU'
+    | 'MK'
+    | 'IV'
+    | 'HR'
+    | 'GA'
+    | 'EN'
+    | 'DL'
+    | 'AC'
+
+type deptDemoCountsCdc = { [key in DeptCdc]: DataDemo[]}
+
+const initialArrDemoCdc: deptDemoCountsCdc = {
+    SC: [],
+    SA: [],
+    QMR: [],
+    PU: [],
+    IV: [],
+    MK: [],
+    HR: [],
+    GA: [],
+    EN: [],
+    DL: [],
+    AC: [],
 }
 
 type CountsBrach ={
@@ -161,6 +178,18 @@ const data: DataDemo[] = [
     },
     {
         id: '12',
+        dept: 'GA',
+        NCR: 10,
+        CCR: 15,
+        SCR: 6,
+        category: 'NCR',
+        topic: 'topic 1',
+        topicType: 'Process',
+        branch: 'ชลบุรี',
+        ncStatus: 'ปิดแล้ว'
+    },
+    {
+        id: '13',
         dept: 'AC',
         NCR: 10,
         CCR: 15,
@@ -173,17 +202,33 @@ const data: DataDemo[] = [
     },
 ];
 
-const initialDemo = [{nameDept: 'SC', counts: 0}]
+const initialDemoCdc :{
+    nameDept: DeptCdc;
+    counts: number;
+    branch: Branch;
+}[] = [{
+    nameDept: 'SC', 
+    counts: 0,
+    branch: 'ชลบุรี'
+}]
 
 interface Props { }
 
 const NcChart: React.FC<Props> = () => {
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndexCdc, setActiveIndexCdc] = useState(0);
     const [countsBrach, setCountsBrach] = useState<CountsBrach | null>(null);
-    const [dataDemo, setDataDemo] = useState<{
-        nameDept: string;
+    // const [dataDemoJsr, setDataDemoJsr] = useState<DataDemo[] | null>(null);
+    
+    const [toBranch, setToBranch] = useState<Branch>('ลาดกระบัง')
+    const [dataCdc, setDataCdc] = useState<{
+        nameDept: DeptCdc;
         counts: number;
-    }[]>(initialDemo);
+        branch: Branch;
+    }[]>(initialDemoCdc);
+
+    const [ncCdc, setNcCdc] = useState(initialArrDemoCdc)
+    console.log(ncCdc.AC)
+
     // const [dateStart, setDateStart] = useState('2022-01-01');
     // const [dateEnd, setDateEnd] = useState('2022-12-31');
 
@@ -193,14 +238,13 @@ const NcChart: React.FC<Props> = () => {
     //     } = useQueryNcReport(dateStart,dateEnd)
     // console.log('ncNotify', ncNotify)
 
-    const dept = dataDemo[activeIndex].nameDept
-    const branch = data[activeIndex].branch
-    
-    const handleClick = useCallback(
+    const handleClickCdc = useCallback(
         (_, index: number) => {
-            setActiveIndex(index);
+            setActiveIndexCdc(index);
+            // setToDept(dataCdc[index].nameDept)
+            setToBranch(dataCdc[index].branch)
         },
-        [setActiveIndex]
+        [setActiveIndexCdc, dataCdc]
     );
 
     useEffect(() => {
@@ -210,63 +254,73 @@ const NcChart: React.FC<Props> = () => {
             latKrabang: branchLkb.length,
             chonburi: branchCdc.length
         })
+        // setDataDemoJsr(branchLkb)
 
-        const scLkb = branchLkb.filter(value => value.dept === 'SC')
-        const saLkb = branchLkb.filter(value => value.dept === 'SA')
-        const qmrLkb = branchLkb.filter(value => value.dept === 'QMR')
-        const puLkb = branchLkb.filter(value => value.dept === 'PU')
-        const mkLkb = branchLkb.filter(value => value.dept === 'MK')
-        const ivLkb = branchLkb.filter(value => value.dept === 'IV')
-        const hrLkb = branchLkb.filter(value => value.dept === 'HR')
-        const enLkb = branchLkb.filter(value => value.dept === 'EN')
-        const dlLkb = branchLkb.filter(value => value.dept === 'DL')
-        const adLkb = branchLkb.filter(value => value.dept === 'AD')
-        const acLkb = branchLkb.filter(value => value.dept === 'AC')
+        const updatedCdc: any = {}
 
-        setDataDemo([
+        Object.keys(initialArrDemoCdc).forEach(ncStatus => {
+            const status = ncStatus as DeptCdc
+
+            updatedCdc[status] = branchCdc.filter((item) => item.dept === status)
+        })
+        
+        setNcCdc(updatedCdc)
+
+        setDataCdc([
             {
                 nameDept: 'SC',
-                counts: scLkb.length
+                counts: updatedCdc.SC.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'SA',
-                counts: saLkb.length
+                counts: updatedCdc.SA.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'QMR',
-                counts: qmrLkb.length
+                counts: updatedCdc.QMR.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'PU',
-                counts: puLkb.length
+                counts: updatedCdc.PU.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'MK',
-                counts: mkLkb.length
+                counts: updatedCdc.MK.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'IV',
-                counts: ivLkb.length
+                counts: updatedCdc.IV.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'HR',
-                counts: hrLkb.length
+                counts: updatedCdc.HR.length,
+                branch: 'ชลบุรี'
+            },
+            {
+                nameDept: 'GA',
+                counts: updatedCdc.GA.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'EN',
-                counts: enLkb.length
+                counts: updatedCdc.EN.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'DL',
-                counts: dlLkb.length
-            },
-            {
-                nameDept: 'AD',
-                counts: adLkb.length
+                counts: updatedCdc.DL.length,
+                branch: 'ชลบุรี'
             },
             {
                 nameDept: 'AC',
-                counts: acLkb.length
+                counts: updatedCdc.AC.length,
+                branch: 'ชลบุรี'
             },
         ])
 
@@ -307,42 +361,7 @@ const NcChart: React.FC<Props> = () => {
                     <div className='card'>
                         <div className="flex-center">
                             <h3>ลาดกระบัง NC ทั้งหมด {countsBrach?.latKrabang}</h3>
-                        </div>
-                        <div className="chart">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    width={500}
-                                    height={300}
-                                    data={dataDemo}
-                                    margin={{
-                                        top: 20,
-                                        right: 30,
-                                        left: 0,
-                                        bottom: 5,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="nameDept" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    {/* <Legend /> */}
-                                    <Bar 
-                                        dataKey="counts"
-                                        onClick={handleClick}
-                                    >
-                                        {data.map((_, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                cursor="pointer"
-                                                fill={index === activeIndex ? "#007bff" : '#78b8fd'}
-                                            />
-                                        ))}
-                                    </Bar>
-                                    {/* <Bar dataKey="NCR" fill="#007bff" />
-                                    <Bar dataKey="CCR" fill="#78b8fd" />
-                                    <Bar dataKey="SCR" fill="#235488" /> */}
-                                </BarChart>
-                            </ResponsiveContainer>
+                            {/* <NcBarChartJsr dataDemoJsr={dataDemoJsr} /> */}
                         </div>
                     </div>
 
@@ -356,7 +375,7 @@ const NcChart: React.FC<Props> = () => {
                                 <BarChart
                                     width={500}
                                     height={300}
-                                    data={data}
+                                    data={dataCdc}
                                     margin={{
                                         top: 20,
                                         right: 30,
@@ -365,13 +384,24 @@ const NcChart: React.FC<Props> = () => {
                                     }}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="dept" />
+                                    <XAxis dataKey="nameDept" />
                                     <YAxis />
                                     <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="NCR" fill="#0bce46" />
-                                    <Bar dataKey="CCR" fill="#50c272" />
-                                    <Bar dataKey="SCR" fill="#097028" />
+                                    <Bar 
+                                        dataKey="counts"
+                                        onClick={handleClickCdc}
+                                    >
+                                        {dataCdc.map((_, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                cursor="pointer"
+                                                fill={index === activeIndexCdc ? "#0bce46" : '#50c272'}
+                                            />
+                                        ))}
+                                    </Bar>
+                                    {/* <Bar dataKey="NCR" fill="#0bce46" /> */}
+                                    {/* <Bar dataKey="CCR" fill="#50c272" />
+                                    <Bar dataKey="SCR" fill="#097028" /> */}
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -379,7 +409,7 @@ const NcChart: React.FC<Props> = () => {
                 </div>
 
                 {/* แผนก */}
-                <NcChartDept dept={dept} branch={branch}/>
+                <NcChartDept dept={'SC'} branch={toBranch}/>
             </NcChartStyled>
         </>
     )
