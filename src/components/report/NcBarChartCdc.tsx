@@ -3,16 +3,16 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { NcrNotify ,Branch } from '../../types';
+import { NcrNotify, Branch } from '../../types';
 
 interface Props {
-    dataBarJsr: NcrNotify[] | null
-    setNcJsrToDept: React.Dispatch<React.SetStateAction<NcrNotify[] | undefined>>
+    dataBarCdc: NcrNotify[] | null
+    setNcCdcToDept: React.Dispatch<React.SetStateAction<NcrNotify[] | undefined>>
     setBranchChart: React.Dispatch<React.SetStateAction<Branch>>
     setDeptChart: React.Dispatch<React.SetStateAction<string>>
 }
 
-type DeptJsr =
+type DeptCdc =  
     | 'SC'
     | 'SA'
     | 'QMR'
@@ -20,14 +20,14 @@ type DeptJsr =
     | 'MK'
     | 'IV'
     | 'HR'
+    | 'GA'
     | 'EN'
     | 'DL'
-    | 'AD'
     | 'AC'
 
-type DeptDemoCounts = { [key in DeptJsr]: NcrNotify[] }
+type deptDemoCountsCdc = { [key in DeptCdc]: NcrNotify[]}
 
-const initialArrDemo: DeptDemoCounts = {
+const initialArrDemoCdc: deptDemoCountsCdc = {
     SC: [],
     SA: [],
     QMR: [],
@@ -35,114 +35,114 @@ const initialArrDemo: DeptDemoCounts = {
     IV: [],
     MK: [],
     HR: [],
+    GA: [],
     EN: [],
     DL: [],
-    AD: [],
     AC: [],
 }
 
-const initialDemo: {
-    nameDept: DeptJsr;
+const initialDemoCdc :{
+    nameDept: DeptCdc;
     counts: number;
 }[] = [{
-    nameDept: 'SC',
+    nameDept: 'SC', 
     counts: 0,
 }]
 
-const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchChart, setDeptChart }) => {
+const NcBarChartCdc: React.FC<Props> = ({ dataBarCdc, setNcCdcToDept, setBranchChart, setDeptChart }) => {
     const [activeIndex, setActiveIndex] = useState(0)
-    const [activeDept, setActiveDept] = useState<DeptJsr>('SC')
+    const [activeDept, setActiveDept] = useState<DeptCdc>('SC')
 
-    const [dataJsr, setDataJsr] = useState(initialDemo)
-    const [ncJsr, setNcJsr] = useState(initialArrDemo)
+    const [dataCdc, setDataCdc] = useState(initialDemoCdc)
+    const [ncCdc, setNcCdc] = useState(initialArrDemoCdc)
     
     const handleClick = useCallback((_, index: number) => {
-        const result = dataJsr[index].nameDept
-        
-        setActiveIndex(index);
+        const result = dataCdc[index].nameDept
+
+        setActiveIndex(index)
         setActiveDept(result)
         setDeptChart(result)
-        setBranchChart('ลาดกระบัง')
-    },[setActiveIndex, setBranchChart, dataJsr, setDeptChart]);
+        setBranchChart('ชลบุรี')
+    },[setActiveIndex, setBranchChart, dataCdc, setDeptChart ]);
 
     useEffect(() => {
-        if (!dataBarJsr) return
+        if (!dataBarCdc) return
 
-        const updatedJsr: any = {}
+        const updatedCdc: any = {}
 
-        Object.keys(initialArrDemo).forEach(ncStatus => {
-            const status = ncStatus as DeptJsr
+        Object.keys(initialArrDemoCdc).forEach(ncStatus => {
+            const status = ncStatus as DeptCdc
 
-            updatedJsr[status] = dataBarJsr.filter((item) => item.dept === status)
+            updatedCdc[status] = dataBarCdc.filter((item) => item.dept === status)
         })
+        
+        setNcCdc(updatedCdc)
 
-        setNcJsr(updatedJsr)
-
-        setDataJsr([
+        setDataCdc([
             {
                 nameDept: 'SC',
-                counts: updatedJsr.SC.length,
+                counts: updatedCdc.SC.length,
             },
             {
                 nameDept: 'SA',
-                counts: updatedJsr.SA.length,
+                counts: updatedCdc.SA.length,
             },
             {
                 nameDept: 'QMR',
-                counts: updatedJsr.QMR.length,
+                counts: updatedCdc.QMR.length,
             },
             {
                 nameDept: 'PU',
-                counts: updatedJsr.PU.length,
+                counts: updatedCdc.PU.length,
             },
             {
                 nameDept: 'MK',
-                counts: updatedJsr.MK.length,
+                counts: updatedCdc.MK.length,
             },
             {
                 nameDept: 'IV',
-                counts: updatedJsr.IV.length,
+                counts: updatedCdc.IV.length,
             },
             {
                 nameDept: 'HR',
-                counts: updatedJsr.HR.length,
+                counts: updatedCdc.HR.length,
+            },
+            {
+                nameDept: 'GA',
+                counts: updatedCdc.GA.length,
             },
             {
                 nameDept: 'EN',
-                counts: updatedJsr.EN.length,
+                counts: updatedCdc.EN.length,
             },
             {
                 nameDept: 'DL',
-                counts: updatedJsr.DL.length,
-            },
-            {
-                nameDept: 'AD',
-                counts: updatedJsr.AD.length,
+                counts: updatedCdc.DL.length,
             },
             {
                 nameDept: 'AC',
-                counts: updatedJsr.AC.length,
+                counts: updatedCdc.AC.length,
             },
         ])
 
-    }, [dataBarJsr])
+    }, [dataBarCdc])
 
     useEffect(() => {
-        const result = ncJsr[activeDept]
-        setNcJsrToDept(result)
-    }, [ activeDept, ncJsr, setNcJsrToDept])
+        const result = ncCdc[activeDept]
+        setNcCdcToDept(result)
+    }, [ dataCdc, activeDept, ncCdc, setNcCdcToDept])
 
     return (
-        <div className='card'>
+        <div className='card m-top'>
             <div className="flex-center">
-                <h3>ลาดกระบัง NC ทั้งหมด {dataBarJsr?.length}</h3>
+                <h3>ชลบุรี NC ทั้งหมด {dataBarCdc?.length}</h3>
             </div>
             <div className="chart">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         width={500}
                         height={300}
-                        data={dataJsr}
+                        data={dataCdc}
                         margin={{
                             top: 20,
                             right: 30,
@@ -154,21 +154,18 @@ const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchC
                         <XAxis dataKey="nameDept" />
                         <YAxis />
                         <Tooltip />
-                        <Bar
+                        <Bar 
                             dataKey="counts"
                             onClick={handleClick}
                         >
-                            {dataJsr.map((_, index) => (
+                            {dataCdc.map((_, index) => (
                                 <Cell
                                     key={`cell-${index}`}
                                     cursor="pointer"
-                                    fill={index === activeIndex ? "#007bff" : '#78b8fd'}
+                                    fill={index === activeIndex ? "#0bce46" : '#50c272'}
                                 />
                             ))}
                         </Bar>
-                        {/* <Bar dataKey="NCR" fill="#007bff" />
-                                    <Bar dataKey="CCR" fill="#78b8fd" />
-                                    <Bar dataKey="SCR" fill="#235488" /> */}
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -176,4 +173,4 @@ const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchC
     )
 }
 
-export default NcBarChartJsr
+export default NcBarChartCdc

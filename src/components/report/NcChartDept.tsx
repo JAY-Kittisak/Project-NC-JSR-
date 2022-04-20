@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import {
-    BarChart, Bar, XAxis, CartesianGrid,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 
-import { Branch, ChartColor, ChartColorType } from '../../types';
+import { NcrNotify, Branch, ChartColor, ChartColorType } from '../../types';
 
 interface Props {
-    dept: string
-    branch: Branch
+    ncJsrToDept: NcrNotify[] | undefined
+    branchChart: Branch
+    deptChart: string
 }
 
 interface PropStyled {
     colors: string
 }
 
+type ValueDept ={
+    dept: string;
+    value: number;
+}
+
 
 const data = [
     {
         name: 'NCR',
-        Product: 3,
-        Process: 4,
+        product: 0,
+        process: 4,
     },
     {
         name: 'CCS',
-        Product: 4,
-        Process: 2,
+        product: 0,
+        process: 0,
     },
     {
         name: 'SCR',
-        Product: 1,
-        Process: 1,
+        product: 0,
+        process: 0,
     },
-];
-const dataPieChart = [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 300 },
-    { name: 'Group D', value: 200 },
 ];
 
 type RenderCu = {
@@ -51,7 +51,7 @@ type RenderCu = {
     index: number;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#FF8042', '#FFBB28', '#00C49F', '#0088FE', '#096d27', '#063691', '#066591'];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: RenderCu) => {
@@ -66,28 +66,77 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const NcChartDept: React.FC<Props> = ({ dept, branch}) => {
+const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) => {
+    const [dataCat, setDataCat] = useState(data)
+    const [dataPieChart, setDataPieChart] = useState<ValueDept[]>([])
     const [chartColor, setChartColor] = useState<ChartColor>('#007bff')
     const [chartColorType, setChartColorType] = useState<ChartColorType>('#78b8fd')
 
     useEffect(() => {
-        if (branch === 'ลาดกระบัง') {
+        if (branchChart === 'ลาดกระบัง') {
             setChartColor('#007bff')
             setChartColorType('#78b8fd')
         } else {
             setChartColor('#0bce46')
             setChartColorType('#6fcc8b')
         }
-    } ,[branch])
+    } ,[branchChart])
+
+    useEffect(() => {
+        if (!ncJsrToDept) return
+
+        const ncr = ncJsrToDept.filter(item => item.category === 'NCR')
+        const ccr = ncJsrToDept.filter(item => item.category === 'CCR')
+        const scr = ncJsrToDept.filter(item => item.category === 'SCR')
+
+        const ncrProcess = ncr.filter(item => item.topicType === 'Process')
+        const ncrProduct = ncr.filter(item => item.topicType === 'Product')
+        const ccrProcess = ccr.filter(item => item.topicType === 'Process')
+        const ccrProduct = ccr.filter(item => item.topicType === 'Product')
+        const scrProcess = scr.filter(item => item.topicType === 'Process')
+        const scrProduct = scr.filter(item => item.topicType === 'Product')
+
+        const topics = ncJsrToDept.map(item => item.topic)
+        
+        const onlyTopics = new Set(ncJsrToDept.map(item => item.topic))
+        
+        let itemPieChart: ValueDept[] = []
+
+        onlyTopics.forEach((onlyTopic) => {
+            const result = topics.filter(topic => topic === onlyTopic)
+            const testDemo = { dept: onlyTopic, value: result.length }
+            itemPieChart.push(testDemo)
+        });
+        setDataPieChart(itemPieChart)
+
+        setDataCat([
+            {
+                name: 'NCR',
+                process: ncrProcess.length,
+                product: ncrProduct.length
+            },
+            {
+                name: 'CCR',
+                process: ccrProcess.length,
+                product: ccrProduct.length
+            },
+            {
+                name: 'SCR',
+                process: scrProcess.length,
+                product: scrProduct.length
+            },
+        ])
+
+    }, [ncJsrToDept])
 
     return (
         <DeptChartStyled colors={chartColor}>
             <div className="flex-center">
-                <h3>แผนก {dept} {branch}</h3>
+                <h3>แผนก {deptChart} {branchChart}</h3>
             </div>
 
             <p className="flex-center title">ประเภทความไม่สอดคล้อง</p>
-            <div className='flex-start'>
+            <TopicAndPic>
                 <div className="pie-chart">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart width={300} height={300}>
@@ -109,36 +158,14 @@ const NcChartDept: React.FC<Props> = ({ dept, branch}) => {
                     </ResponsiveContainer>
                 </div>
                 <div>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[0]}></CircleStyled>
-                        <p>ลงทะเบียนไม่ครบถ้วน</p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[1]}></CircleStyled>
-                        <p>จัดทำใบเสนอราคาไม่ถูกต้อง</p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[2]}></CircleStyled>
-                        <p>การสื่อสารผิดพลาด </p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[3]}></CircleStyled>
-                        <p>สินค้าเคลม / คืนสินค้า</p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[1]}></CircleStyled>
-                        <p>จัดทำใบเสนอราคาไม่ถูกต้อง</p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[2]}></CircleStyled>
-                        <p>การสื่อสารผิดพลาด </p>
-                    </TopicStyled>
-                    <TopicStyled>
-                        <CircleStyled colors={COLORS[3]}></CircleStyled>
-                        <p>สินค้าเคลม / คืนสินค้า</p>
-                    </TopicStyled>
+                    {dataPieChart.map((item,i) => (
+                        <TopicStyled key={i}>
+                            <CircleStyled colors={COLORS[i]}></CircleStyled>
+                            <TextStyled> {item.dept}</TextStyled>
+                        </TopicStyled>
+                    ))}
                 </div>
-            </div>
+            </TopicAndPic>
 
             <div className="type-chart">
             <p className="flex-center title">ประเด็นความไม่สอดคล้อง</p>
@@ -146,19 +173,20 @@ const NcChartDept: React.FC<Props> = ({ dept, branch}) => {
                     <BarChart
                         width={500}
                         height={300}
-                        data={data}
+                        data={dataCat}
                         margin={{
                             top: 20,
-                            right: 30,
-                            left: 25,
-                            bottom: 5,
+                            right: 50,
+                            left: 0,
+                            bottom: 30,
                         }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
+                        <YAxis />
                         <Tooltip />
-                        <Bar dataKey="Product" fill={chartColor} />
-                        <Bar dataKey="Process" fill={chartColorType} />
+                        <Bar dataKey="product" fill={chartColor} />
+                        <Bar dataKey="process" fill={chartColorType} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -175,13 +203,19 @@ const DeptChartStyled = styled.section`
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
+    @media screen and (max-width: 1000px){
+        width: 100%;
+        margin-top: 1.5rem;
+        margin-left: 0rem;
+    }
+
     &::before {
         content: '';
         position: absolute;
         height: 45px;
         width: 100%;
         background-color: ${(props: PropStyled) => props.colors};
-        border-radius: 20px 20px 0 0;
+        border-radius: 10px 10px 0 0;
     }
 
     .pie-chart {
@@ -191,7 +225,11 @@ const DeptChartStyled = styled.section`
 
     .type-chart {
         height: 220px;
-        margin-top: 50px;
+        margin-top: 70px;
+        
+        @media screen and (max-width: 1400px){
+            margin-top: 0px;
+        }
     }
 
     .title {
@@ -201,23 +239,42 @@ const DeptChartStyled = styled.section`
         font-weight: 600rem;
     }
 `
+
+const TopicAndPic = styled.section`
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    @media screen and (max-width: 1400px){
+        flex-direction: column;
+    }
+`
+
 const TopicStyled = styled.div`
     display: flex;
     align-items: center;
-    padding-top: 10px;
-
-    p {
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    padding-top: 5px;
+    position: relative;
 `
+
 const CircleStyled = styled.div`
+    position: absolute;
     width: 20px;
     height: 20px;
     background-color:  ${(props: PropStyled) => props.colors};
     border-radius: 50%;
-    margin-right: 0.5rem;
+`
+
+const TextStyled = styled.p`
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 250px;
+    padding-left: 25px;
+    
+    @media screen and (max-width: 1000px){
+        width: 100%;
+    }
 `
 
 export default NcChartDept

@@ -1,331 +1,55 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-    Tooltip, ResponsiveContainer, Cell
-} from 'recharts';
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
-import { Branch, DataDemo } from '../../types';
-// import NcBarChartJsr from './NcBarChartJsr';
-// import { useQueryNcReport } from '../../hooks/useQueryNcReport';
+
+import NcBarChartJsr from './NcBarChartJsr';
+import NcBarChartCdc from './NcBarChartCdc';
 import NcChartDept from './NcChartDept';
-
-type DeptCdc =  
-    | 'SC'
-    | 'SA'
-    | 'QMR'
-    | 'PU'
-    | 'MK'
-    | 'IV'
-    | 'HR'
-    | 'GA'
-    | 'EN'
-    | 'DL'
-    | 'AC'
-
-type deptDemoCountsCdc = { [key in DeptCdc]: DataDemo[]}
-
-const initialArrDemoCdc: deptDemoCountsCdc = {
-    SC: [],
-    SA: [],
-    QMR: [],
-    PU: [],
-    IV: [],
-    MK: [],
-    HR: [],
-    GA: [],
-    EN: [],
-    DL: [],
-    AC: [],
-}
-
-type CountsBrach ={
-    latKrabang?: number;
-    chonburi?: number;
-}
-
-const data: DataDemo[] = [
-    {
-        id: '1',
-        dept: 'SC',
-        NCR: 7,
-        CCR: 6,
-        SCR: 2,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '2',
-        dept: 'SA',
-        NCR: 11,
-        CCR: 5,
-        SCR: 4,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '3',
-        dept: 'QMR',
-        NCR: 6,
-        CCR: 12,
-        SCR: 3,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '4',
-        dept: 'PU',
-        NCR: 10,
-        CCR: 15,
-        SCR: 6,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '5',
-        dept: 'MK',
-        NCR: 7,
-        CCR: 5,
-        SCR: 4,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '6',
-        dept: 'IV',
-        NCR: 8,
-        CCR: 14,
-        SCR: 5,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '7',
-        dept: 'HR',
-        NCR: 12,
-        CCR: 3,
-        SCR: 7,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '8',
-        dept: 'EN',
-        NCR: 5,
-        CCR: 8,
-        SCR: 7,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '9',
-        dept: 'DL',
-        NCR: 12,
-        CCR: 8,
-        SCR: 2,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '10',
-        dept: 'DC',
-        NCR: 6,
-        CCR: 5,
-        SCR: 1,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '11',
-        dept: 'AD',
-        NCR: 3,
-        CCR: 10,
-        SCR: 6,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ลาดกระบัง',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '12',
-        dept: 'GA',
-        NCR: 10,
-        CCR: 15,
-        SCR: 6,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ชลบุรี',
-        ncStatus: 'ปิดแล้ว'
-    },
-    {
-        id: '13',
-        dept: 'AC',
-        NCR: 10,
-        CCR: 15,
-        SCR: 6,
-        category: 'NCR',
-        topic: 'topic 1',
-        topicType: 'Process',
-        branch: 'ชลบุรี',
-        ncStatus: 'ปิดแล้ว'
-    },
-];
-
-const initialDemoCdc :{
-    nameDept: DeptCdc;
-    counts: number;
-    branch: Branch;
-}[] = [{
-    nameDept: 'SC', 
-    counts: 0,
-    branch: 'ชลบุรี'
-}]
+import Spinner from '../Spinner'
+import { NcrNotify, Branch } from '../../types';
+import { useQueryNcReport } from '../../hooks/useQueryNcReport';
+import { SpinnerStyled } from '../../styles/LayoutStyle'
 
 interface Props { }
 
 const NcChart: React.FC<Props> = () => {
-    const [activeIndexCdc, setActiveIndexCdc] = useState(0);
-    const [countsBrach, setCountsBrach] = useState<CountsBrach | null>(null);
-    // const [dataDemoJsr, setDataDemoJsr] = useState<DataDemo[] | null>(null);
-    
-    const [toBranch, setToBranch] = useState<Branch>('ลาดกระบัง')
-    const [dataCdc, setDataCdc] = useState<{
-        nameDept: DeptCdc;
-        counts: number;
-        branch: Branch;
-    }[]>(initialDemoCdc);
+    const [dataBarJsr, setDataBarJsr] = useState<NcrNotify[] | null>(null);
+    const [dataBarCdc, setDataBarCdc] = useState<NcrNotify[] | null>(null);
 
-    const [ncCdc, setNcCdc] = useState(initialArrDemoCdc)
-    console.log(ncCdc.AC)
+    const [ncJsrToDept, setNcJsrToDept] = useState<NcrNotify[]>()
+    const [ncCdcToDept, setNcCdcToDept] = useState<NcrNotify[]>()
+
+    const [branchChart, setBranchChart] = useState<Branch>('ลาดกระบัง')
+    const [deptChart, setDeptChart] = useState('SC')
 
     // const [dateStart, setDateStart] = useState('2022-01-01');
     // const [dateEnd, setDateEnd] = useState('2022-12-31');
 
-    // const {
-    //     ncNotify,
-    //     //  loading, error 
-    //     } = useQueryNcReport(dateStart,dateEnd)
-    // console.log('ncNotify', ncNotify)
+    const dateStart = '2022-01-01'
+    const dateEnd = '2022-12-31'
 
-    const handleClickCdc = useCallback(
-        (_, index: number) => {
-            setActiveIndexCdc(index);
-            // setToDept(dataCdc[index].nameDept)
-            setToBranch(dataCdc[index].branch)
-        },
-        [setActiveIndexCdc, dataCdc]
-    );
+    const { ncNotify, loading, error } = useQueryNcReport(dateStart,dateEnd)
 
     useEffect(() => {
-        const branchLkb = data.filter(value => value.branch === 'ลาดกระบัง')
-        const branchCdc = data.filter(value => value.branch === 'ชลบุรี')
-        setCountsBrach({
-            latKrabang: branchLkb.length,
-            chonburi: branchCdc.length
-        })
-        // setDataDemoJsr(branchLkb)
-
-        const updatedCdc: any = {}
-
-        Object.keys(initialArrDemoCdc).forEach(ncStatus => {
-            const status = ncStatus as DeptCdc
-
-            updatedCdc[status] = branchCdc.filter((item) => item.dept === status)
-        })
+        if (!ncNotify) return
         
-        setNcCdc(updatedCdc)
+        const branchLkb = ncNotify.filter(value => value.branch === 'ลาดกระบัง')
+        const branchCdc = ncNotify.filter(value => value.branch === 'ชลบุรี')
 
-        setDataCdc([
-            {
-                nameDept: 'SC',
-                counts: updatedCdc.SC.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'SA',
-                counts: updatedCdc.SA.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'QMR',
-                counts: updatedCdc.QMR.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'PU',
-                counts: updatedCdc.PU.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'MK',
-                counts: updatedCdc.MK.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'IV',
-                counts: updatedCdc.IV.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'HR',
-                counts: updatedCdc.HR.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'GA',
-                counts: updatedCdc.GA.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'EN',
-                counts: updatedCdc.EN.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'DL',
-                counts: updatedCdc.DL.length,
-                branch: 'ชลบุรี'
-            },
-            {
-                nameDept: 'AC',
-                counts: updatedCdc.AC.length,
-                branch: 'ชลบุรี'
-            },
-        ])
+        setDataBarJsr(branchLkb)
+        setDataBarCdc(branchCdc)
 
-        
-    }, [])
+    }, [ncNotify])
+
+    if (loading) return (
+        <SpinnerStyled>
+            <div className='typography'>
+                <Spinner color='#007bff' height={50} width={50} />
+                <span>Loading... </span>
+            </div>
+        </SpinnerStyled>
+    )
+
+    if (error) return <h2 className='header--center'>{error}</h2>
 
     return (
         <>
@@ -334,6 +58,7 @@ const NcChart: React.FC<Props> = () => {
                     <InputStyled>
                         <label htmlFor="containmentDueDate">จากวันที่</label>
                         <input
+                            disabled
                             type="date"
                             name='containmentDueDate'
                             id="containmentDueDate"
@@ -345,6 +70,7 @@ const NcChart: React.FC<Props> = () => {
                     <InputStyled>
                         <label htmlFor="containmentDueDate">ถึงวันที่</label>
                         <input
+                            disabled
                             type="date"
                             name='containmentDueDate'
                             id="containmentDueDate"
@@ -358,58 +84,28 @@ const NcChart: React.FC<Props> = () => {
             <NcChartStyled>
                 <div className="left-content">
                     {/* ลาดกระบัง */}
-                    <div className='card'>
-                        <div className="flex-center">
-                            <h3>ลาดกระบัง NC ทั้งหมด {countsBrach?.latKrabang}</h3>
-                            {/* <NcBarChartJsr dataDemoJsr={dataDemoJsr} /> */}
-                        </div>
-                    </div>
+                    <NcBarChartJsr
+                        dataBarJsr={dataBarJsr}
+                        setNcJsrToDept={setNcJsrToDept}
+                        setBranchChart={setBranchChart}
+                        setDeptChart={setDeptChart}
+                    />
 
                     {/* ชลบุรี */}
-                    <div className='card m-top'>
-                        <div className="flex-center">
-                            <h3>ชลบุรี NC ทั้งหมด {countsBrach?.chonburi}</h3>
-                        </div>
-                        <div className="chart">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    width={500}
-                                    height={300}
-                                    data={dataCdc}
-                                    margin={{
-                                        top: 20,
-                                        right: 30,
-                                        left: 0,
-                                        bottom: 5,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="nameDept" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar 
-                                        dataKey="counts"
-                                        onClick={handleClickCdc}
-                                    >
-                                        {dataCdc.map((_, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                cursor="pointer"
-                                                fill={index === activeIndexCdc ? "#0bce46" : '#50c272'}
-                                            />
-                                        ))}
-                                    </Bar>
-                                    {/* <Bar dataKey="NCR" fill="#0bce46" /> */}
-                                    {/* <Bar dataKey="CCR" fill="#50c272" />
-                                    <Bar dataKey="SCR" fill="#097028" /> */}
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
+                    <NcBarChartCdc
+                        dataBarCdc={dataBarCdc}
+                        setNcCdcToDept={setNcCdcToDept}
+                        setBranchChart={setBranchChart}
+                        setDeptChart={setDeptChart}
+                    />
                 </div>
 
                 {/* แผนก */}
-                <NcChartDept dept={'SC'} branch={toBranch}/>
+                {branchChart === 'ลาดกระบัง' ? (
+                    <NcChartDept ncJsrToDept={ncJsrToDept} deptChart={deptChart} branchChart={branchChart}/>
+                ): (
+                    <NcChartDept ncJsrToDept={ncCdcToDept} deptChart={deptChart} branchChart={branchChart}/>
+                )}
             </NcChartStyled>
         </>
     )
@@ -445,12 +141,17 @@ const NcChartStyled = styled.div`
     display: flex;
     width: 100%;
 
-    /* FIXME: ใส่มีเดี่ย */
-
     .left-content {
         display: flex;
         flex-direction: column;
         width: 70%;
+    }
+
+    @media screen and (max-width: 1000px){
+        flex-direction: column;
+        .left-content {
+            width: 100%;
+        }
     }
 
     .right-content {
@@ -480,7 +181,7 @@ const NcChartStyled = styled.div`
         height: 45px;
         width: 100%;
         background-color: #007bff;
-        border-radius: 20px 20px 0 0;
+        border-radius: 10px 10px 0 0;
     }
 
     .card + .card::before{

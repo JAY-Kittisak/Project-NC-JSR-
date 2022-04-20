@@ -371,6 +371,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                     <Button
                         type='submit'
                         loading={loading}
+                        disabled={loading}
                         width='100%'
                         style={{ margin: '1rem 0rem 0rem' }}
                     >

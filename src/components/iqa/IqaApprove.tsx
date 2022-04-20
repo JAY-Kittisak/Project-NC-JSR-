@@ -108,6 +108,7 @@ const IqaApprove: React.FC<Props> = ({ iqaId, approve, iqaStatus, setAlertWarnin
                         <Button
                             type='submit'
                             loading={loading}
+                            disabled={loading}
                             width='100%'
                             style={{ margin: '0.5rem 0' }}
                         >

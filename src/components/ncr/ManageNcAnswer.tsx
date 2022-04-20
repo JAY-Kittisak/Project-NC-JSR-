@@ -520,6 +520,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     <Button
                         type='submit'
                         loading={loading}
+                        disabled={loading}
                         width='100%'
                     >
                         {ncAnswer ? 'อัพเดท' : 'บันทึก'}

@@ -112,6 +112,7 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
                         <Button
                             type='submit'
                             loading={loading}
+                            disabled={loading}
                             width='100%'
                             style={{ margin: '0.5rem 0' }}
                         >

@@ -469,6 +469,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <Button
                         type='submit'
                         loading={loading}
+                        disabled={loading}
                         width='100%'
                     >
                         {iqaAnswer ? 'อัพเดท' : 'บันทึก'}

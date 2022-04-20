@@ -107,6 +107,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
                         <Button
                             type='submit'
                             loading={loading}
+                            disabled={loading}
                             width='100%'
                             style={{ margin: '0.5rem 0' }}
                         >

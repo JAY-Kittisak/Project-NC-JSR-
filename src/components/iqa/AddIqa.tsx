@@ -446,6 +446,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                 <Button
                     type='submit'
                     loading={loading}
+                    disabled={loading}
                     width='100%'
                     style={{ margin: '0.5rem 0' }}
                 >
