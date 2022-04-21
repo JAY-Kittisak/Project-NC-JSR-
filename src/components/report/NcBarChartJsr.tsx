@@ -3,7 +3,9 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { NcrNotify ,Branch } from '../../types';
+
+import { initialDeptJsr } from '../../helpers'
+import { NcrNotify ,Branch, DeptJsr, CountsBarJsr } from '../../types';
 
 interface Props {
     dataBarJsr: NcrNotify[] | null
@@ -12,39 +14,7 @@ interface Props {
     setDeptChart: React.Dispatch<React.SetStateAction<string>>
 }
 
-type DeptJsr =
-    | 'SC'
-    | 'SA'
-    | 'QMR'
-    | 'PU'
-    | 'MK'
-    | 'IV'
-    | 'HR'
-    | 'EN'
-    | 'DL'
-    | 'AD'
-    | 'AC'
-
-type DeptDemoCounts = { [key in DeptJsr]: NcrNotify[] }
-
-const initialArrDemo: DeptDemoCounts = {
-    SC: [],
-    SA: [],
-    QMR: [],
-    PU: [],
-    IV: [],
-    MK: [],
-    HR: [],
-    EN: [],
-    DL: [],
-    AD: [],
-    AC: [],
-}
-
-const initialDemo: {
-    nameDept: DeptJsr;
-    counts: number;
-}[] = [{
+const initialBarJsr: CountsBarJsr[] = [{
     nameDept: 'SC',
     counts: 0,
 }]
@@ -53,8 +23,8 @@ const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchC
     const [activeIndex, setActiveIndex] = useState(0)
     const [activeDept, setActiveDept] = useState<DeptJsr>('SC')
 
-    const [dataJsr, setDataJsr] = useState(initialDemo)
-    const [ncJsr, setNcJsr] = useState(initialArrDemo)
+    const [dataJsr, setDataJsr] = useState(initialBarJsr)
+    const [ncJsr, setNcJsr] = useState(initialDeptJsr)
     
     const handleClick = useCallback((_, index: number) => {
         const result = dataJsr[index].nameDept
@@ -69,61 +39,20 @@ const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchC
         if (!dataBarJsr) return
 
         const updatedJsr: any = {}
+        let countsBarChart: CountsBarJsr[] = []
 
-        Object.keys(initialArrDemo).forEach(ncStatus => {
-            const status = ncStatus as DeptJsr
+        Object.keys(initialDeptJsr).forEach(deptJsr => {
+            const dept = deptJsr as DeptJsr
 
-            updatedJsr[status] = dataBarJsr.filter((item) => item.dept === status)
+            updatedJsr[dept] = dataBarJsr.filter((item) => item.dept === dept)
+
+            const countsBar: CountsBarJsr  = { nameDept: dept, counts: updatedJsr[dept].length }
+            countsBarChart.push(countsBar)
         })
 
         setNcJsr(updatedJsr)
 
-        setDataJsr([
-            {
-                nameDept: 'SC',
-                counts: updatedJsr.SC.length,
-            },
-            {
-                nameDept: 'SA',
-                counts: updatedJsr.SA.length,
-            },
-            {
-                nameDept: 'QMR',
-                counts: updatedJsr.QMR.length,
-            },
-            {
-                nameDept: 'PU',
-                counts: updatedJsr.PU.length,
-            },
-            {
-                nameDept: 'MK',
-                counts: updatedJsr.MK.length,
-            },
-            {
-                nameDept: 'IV',
-                counts: updatedJsr.IV.length,
-            },
-            {
-                nameDept: 'HR',
-                counts: updatedJsr.HR.length,
-            },
-            {
-                nameDept: 'EN',
-                counts: updatedJsr.EN.length,
-            },
-            {
-                nameDept: 'DL',
-                counts: updatedJsr.DL.length,
-            },
-            {
-                nameDept: 'AD',
-                counts: updatedJsr.AD.length,
-            },
-            {
-                nameDept: 'AC',
-                counts: updatedJsr.AC.length,
-            },
-        ])
+        setDataJsr(countsBarChart)
 
     }, [dataBarJsr])
 

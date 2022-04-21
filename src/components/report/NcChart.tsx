@@ -31,9 +31,11 @@ const NcChart: React.FC<Props> = () => {
 
     useEffect(() => {
         if (!ncNotify) return
-        
-        const branchLkb = ncNotify.filter(value => value.branch === 'ลาดกระบัง')
-        const branchCdc = ncNotify.filter(value => value.branch === 'ชลบุรี')
+
+        const filterStatus = ncNotify.filter(value => value.ncStatus !== 'ยกเลิก')
+
+        const branchLkb = filterStatus.filter(value => value.branch === 'ลาดกระบัง')
+        const branchCdc = filterStatus.filter(value => value.branch === 'ชลบุรี')
 
         setDataBarJsr(branchLkb)
         setDataBarCdc(branchCdc)
@@ -147,7 +149,7 @@ const NcChartStyled = styled.div`
         width: 70%;
     }
 
-    @media screen and (max-width: 1000px){
+    @media screen and (max-width: 1200px){
         flex-direction: column;
         .left-content {
             width: 100%;
@@ -185,7 +187,7 @@ const NcChartStyled = styled.div`
     }
 
     .card + .card::before{
-        background-color: #50c272;
+        background-color: #0bce46;
     }
 
     h3 {

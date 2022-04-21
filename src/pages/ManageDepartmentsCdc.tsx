@@ -72,7 +72,7 @@ const ManageDepartmentsCdc: React.FC<Props> = () => {
                                         message: 'Department name must be at least 3 characters.'
                                     },
                                     maxLength: {
-                                        value: 3,
+                                        value: 6,
                                         message: 'Department name be not more than 200 characters.'
                                     }
                                 })}

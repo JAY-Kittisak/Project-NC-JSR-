@@ -3,7 +3,9 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { NcrNotify, Branch } from '../../types';
+
+import { NcrNotify, Branch, DeptCdc, CountsBarCdc } from '../../types';
+import { initialDeptCdc } from '../../helpers'
 
 interface Props {
     dataBarCdc: NcrNotify[] | null
@@ -12,39 +14,7 @@ interface Props {
     setDeptChart: React.Dispatch<React.SetStateAction<string>>
 }
 
-type DeptCdc =  
-    | 'SC'
-    | 'SA'
-    | 'QMR'
-    | 'PU'
-    | 'MK'
-    | 'IV'
-    | 'HR'
-    | 'GA'
-    | 'EN'
-    | 'DL'
-    | 'AC'
-
-type deptDemoCountsCdc = { [key in DeptCdc]: NcrNotify[]}
-
-const initialArrDemoCdc: deptDemoCountsCdc = {
-    SC: [],
-    SA: [],
-    QMR: [],
-    PU: [],
-    IV: [],
-    MK: [],
-    HR: [],
-    GA: [],
-    EN: [],
-    DL: [],
-    AC: [],
-}
-
-const initialDemoCdc :{
-    nameDept: DeptCdc;
-    counts: number;
-}[] = [{
+const initialDemoCdc: CountsBarCdc[] = [{
     nameDept: 'SC', 
     counts: 0,
 }]
@@ -54,7 +24,7 @@ const NcBarChartCdc: React.FC<Props> = ({ dataBarCdc, setNcCdcToDept, setBranchC
     const [activeDept, setActiveDept] = useState<DeptCdc>('SC')
 
     const [dataCdc, setDataCdc] = useState(initialDemoCdc)
-    const [ncCdc, setNcCdc] = useState(initialArrDemoCdc)
+    const [ncCdc, setNcCdc] = useState(initialDeptCdc)
     
     const handleClick = useCallback((_, index: number) => {
         const result = dataCdc[index].nameDept
@@ -69,61 +39,20 @@ const NcBarChartCdc: React.FC<Props> = ({ dataBarCdc, setNcCdcToDept, setBranchC
         if (!dataBarCdc) return
 
         const updatedCdc: any = {}
+        let countsBarChart: CountsBarCdc[] = []
 
-        Object.keys(initialArrDemoCdc).forEach(ncStatus => {
-            const status = ncStatus as DeptCdc
+        Object.keys(initialDeptCdc).forEach(deptCdc => {
+            const dept = deptCdc as DeptCdc
 
-            updatedCdc[status] = dataBarCdc.filter((item) => item.dept === status)
+            updatedCdc[dept] = dataBarCdc.filter((item) => item.dept === dept)
+
+            const countsBar: CountsBarCdc = { nameDept: dept, counts: updatedCdc[dept].length }
+            countsBarChart.push(countsBar)
         })
         
         setNcCdc(updatedCdc)
 
-        setDataCdc([
-            {
-                nameDept: 'SC',
-                counts: updatedCdc.SC.length,
-            },
-            {
-                nameDept: 'SA',
-                counts: updatedCdc.SA.length,
-            },
-            {
-                nameDept: 'QMR',
-                counts: updatedCdc.QMR.length,
-            },
-            {
-                nameDept: 'PU',
-                counts: updatedCdc.PU.length,
-            },
-            {
-                nameDept: 'MK',
-                counts: updatedCdc.MK.length,
-            },
-            {
-                nameDept: 'IV',
-                counts: updatedCdc.IV.length,
-            },
-            {
-                nameDept: 'HR',
-                counts: updatedCdc.HR.length,
-            },
-            {
-                nameDept: 'GA',
-                counts: updatedCdc.GA.length,
-            },
-            {
-                nameDept: 'EN',
-                counts: updatedCdc.EN.length,
-            },
-            {
-                nameDept: 'DL',
-                counts: updatedCdc.DL.length,
-            },
-            {
-                nameDept: 'AC',
-                counts: updatedCdc.AC.length,
-            },
-        ])
+        setDataCdc(countsBarChart)
 
     }, [dataBarCdc])
 

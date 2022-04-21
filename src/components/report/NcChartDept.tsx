@@ -100,14 +100,14 @@ const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) =
         
         const onlyTopics = new Set(ncJsrToDept.map(item => item.topic))
         
-        let itemPieChart: ValueDept[] = []
+        let valuesPieChart: ValueDept[] = []
 
         onlyTopics.forEach((onlyTopic) => {
             const result = topics.filter(topic => topic === onlyTopic)
-            const testDemo = { dept: onlyTopic, value: result.length }
-            itemPieChart.push(testDemo)
+            const valuePic = { dept: onlyTopic, value: result.length }
+            valuesPieChart.push(valuePic)
         });
-        setDataPieChart(itemPieChart)
+        setDataPieChart(valuesPieChart)
 
         setDataCat([
             {
@@ -203,7 +203,7 @@ const DeptChartStyled = styled.section`
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
-    @media screen and (max-width: 1000px){
+    @media screen and (max-width: 1200px){
         width: 100%;
         margin-top: 1.5rem;
         margin-left: 0rem;
@@ -272,7 +272,7 @@ const TextStyled = styled.p`
     width: 250px;
     padding-left: 25px;
     
-    @media screen and (max-width: 1000px){
+    @media screen and (max-width: 1200px){
         width: 100%;
     }
 `

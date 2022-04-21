@@ -72,7 +72,7 @@ const ManageDepartments: React.FC<Props> = () => {
                                         message: 'Department name must be at least 3 characters.'
                                     },
                                     maxLength: {
-                                        value: 3,
+                                        value: 6,
                                         message: 'Department name be not more than 200 characters.'
                                     }
                                 })}
@@ -111,7 +111,6 @@ const ManageDeptStyled = styled.div`
 
     .form{
         display: flex;
-        align-items: center;
         width: 100%;
 
         @media screen and (max-width: 502px){
@@ -119,7 +118,7 @@ const ManageDeptStyled = styled.div`
         }
 
         button {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         div:first-child {

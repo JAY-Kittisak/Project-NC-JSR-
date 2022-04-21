@@ -370,10 +370,10 @@ export type SidebarType = {
     }[];
 }
 
+// TODO: Chart
 export type ChartColor = '#007bff' | '#0bce46'
 export type ChartColorType = '#78b8fd' | '#6fcc8b'
 
-// TODO: Chart
 export type DataDemo = {
     id: string
     dept: string
@@ -385,4 +385,49 @@ export type DataDemo = {
     topicType: string
     branch: Branch
     ncStatus: StatusNc
+}
+
+export type DeptJsr =
+    | 'SC'
+    | 'QMR'
+    | 'PU'
+    | 'MK'
+    | 'IV'
+    | 'HR'
+    | 'EN'
+    | 'DL'
+    | 'AD'
+    | 'AC'
+    | 'SAYA'
+    | 'SARG'
+    | 'SAPJ'
+    | 'SAMO'
+    | 'SAAR'
+
+export type DeptJsrCounts = { [key in DeptJsr]: NcrNotify[] }
+
+export type CountsBarJsr = {
+    nameDept: DeptJsr;
+    counts: number;
+}
+
+export type DeptCdc =  
+    | 'SC'
+    | 'QMR'
+    | 'PU'
+    | 'MK'
+    | 'IV'
+    | 'HR'
+    | 'GA'
+    | 'EN'
+    | 'DL'
+    | 'AC'
+    | 'SACT'
+    | 'SAAR'
+
+export type DeptCdcCounts = { [key in DeptCdc]: NcrNotify[] }
+
+export type CountsBarCdc ={
+    nameDept: DeptCdc;
+    counts: number;
 }

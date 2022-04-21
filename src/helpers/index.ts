@@ -7,7 +7,9 @@ import {
     StatusNc, 
     Requirements, 
     EditedDoc, 
-    EditedRootDoc
+    EditedRootDoc,
+    DeptJsrCounts,
+    DeptCdcCounts
 } from "../types";
 import { firebase } from '../firebase/config'
 
@@ -132,4 +134,37 @@ export function getStatusColor(value: StatusNc) {
     } else if (value === 'ยกเลิก') {
         return '#7a05ff'
     } else return 'var(--primary-color)'
+}
+
+export const initialDeptJsr: DeptJsrCounts = {
+    SC: [],
+    QMR: [],
+    PU: [],
+    IV: [],
+    MK: [],
+    HR: [],
+    EN: [],
+    DL: [],
+    AD: [],
+    AC: [],
+    SAYA: [],
+    SARG: [],
+    SAPJ: [],
+    SAMO: [],
+    SAAR: [],
+}
+
+export const initialDeptCdc: DeptCdcCounts = {
+    SC: [],
+    QMR: [],
+    PU: [],
+    IV: [],
+    MK: [],
+    HR: [],
+    GA: [],
+    EN: [],
+    DL: [],
+    AC: [],
+    SACT: [],
+    SAAR: [],
 }
