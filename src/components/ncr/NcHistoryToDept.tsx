@@ -65,8 +65,11 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
                     <div className='nc-column'>
                         <p className='header--center'>วันที่ออก NC</p>
                     </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>ออกให้กับ</p>
+                    <div className='nc-column-dept'>
+                            <p className='header--center'>ออกโดย</p>
+                    </div>
+                    <div className='nc-column-dept'>
+                            <p className='header--center'>ออกให้กับ</p>
                     </div>
                     <div className='nc-column'>
                         <p className='header--center'>ประเด็น</p>
@@ -137,6 +140,10 @@ const HistoryDetail = styled.section`
 
     .nc-column {
         width: 20%;
+    }
+
+    .nc-column-dept {
+        width: 10%;
     }
 
     .header--center {

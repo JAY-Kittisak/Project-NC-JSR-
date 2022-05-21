@@ -183,12 +183,12 @@ const IqaDetail: React.FC<Props> = ({
                             )}
                             {isEditing ? (
                                 <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
-                                    <span><EditIcon /> แก้ไข NC</span>
+                                    <span><EditIcon /> แก้ไข</span>
                                 </Button>
                             ) : (
-                                (creator.id === userInfo.id) && (!answerDateAt) && (
+                                ((creator.id === userInfo.id) && (answerDateAt === undefined)) && (
                                     <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
-                                        <span><EditIcon /> แก้ไข NC</span>
+                                        <span><EditIcon /> แก้ไข</span>
                                     </Button>
                                 )
                             )}

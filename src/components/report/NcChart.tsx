@@ -139,9 +139,10 @@ const InputStyled = styled.div`
 `
 
 const NcChartStyled = styled.div`
-    margin-top: .5rem;
     display: flex;
+    align-items: center;
     width: 100%;
+    margin-top: .5rem;
 
     .left-content {
         display: flex;

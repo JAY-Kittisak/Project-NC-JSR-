@@ -641,7 +641,7 @@ const NcAnswerStyled = styled.div`
         }
         
         .title-select-doc {
-            margin-top: 19px; 
+            margin-top: 14px; 
             margin-left: 17px; 
             padding: 0 .5rem;
             font-size: 1.2rem;

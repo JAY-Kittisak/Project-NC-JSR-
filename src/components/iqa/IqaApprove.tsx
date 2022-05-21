@@ -88,7 +88,7 @@ const IqaApprove: React.FC<Props> = ({ iqaId, approve, iqaStatus, setAlertWarnin
                 )}
                 <div className="form-field">
                     <label htmlFor="approveDetail">
-                        ข้อเสนอแนะเพิ่มเติม
+                        ความคิดเห็น QMR
                     </label>
                     <textarea
                         cols={30}

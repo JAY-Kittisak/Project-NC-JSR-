@@ -173,6 +173,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
         }
     }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
 
+    console.log(iqaAnswer?.fileAnswerIqaName)
+
     return (
         <IqaAnswerStyled className='box-shadows'>
             <h4>ผู้รับผิดชอบการแก้ไข/ป้องกัน</h4>
@@ -357,7 +359,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 )}
 
                 {/* editedDoc */}
-                <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น</p>
+                <p className='title-select-doc'>เอกสารที่ต้องปรับปรุงแก้ไขเบื้องต้น(หากมี)</p>
                 <div className="select-doc">
                     {selectEditedDoc.map((item, i) => (
                         <CheckboxStyled key={i}>
@@ -418,7 +420,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                     ) : (
                                         <>
                                             <label>
-                                                ชื่อไฟล์ (หากมี)
+                                                ชื่อไฟล์
                                             </label>
                                             <input
                                                 readOnly
@@ -434,7 +436,14 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                                             : ''
                                                 }
                                                 ref={register}
-                                            />
+                                                />
+                                                {/* ref={register({ required: 'โปรดแนบไฟล์ของคุณ' })}
+                                            {errors && (
+                                                <p className='paragraph-error text-center'>{errors.fileAnswerIqaName?.message}</p>
+                                            )} */}
+                                            {errors && (
+                                                <p className='paragraph-error text-center'>{errors.fileAnswerIqaName?.message}</p>
+                                            )}
                                         </>
                                     )}
 
@@ -485,7 +494,7 @@ const IqaAnswerStyled = styled.div`
     background-color: var(--background-dark-color);
     
     .title-select-doc {
-        margin-top: 19px; 
+        margin-top: 14px; 
         margin-left: 17px; 
         padding: 0 .5rem;
         font-size: 1.2rem;

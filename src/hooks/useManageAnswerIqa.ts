@@ -101,11 +101,15 @@ export const useManageAnswerIqa = () => {
 
                 iqaAnswerRef
                     .add(newAnswerIqa).then(() => {
-                        console.log('Save IQA Answer Finished.')
+                        
+                        setLoading(false)
+                        setAddAnswerIqaFinished(true)
                     })
                     .catch((err) => {
                         const { message } = err as { message: string }
-                        console.log('err iqaAnswerRef', message)
+                        
+                        setError(message)
+                        setLoading(false)
                     })
             } else {
                 const newAnswerIqa: UploadAnswerIqa = {
@@ -134,11 +138,15 @@ export const useManageAnswerIqa = () => {
 
                 iqaAnswerRef
                     .add(newAnswerIqa).then(() => {
-                        console.log('Save IQA Answer Finished.')
+                        
+                        setLoading(false)
+                        setAddAnswerIqaFinished(true)
                     })
                     .catch((err) => {
                         const { message } = err as { message: string }
-                        console.log('err iqaAnswerRef', message)
+
+                        setError(message)
+                        setLoading(false)
                     })
 
             }

@@ -60,9 +60,9 @@ const ResetPassStyled = styled.div`
 `;
 
 const ModalStyled = styled.div`
-    position: absolute;
+    position: fixed;
     top: 50%;
-    left: 43%;
+    left: 50%;
     transform: translate(-50%, -50%);
     padding: 2rem;
     background: white;

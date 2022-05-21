@@ -22,7 +22,6 @@ type ValueDept ={
     value: number;
 }
 
-
 const data = [
     {
         name: 'NCR',
@@ -196,6 +195,7 @@ const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) =
 
 const DeptChartStyled = styled.section`
     width: 30%;
+    min-height: 605px;
     margin-left: 1.5rem;
     margin-top: .5rem;
     background-color: var(--background-dark-color);
@@ -225,9 +225,9 @@ const DeptChartStyled = styled.section`
 
     .type-chart {
         height: 220px;
-        margin-top: 70px;
+        margin-top: 40px;
         
-        @media screen and (max-width: 1400px){
+        @media screen and (max-width: 1900px){
             margin-top: 0px;
         }
     }
@@ -245,7 +245,7 @@ const TopicAndPic = styled.section`
     align-items: center;
     justify-content: start;
 
-    @media screen and (max-width: 1400px){
+    @media screen and (max-width: 1900px){
         flex-direction: column;
     }
 `

@@ -38,8 +38,6 @@ const IqaFollow: React.FC<Props> = ({
     const handleRadioClick = (e: React.ChangeEvent<HTMLInputElement>): void => setRadioBtn(e.currentTarget.value as FoundFix)
 
     const handleUpdateIqaFollow = handleSubmit(async (data) => {
-
-        console.log('handleUpdateIqaFollow',data)
         const finished = await updateIqaFollow(iqaId,data)
 
         if (finished) {
@@ -72,7 +70,7 @@ const IqaFollow: React.FC<Props> = ({
                             onChange={handleRadioClick}
                             ref={register({ required: 'จำเป็นต้องเลือกหนึ่งตัวเลือกด้านบน' })}
                         />
-                        <label htmlFor="foundAFix">พบการแก้ไขเชิงระบบ</label>
+                        <label htmlFor="foundAFix">การแก้ไขเรียบร้อย</label>
                     </div>
                     <div className="group">
                         <input
@@ -85,7 +83,7 @@ const IqaFollow: React.FC<Props> = ({
                             onChange={handleRadioClick}
                             ref={register({ required: 'จำเป็นต้องเลือกหนึ่งตัวเลือกด้านบน' })}
                         />
-                        <label htmlFor="canNotFix">ไม่สามารถปิดได้</label>
+                        <label htmlFor="canNotFix">การแก้ไขยังไม่เรียบร้อย</label>
                     </div>
                 </RadioStyled>
                 {errors && (
@@ -93,7 +91,7 @@ const IqaFollow: React.FC<Props> = ({
                 )}
                 <div className="form-field">
                     <label htmlFor="followDetail">
-                        ข้อเสนอแนะเพิ่มเติม
+                        ความเห็น Auditor
                     </label>
                     <textarea
                         cols={30}

@@ -108,7 +108,10 @@ const IqaAdminView: React.FC<Props> = () => {
                     <div className='nc-column'>
                         <p className='header--center'>วันที่ออก IQA</p>
                     </div>
-                    <div className='nc-column'>
+                    <div className='nc-column-dept'>
+                        <p className='header--center'>ทีมที่ออก IQA</p>
+                    </div>
+                    <div className='nc-column-dept'>
                         <p className='header--center'>ออกให้กับ</p>
                     </div>
                     <div className='nc-column'>
@@ -174,6 +177,10 @@ const HistoryDetail = styled.section`
 
     .nc-column {
         width: 20%;
+    }
+
+    .nc-column-dept {
+        width: 10%;
     }
 
     .header--center {

@@ -25,7 +25,10 @@ const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
                         </p>
                     )}
                 </div>
-                <div className="nc-column">
+                <div className="nc-column-dept">
+                    <p>{item.creator.dept}</p>
+                </div>
+                <div className="nc-column-dept">
                     <p>{item.dept}</p>
                 </div>
                 <div className="nc-column">
@@ -81,14 +84,11 @@ const NotifyItem = styled.div`
         border-bottom: 1px solid rgb(40, 44, 52, 0.3);
     }
 
-    .nc-column {
-        width: 20%;
-        p {
-            margin: 5px 0;
-            text-align: center;
-            font-style: italic;
-            font-size: 0.9rem;
-        }
+    p {
+        margin: 5px 0;
+        text-align: center;
+        font-style: italic;
+        font-size: 0.9rem;
     }
 `
 export default NcHistoryToDeptItem

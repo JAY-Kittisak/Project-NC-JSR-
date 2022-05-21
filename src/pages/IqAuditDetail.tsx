@@ -63,7 +63,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                     <IqaDetail
                         iqa={iqa}
                         userInfo={userInfo}
-                        answerDateAt={undefined}
+                        answerDateAt={iqaAnswer?.createdAt}
                         setAlertWarning={setAlertWarning}
                         setAlertState={setAlertState}
                         setOpenNcForm={setOpenNcForm}
