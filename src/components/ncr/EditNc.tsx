@@ -18,7 +18,7 @@ interface Props {
 }
 
 const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
-    const [dept, setDept] = useState(nc.dept)
+    const [selectDept, setSelectDept] = useState(nc.dept)
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
@@ -34,7 +34,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
         editNc,
         uploadImageToStorage,
         setUploadProgression,
-        editNcFinished,
+        editFinished,
         uploadProgression,
         loading,
         error
@@ -82,13 +82,13 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
         } = nc
 
         const isNotEdited =
-            category === data.creatorName &&
+            category === data.category &&
             creatorName === data.creatorName &&
-            dept === data.creatorName &&
+            dept === data.dept &&
             topicType === data.topicType &&
-            topic === data.creatorName &&
-            detail === data.creatorName &&
-            fileNcName === data.creatorName
+            topic === data.topic &&
+            detail === data.detail &&
+            fileNcName === data.fileNcName
 
         // 1. Nothing Changed
         if (isNotEdited) return
@@ -97,7 +97,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
         if (fileNcUrl && fileNcRef && fileNcName) {
             // 3. Something changed
             if (fileNcName !== data.fileNcName) {
-                // 3.1 If the iamge changed
+                // 3.1 If the image changed
                 if (!selectedFile) return
 
                 // Delete the old image
@@ -121,28 +121,33 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
 
         if (nc.branch === 'ลาดกระบัง') {
             if (departments) {
-                const filterTopic = departments.filter((value) => value.dept === dept)
+                const filterTopic = departments.filter((value) => value.dept === selectDept)
                 const mapTopic = filterTopic.map(item => item.topic)
                 const mapIs = mapTopic[0]
                 setTopic(mapIs)
             }
         } else {
             if (deptCdc) {
-                const filterTopic = deptCdc.filter((value) => value.dept === dept)
+                const filterTopic = deptCdc.filter((value) => value.dept === selectDept)
                 const mapTopic = filterTopic.map(item => item.topic)
                 const mapIs = mapTopic[0]
                 setTopic(mapIs)
             }
         }
-    }, [nc.branch, departments, deptCdc, dept])
+    }, [nc.branch, departments, deptCdc, selectDept])
 
     useEffect(() => {
-        if (editNcFinished) {
+        if (editFinished) {
             setSelectedFile(null)
             setUploadProgression(0)
             setOpenNcForm(false)
         }
-    }, [editNcFinished, setUploadProgression, setSelectedFile, setOpenNcForm])
+    }, [editFinished, setUploadProgression, setSelectedFile, setOpenNcForm])
+
+    useEffect(() => {
+        document.documentElement.style.overflowY = 'hidden'
+        return () => { document.documentElement.style.overflowY = 'auto' }
+    }, [])
 
     return (
         <>
@@ -168,7 +173,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                                 name='category'
                                 className='input'
                                 defaultValue={nc.category}
-                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                ref={register({ required: 'โปรดใส่ ประเภท' })}
                             >
                                 <option style={{ display: 'none' }}></option>
                                 {categories.map((cat) => (
@@ -203,7 +208,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                                     name='dept'
                                     className='input'
                                     defaultValue={nc.dept}
-                                    onChange={(e) => setDept(e.target.value)}
+                                    onChange={(e) => setSelectDept(e.target.value)}
                                     ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                                 >
                                     {departments.map((cat) => (
@@ -222,7 +227,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                                     name='dept'
                                     className='input'
                                     defaultValue={nc.dept}
-                                    onChange={(e) => setDept(e.target.value)}
+                                    onChange={(e) => setSelectDept(e.target.value)}
                                     ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
                                 >
                                     <option style={{ display: 'none' }}></option>
@@ -286,7 +291,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
 
                     {/* Detail */}
                     <div className='form__input-container'>
-                        <label className='form__input-label'>
+                        <label htmlFor='detail' className='form__input-label'>
                             รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
                         </label>
                         <textarea
@@ -299,7 +304,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                             ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
                         />
                     </div>
-                    {errors.detail && (
+                    {errors && (
                         <p className='paragraph-error text-center'>{errors.detail?.message}</p>
                     )}
 
@@ -396,7 +401,7 @@ const GridStyled = styled.section`
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 2rem;
     @media screen and (max-width:1400px){
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: 1fr;
     }
 `
 
@@ -421,14 +426,9 @@ const ModalStyled = styled.div`
     box-shadow: 0px 30px 20px rgba(0, 0, 0, 0.4);
     animation: appear 0.4s linear;
     position: fixed;
-    width: 35%;
+    width: 40rem;
     z-index: 1;
 
-    @media screen and (max-width: 600px) {
-        position: fixed;
-        width: 90%;
-    }
-    
     @keyframes appear {
         from {
             opacity: 0;
@@ -473,7 +473,7 @@ const ModalStyled = styled.div`
     .input {
         width: 100%;
         border: 0.6px solid #79849b;
-        padding: 0.3rem;
+        padding: 0.2rem;
         outline: none;
         border-radius: 2px;
         box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);

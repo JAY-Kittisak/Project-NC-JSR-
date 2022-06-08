@@ -11,9 +11,7 @@ const DashboardIqa: React.FC<Props> = () => {
         <MainLayout>
             <Title title={'Dashboard IQA'} span={'Dashboard IQA'} />
             <InnerLayout>
-
                 <IqaChart />
-
             </InnerLayout>
         </MainLayout>
     )

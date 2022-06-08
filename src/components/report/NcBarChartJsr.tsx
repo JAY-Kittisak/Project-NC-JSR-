@@ -95,9 +95,6 @@ const NcBarChartJsr: React.FC<Props> = ({ dataBarJsr, setNcJsrToDept, setBranchC
                                 />
                             ))}
                         </Bar>
-                        {/* <Bar dataKey="NCR" fill="#007bff" />
-                                    <Bar dataKey="CCR" fill="#78b8fd" />
-                                    <Bar dataKey="SCR" fill="#235488" /> */}
                     </BarChart>
                 </ResponsiveContainer>
             </div>

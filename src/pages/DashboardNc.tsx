@@ -11,9 +11,7 @@ const DashboardNc: React.FC<Props> = () => {
         <MainLayout>
             <Title title={'Dashboard Nc'} span={'Dashboard Nc'} />
             <InnerLayout>
-
                 <NcChart />
-                
             </InnerLayout>
         </MainLayout>
     )

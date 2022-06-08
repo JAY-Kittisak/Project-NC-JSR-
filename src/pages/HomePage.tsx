@@ -7,9 +7,6 @@ import YouTubeIcon from "@material-ui/icons/YouTube";
 import Hero from "../components/hero/Hero";
 import { useAuthContext } from "../state/auth-context";
 import { useModalContext } from "../state/modal-context";
-// import { MainLayout } from "../styles/LayoutStyle";
-// import News from "../components/home/News";
-// import Holiday from "../components/home/Holiday";
 
 function HomePage() {
     const { setModalType } = useModalContext()
@@ -37,9 +34,6 @@ function HomePage() {
                     <h1>
                         <span className="span-primary">JSR</span> NC System
                     </h1>
-                    {/* <h1>
-                        บริษัท <span className="span-primary">จ.ศรีรุ่งเรื่องอิมเป็กซ์</span> จำกัด
-                    </h1> */}
                     <p>
                         เรา JSR มุ่งมั่นที่จะเป็นผู้นำด้านการจำหน่ายเครื่องมืออุตสาหกรรม ที่มีผลิตภัณฑ์ หลากหลาย ครอบคลุมความต้องการของลูกค่า
                     </p>
@@ -63,11 +57,6 @@ function HomePage() {
                     )}
                 </div>
             </HomePageStyled>
-            {/* <MainLayout>
-                <News />
-                <br />
-                <Holiday />
-            </MainLayout> */}
         </>
     );
 }

@@ -41,10 +41,10 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
 
     return (
         <NcHistory>
-            <HistoryHeader>
+            <section className='header-status'>
                 <h4>NC ที่ถูกออกให้กับแผนก {dept}</h4>
 
-                <NcTabStyled>
+                <div className='tab-status'>
                     {orderTabs.map((tab) => (
                         <Tab
                             key={tab}
@@ -53,9 +53,9 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
                             activeTab={activeTab}
                         />
                     ))}
-                </NcTabStyled>
+                </div>
 
-            </HistoryHeader>
+            </section>
 
             <HistoryDetail>
                 <div className="nc-content">
@@ -103,26 +103,6 @@ const NcHistoryToDept: React.FC<Props> = ({ dept, branch }) => {
 const NcHistory = styled.div`
     padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
-
-    h4{
-        color: var(--white-color);
-        font-size: 1.4rem;
-        margin: 16px 0;
-        border-left: 5px solid #e74c3c;
-        padding-left: 16px;
-    }
-`
-
-const NcTabStyled = styled.div`
-    width: 40%;
-    display: flex;
-    justify-content: space-between;
-    height: 2rem;
-`
-
-const HistoryHeader = styled.section`
-    display: flex;
-    justify-content: space-between;
 `
 
 const HistoryDetail = styled.section`

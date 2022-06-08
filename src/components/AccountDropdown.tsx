@@ -50,9 +50,6 @@ const AccountDropdown: React.FC<Props> = ({ name, email }) => {
                     <span>{email}</span>
                 </h3>
                 <ul>
-                    {/* <li><button><PersonIcon />My Profile</button></li>
-                    <li><button><EditIcon />Edit Profile</button></li>
-                    <li><button><Settings />Settings</button></li> */}
                     <li>
                         <Brightness4Icon />
                         <Switch

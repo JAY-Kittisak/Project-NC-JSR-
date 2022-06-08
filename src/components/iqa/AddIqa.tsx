@@ -172,6 +172,9 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                         </Button>
                     )}
                 </div>
+                {errors && (
+                    <p className='paragraph-error text-center'>{errors.inspector1?.message}</p>
+                )}
                 {nameTwo && (
                     <div className='flex-between'>
                         <div className='form-field'>
@@ -249,26 +252,28 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                 )}
 
                 <div className='grid-add'>
-                    <div className='form-field'>
-                        <label htmlFor='category'>
-                            CAR หรือ OBS
-                        </label>
-                        <select name='category' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
-                            <option style={{ display: 'none' }}></option>
-                            <option value='CAR'>CAR</option>
-                            <option value='OBS'>OBS</option>
-                        </select>
-                    </div>
-                    <div className='form-field'>
-                        <label htmlFor='team'>ทีม</label>
-                        <select name='team' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
-                            <option style={{ display: 'none' }}></option>
-                            {selectTeams.map((item,i) => {
-                                return (
-                                    <option key={i} value={item}>ทีม {item}</option>
-                                )
-                            })}
-                        </select>
+                    <div className='flex-between'>
+                        <div className='form-field'>
+                            <label htmlFor='category'>
+                                CAR/OBS
+                            </label>
+                            <select name='category' ref={register({ required: 'โปรดเลือกประเภท  CAR หรือ OBS' })}>
+                                <option style={{ display: 'none' }}></option>
+                                <option value='CAR'>CAR</option>
+                                <option value='OBS'>OBS</option>
+                            </select>
+                        </div>
+                        <div className='form-field'>
+                            <label htmlFor='team'>ทีม</label>
+                            <select name='team' ref={register({ required: 'โปรดเลือกทีม' })}>
+                                <option style={{ display: 'none' }}></option>
+                                {selectTeams.map((item,i) => {
+                                    return (
+                                        <option key={i} value={item}>ทีม {item}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
                     </div>
                     <div className='form-field'>
                         <label htmlFor='round'>
@@ -282,20 +287,23 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                     </div>
                 </div>
                 {errors && (
+                    <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                )}
+                {errors && (
                     <p className='paragraph-error text-center'>{errors.team?.message}</p>
                 )}
                 {errors && (
-                    <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                    <p className='paragraph-error text-center'>{errors.round?.message}</p>
                 )}
 
-                {/* กระบวนการถูกตรวจ & แผนก*/}
+                {/* ถึงชื่อ & แผนก*/}
                 <div className='flex-between'>
                     <div className='form-field'>
                         <label htmlFor='toName'>ถึงชื่อ-นามสกุล</label>
                         <input
                             name='toName'
                             id='toName'
-                            ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
+                            ref={register({ required: 'โปรดใส่ ถึงชื่อ-นามสกุล' })}
                         />
                     </div>
                     {userInfo?.branch === 'ลาดกระบัง' ? (
@@ -305,7 +313,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                             </label>
                             <select
                                 name='dept'
-                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
                             >
                                 <option style={{ display: 'none' }}></option>
                                 {departments.map((cat) => (
@@ -322,7 +330,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                             </label>
                             <select
                                 name='dept'
-                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
                             >
                                 <option style={{ display: 'none' }}></option>
                                 {deptCdc.map((cat) => (
@@ -356,7 +364,7 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                         <label htmlFor='requirements'>
                             ผิดข้อกำหนด ISO 9001 ข้อที่
                         </label>
-                        <select name='requirements' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
+                        <select name='requirements' ref={register({ required: 'โปรดใส่ ข้อกำหนด ISO 9001' })}>
                             <option style={{ display: 'none' }}></option>
                             {requirements.map((item, i) => (
                                 <option key={i} value={item}>{item}</option>
@@ -364,6 +372,9 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
                         </select>
                     </div>
                 </div>
+                {errors && (
+                    <p className='paragraph-error text-center'>{errors.checkedProcess?.message}</p>
+                )}
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.requirements?.message}</p>
                 )}
@@ -489,9 +500,9 @@ const AddIqaStyled = styled.section`
 
     .grid-add {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         grid-column-gap: 1rem;
-        
+
         @media screen and (max-width: 1400px){
             grid-template-columns: repeat(1, 1fr);
         }
@@ -535,9 +546,7 @@ const AddIqaStyled = styled.section`
 
     .form{
         width: 100%;
-        @media screen and (max-width: 502px){
-            width: 100%;
-        }
+        
         .form-field{
             margin-top: 2rem;
             position: relative;

@@ -5,7 +5,7 @@ import PrintRoundedIcon from "@material-ui/icons/PrintRounded";
 
 import Button from '../Button'
 import { formatDate, isAdmin, diffDay, getStatusColor } from '../../helpers'
-import { IqaType, UserInfo, AlertNt, AlertType, StatusNc } from '../../types'
+import { IqaType, UserInfo, AlertNt, AlertType, StatusProps } from '../../types'
 import { firebase } from '../../firebase/config'
 import UpdateIqaStatus from './UpdateIqaStatus';
 
@@ -15,7 +15,7 @@ interface Props {
     answerDateAt: firebase.firestore.Timestamp | undefined
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
-    setOpenNcForm: React.Dispatch<React.SetStateAction<boolean>>
+    setOpenIqaForm: React.Dispatch<React.SetStateAction<boolean>>
     printNcDetail: () => void
 }
 
@@ -25,7 +25,7 @@ const IqaDetail: React.FC<Props> = ({
     answerDateAt, 
     setAlertWarning,
     setAlertState, 
-    setOpenNcForm,
+    setOpenIqaForm,
     printNcDetail
 }) => {
     const [isEditing, setIsEditing] = useState(false)
@@ -111,8 +111,8 @@ const IqaDetail: React.FC<Props> = ({
                                         setIsEditing={setIsEditing}
                                     />
                                 ) : (
-                                    <NcStatusStyled ncStatus={iqaStatus}>
-                                        {iqaStatus}
+                                    <NcStatusStyled status={iqaStatus}>
+                                        <p>{iqaStatus}</p>
                                     </NcStatusStyled>
                                 )}
                             </div>
@@ -182,12 +182,12 @@ const IqaDetail: React.FC<Props> = ({
                                 </Button>
                             )}
                             {isEditing ? (
-                                <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
+                                <Button className='btn--darkcyan' onClick={() => setOpenIqaForm(true)}>
                                     <span><EditIcon /> แก้ไข</span>
                                 </Button>
                             ) : (
                                 ((creator.id === userInfo.id) && (answerDateAt === undefined)) && (
-                                    <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
+                                    <Button className='btn--darkcyan' onClick={() => setOpenIqaForm(true)}>
                                         <span><EditIcon /> แก้ไข</span>
                                     </Button>
                                 )
@@ -201,6 +201,12 @@ const IqaDetailStyled = styled.div`
     display: flex;
     flex-direction: column;
     background-color: var(--background-dark-color);
+    
+    .edit-nc {
+        button {
+            margin: 10px;
+        }
+    }
 `
 const SvgStyled = styled.div`
     svg {
@@ -215,8 +221,17 @@ const SvgStyled = styled.div`
     }
 `
 const NcStatusStyled = styled.section`
-    font-size: 1.2rem;
-    color: ${(props: { ncStatus: StatusNc }) => getStatusColor(props.ncStatus)};
+    width: 100px;
+    padding: 2px;
+    border-radius: 30px;
+    color: white;
+    background-color: ${(props: StatusProps) => getStatusColor(props.status)};
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+
+    p {
+        font-size: 1.2rem;
+        text-align: center;
+    }
 `
 
 export default IqaDetail

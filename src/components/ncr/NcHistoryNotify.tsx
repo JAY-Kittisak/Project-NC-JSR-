@@ -77,12 +77,6 @@ const NcHistory = styled.div`
     }
 `
 
-// const NcPaginationStyled = styled.div`
-//     margin-bottom: 1rem;
-//     display: flex;
-//     justify-content: flex-end;
-// `
-
 const HistoryHeader = styled.section`
     display: flex;
     justify-content: space-between;

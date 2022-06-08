@@ -96,7 +96,7 @@ export const useManageAnswerIqa = () => {
                     .update({ iqaStatus: 'ตอบแล้ว' })
                     .catch((err) => {
                         const { message } = err as { message: string }
-                        console.log('err iqaRef', message)
+                        setError(message)
                     })
 
                 iqaAnswerRef
@@ -133,7 +133,7 @@ export const useManageAnswerIqa = () => {
                     .update({ iqaStatus: 'ตอบแล้ว' })
                     .catch((err) => {
                         const { message } = err as { message: string }
-                        console.log('err iqaRef', message)
+                        setError(message)
                     })
 
                 iqaAnswerRef
@@ -222,7 +222,7 @@ export const useManageAnswerIqa = () => {
                         })
                 }
 
-                iqaRef
+                iqaAnswerRef
                     .doc(answerIqaId)
                     .set(editedAnswerIqa, { merge: true })
                     .then(() => {
@@ -275,7 +275,7 @@ export const useManageAnswerIqa = () => {
                         })
                 }
 
-                iqaRef
+                iqaAnswerRef
                     .doc(answerIqaId)
                     .set(editedAnswerIqa, { merge: true })
                     .then(() => {

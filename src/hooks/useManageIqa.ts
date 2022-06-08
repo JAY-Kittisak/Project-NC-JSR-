@@ -12,13 +12,16 @@ import {
     UploadFollowIqa, 
     AddApproveIqaData,
     UploadApproveIqa,
-    StatusNc
+    StatusNc,
+    EditIqaTypeData,
+    UploadEditIqa
 } from "../types"
 
 
 export const useManageIqa = () => {
     const [uploadProgression, setUploadProgression] = useState(0)
     const [addIqaFinished, setAddIqaFinished] = useState(false)
+    const [editFinished, setEditFinished] = useState(false)
 
     const { loading, setLoading, error, setError } = useAsyncCall()
 
@@ -152,6 +155,98 @@ export const useManageIqa = () => {
         }
     }
 
+    const editIqa = (
+        iqaId: string,
+        data: EditIqaTypeData
+    ) => (
+        fileIqaUrl: string | undefined,
+        filePath: string | undefined
+    ) => {
+        const {
+            inspector1,
+            inspector2,
+            inspector3,
+            inspector4,
+            category,
+            team,
+            round,
+            toName,
+            dept,
+            checkedProcess,
+            requirements,
+            detail,
+            fileIqaName
+        } = data
+
+        setLoading(true)
+        setEditFinished(false)
+
+        if (fileIqaUrl && filePath && fileIqaName) {
+            const editedIqa: UploadEditIqa = {
+                inspector1,
+                inspector2: inspector2 ? inspector2 : null,
+                inspector3: inspector3 ? inspector3 : null,
+                inspector4: inspector4 ? inspector4 : null,
+                category,
+                team,
+                round,
+                toName,
+                dept,
+                checkedProcess,
+                requirements,
+                detail,
+                fileIqaUrl,
+                fileIqaName,
+                fileIqaRef: filePath,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
+
+            iqaRef
+                .doc(iqaId)
+                .set(editedIqa, { merge: true })
+                .then(() => {
+                    setEditFinished(true)
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    const { message } = err as { message: string }
+
+                    setError(message)
+                    setLoading(false)
+                })
+        } else {
+            const editedIqa: UploadEditIqa = {
+                inspector1,
+                inspector2: inspector2 ? inspector2 : null,
+                inspector3: inspector3 ? inspector3 : null,
+                inspector4: inspector4 ? inspector4 : null,
+                category,
+                team,
+                round,
+                toName,
+                dept,
+                checkedProcess,
+                requirements,
+                detail,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
+
+            iqaRef
+                .doc(iqaId)
+                .set(editedIqa, { merge: true })
+                .then(() => {
+                    setEditFinished(true)
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    const { message } = err as { message: string }
+
+                    setError(message)
+                    setLoading(false)
+                })
+        }
+    }
+
     const updateIqaFollow = async (iqaId: string, data: AddFollowIqaData) => {
         try {
             setLoading(true)
@@ -259,12 +354,14 @@ export const useManageIqa = () => {
     return {
         uploadFileToStorage,
         addNewIqa,
+        editIqa,
         updateIqaFollow,
         updateIqaApprove,
         updateIqaStatus,
         setUploadProgression,
         uploadProgression,
         addIqaFinished,
+        editFinished,
         loading,
         error
     }

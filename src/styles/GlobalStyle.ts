@@ -136,6 +136,9 @@ const GlobalStyled = createGlobalStyle`
         .ham-burger-menu{
             display: block;
         }
+        .nc-column--hide {
+            display: none;
+        }
     }
 
     .paragraph-error {
@@ -185,6 +188,30 @@ const GlobalStyled = createGlobalStyle`
         text-overflow: ellipsis;
     }
 
+    .header-status {
+        display: flex;
+        justify-content: space-between;
+        @media screen and (max-width: 900px){
+            flex-direction: column;
+        }
+
+        div:first-child{
+            margin-right: 10px
+        }
+
+        h4{
+            color: var(--white-color);
+            font-size: 1.4rem;
+            margin: 16px 0;
+            border-left: 5px solid #e74c3c;
+            padding-left: 16px;
+        }
+
+        .tab-status {
+            display: flex;
+            max-width: 45rem;
+        }
+    }
 `
 
 export default GlobalStyled

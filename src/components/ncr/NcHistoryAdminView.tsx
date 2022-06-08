@@ -69,9 +69,9 @@ const NcHistoryAdminView: React.FC<Props> = () => {
 
     return (
         <NcHistory>
-            <HistoryHeader>
+            <section className='header-status'>
                 <h4>ประวัติการออก NC ทั้งหมด</h4>
-                <NcTabStyled>
+                <div className='tab-status'>
                     {orderTabs.map((tab) => (
                         <Tab
                             key={tab}
@@ -81,19 +81,19 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                             withPagination={true}
                         />
                     ))}
-                </NcTabStyled>
-            </HistoryHeader>
+                </div>
+            </section>
 
             <NcPaginationStyled>
 
-                <HistoryHeader>
+                <div className='flex-between'>
                     <div onClick={() => setBranch('ลาดกระบัง')}>
                         <PrimaryButton  title={"ลาดกระบัง"}/>
                     </div>
                     <div onClick={() => setBranch('ชลบุรี')}>
                         <PrimaryButton  title={"ชลบุรี"}/>
                     </div>
-                </HistoryHeader>
+                </div>
 
                 <Pagination
                     page={page}
@@ -135,37 +135,15 @@ const NcHistoryAdminView: React.FC<Props> = () => {
 const NcHistory = styled.div`
     padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
-
-    h4{
-        color: var(--white-color);
-        font-size: 1.4rem;
-        margin: 16px 0;
-        border-left: 5px solid #e74c3c;
-        padding-left: 16px;
-    }
-`
-
-const NcTabStyled = styled.div`
-    width: 40%;
-    display: flex;
-    justify-content: space-between;
 `
 
 const NcPaginationStyled = styled.div`
-    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
-`
-
-const HistoryHeader = styled.section`
-    display: flex;
-    justify-content: space-between;
-    div:first-child{
-        margin-right: 10px;
-    }
 `
 
 const HistoryDetail = styled.section`
+    margin-top: 1rem;
     border-bottom: 0.5px solid rgb(40, 44, 52, 0.3);
     
     .nc-content {

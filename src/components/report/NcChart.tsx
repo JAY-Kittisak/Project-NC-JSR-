@@ -118,23 +118,28 @@ const FilterDateStyled = styled.div`
 `
 
 const InputStyled = styled.div`
-    text-align: start;
-    margin: .3rem auto;
+    margin-top: 1rem;
+    position: relative;
     width: 100%;
-
-    label {
-        font-weight: 600;
-    }
-    
-    input {
-        width: 100%;
-        border: 0.6px solid #79849b;
-        padding: 0.3rem;
-        outline: none;
-        border-radius: 2px;
-        box-shadow: 2px 2px 4px rgb(137, 145, 160, 0.4);
-        color: var(--font-light-color);
+    label{
+        position: absolute;
+        left: 20px;
+        top: -17px;
+        display: inline-block;
         background-color: var(--background-dark-color);
+        padding: 0 .5rem;
+        font-size: 1.2rem;
+        color: inherit;
+    }
+    input{
+        border: 1px solid var(--border-color);
+        outline: none;
+        background: transparent;
+        height: 40px;
+        padding: 0 15px;
+        width: 100%;
+        color: inherit;
+        box-shadow: none;
     }
 `
 

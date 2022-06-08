@@ -19,7 +19,7 @@ import { useAuthContext } from '../state/auth-context'
 import { useQueryNc } from '../hooks/useQueryNc'
 import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
 import { InnerLayout, MainLayout, SpinnerStyled } from '../styles/LayoutStyle'
-import { StatusNc, AlertNt, AlertType } from '../types'
+import { StatusProps, AlertNt, AlertType } from '../types'
 import { formatDate, diffDay, isAdmin, getStatusColor } from '../helpers'
 
 interface Props { }
@@ -140,8 +140,8 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                         setIsEditing={setIsEditing}
                                     />
                                 ) : (
-                                    <NcStatusStyled ncStatus={ncStatus}>
-                                        {ncStatus}
+                                    <NcStatusStyled status={ncStatus}>
+                                        <p>{ncStatus}</p>
                                     </NcStatusStyled>
                                 )}
                             </div>
@@ -185,12 +185,12 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             )}
                             {isEditing ? (
                                 <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
-                                    <span><EditIcon /> แก้ไข NC</span>
+                                    <span><EditIcon /> แก้ไข</span>
                                 </Button>
                             ) : (
                                 (creator.id === userInfo.id) && (!ncAnswer) && (
                                     <Button className='btn--darkcyan' onClick={() => setOpenNcForm(true)}>
-                                        <span><EditIcon /> แก้ไข NC</span>
+                                        <span><EditIcon /> แก้ไข</span>
                                     </Button>
                                 )
                             )}
@@ -285,8 +285,17 @@ const PrintStyled = styled.div`
 `
 
 const NcStatusStyled = styled.section`
-    font-size: 1.2rem;
-    color: ${(props: { ncStatus: StatusNc }) => getStatusColor(props.ncStatus)};
+    width: 100px;
+    padding: 2px;
+    border-radius: 30px;
+    color: white;
+    background-color: ${(props: StatusProps) => getStatusColor(props.status)};
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+
+    p {
+        font-size: 1.2rem;
+        text-align: center;
+    }
 `
 
 const GridStyled = styled.div`

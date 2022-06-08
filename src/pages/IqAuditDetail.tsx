@@ -16,13 +16,14 @@ import IqaApprove from '../components/iqa/IqaApprove'
 import { AlertNt, AlertType } from '../types'
 import AlertNotification from '../components/dialogs/AlertNotification'
 import IqaPrint from '../components/iqa/IqaPrint'
+import EditIqa from '../components/iqa/EditIqa'
 
 interface Props { }
 
 const IqAuditDetail: React.FC<Props> = () => {
     const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
     const [alertState, setAlertState] = useState<AlertType>('success');
-    const [openNcForm, setOpenNcForm] = useState(false)
+    const [openIqaForm, setOpenIqaForm] = useState(false)
 
     const params = useParams<{ id: string }>()
 
@@ -66,7 +67,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                         answerDateAt={iqaAnswer?.createdAt}
                         setAlertWarning={setAlertWarning}
                         setAlertState={setAlertState}
-                        setOpenNcForm={setOpenNcForm}
+                        setOpenIqaForm={setOpenIqaForm}
                         printNcDetail={printNcDetail}
                     />
 
@@ -111,8 +112,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
-            {/* {openNcForm && <EditNc nc={nc} setOpenNcForm={setOpenNcForm} />} */}
-            {openNcForm && <p>แก้ไข IQA</p>}
+            {openIqaForm && <EditIqa iqa={iqa} setOpenIqaForm={setOpenIqaForm} />}
         </MainLayout>
     )
 }

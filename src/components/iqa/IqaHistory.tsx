@@ -35,9 +35,6 @@ const IqaHistory: React.FC<Props> = () => {
                         <h3 className='header--center'>ออกให้กับ</h3>
                     </div>
                     <div className='nc-column'>
-                        <h3 className='header--center'>แผนก</h3>
-                    </div>
-                    <div className='nc-column'>
                         <h3 className='header--center'>กระบวนการ</h3>
                     </div>
                     <div className='nc-column'>
@@ -95,7 +92,7 @@ const HistoryDetail = styled.section`
     }
 
     .nc-column {
-        width: 20%;
+        width: 25%;
     }
 
     .header--center {

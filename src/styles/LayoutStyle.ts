@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import ImagePath from '../assets/svg/check-circle.svg'
+import { getStatusColor } from "../helpers";
+import { StatusProps } from "../types";
+
 export const MainLayout = styled.div`
     padding: 4rem;
     @media screen and (max-width: 1600px){
         padding: 3rem;
     }
-    /* @media screen and (max-width: 510px){
-        padding: 3rem;
-    } */
     @media screen and (max-width: 571px){
         padding: 2rem .4rem;
     }
@@ -128,5 +128,37 @@ export const SpinnerStyled = styled.div`
         transform: translate(-50%, -50%);
         text-align: center;
         width: 80%;
+    }
+`
+
+export const ItemStyled = styled.div`
+    padding: 0rem 1rem ;
+    border-top: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgb(40, 44, 52, 0.3);
+    border-bottom: 0.5px solid rgb(40, 44, 52, 0.3);
+    cursor: pointer;
+    transition: 0.4s ease-in;
+    &:hover {
+        background-color: var(--background-hover-color);
+    }
+
+    p {
+        margin: 5px 0;
+        text-align: center;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    
+    .bg-status {
+        width: 80px;
+        padding: 2px;
+        margin: 0 auto;
+        border-radius: 30px;
+        color: white;
+        background-color: ${(props: StatusProps) => getStatusColor(props.status)};
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
 `

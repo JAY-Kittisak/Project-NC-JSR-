@@ -67,9 +67,9 @@ const IqaAdminView: React.FC<Props> = () => {
 
     return (
         <IqaHistory>
-            <HistoryHeader>
+            <section className='header-status'>
                 <h4>ประวัติการออก IQA ทั้งหมด</h4>
-                <IqaTabStyled>
+                <div className='tab-status'>
                     {orderTabs.map((tab) => (
                         <Tab
                             key={tab}
@@ -79,18 +79,18 @@ const IqaAdminView: React.FC<Props> = () => {
                             withPagination={true}
                         />
                     ))}
-                </IqaTabStyled>
-            </HistoryHeader>
+                </div>
+            </section>
 
             <IqaPaginationStyled>
-                <HistoryHeader>
+                <section className='flex-between'>
                     <div onClick={() => setBranch('ลาดกระบัง')}>
                         <PrimaryButton  title={"ลาดกระบัง"}/>
                     </div>
                     <div onClick={() => setBranch('ชลบุรี')}>
                         <PrimaryButton  title={"ชลบุรี"}/>
                     </div>
-                </HistoryHeader>
+                </section>
 
                 <Pagination
                     page={page}
@@ -111,13 +111,13 @@ const IqaAdminView: React.FC<Props> = () => {
                     <div className='nc-column-dept'>
                         <p className='header--center'>ทีมที่ออก IQA</p>
                     </div>
-                    <div className='nc-column-dept'>
+                    <div className='nc-column'>
                         <p className='header--center'>ออกให้กับ</p>
                     </div>
-                    <div className='nc-column'>
+                    <div className='nc-column nc-column--hide'>
                         <p className='header--center'>ผิดข้อกำหนด ISO 9001</p>
                     </div>
-                    <div className='nc-column'>
+                    <div className='nc-column-dept'>
                         <p className='header--center'>สถานะ</p>
                     </div>
                 </div>
@@ -132,37 +132,15 @@ const IqaAdminView: React.FC<Props> = () => {
 const IqaHistory = styled.div`
     padding: 0rem 0.5rem 0rem 0.5rem;
     background-color: var(--background-dark-color);
-
-    h4{
-        color: var(--white-color);
-        font-size: 1.4rem;
-        margin: 16px 0;
-        border-left: 5px solid #e74c3c;
-        padding-left: 16px;
-    }
-`
-
-const IqaTabStyled = styled.div`
-    width: 40%;
-    display: flex;
-    justify-content: space-between;
 `
 
 const IqaPaginationStyled = styled.div`
-    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
-`
-
-const HistoryHeader = styled.section`
-    display: flex;
-    justify-content: space-between;
-    div:first-child{
-        margin-right: 10px
-    }
 `
 
 const HistoryDetail = styled.section`
+    margin-top: 1rem;
     border-bottom: 0.5px solid rgb(40, 44, 52, 0.3);
     
     .nc-content {

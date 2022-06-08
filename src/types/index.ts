@@ -61,6 +61,10 @@ export type StatusNc =
     | 'ปิดแล้ว'
     | 'ยกเลิก'
 
+export interface StatusProps {
+    status: StatusNc
+}
+
 export type DemoNcrNotify = {
     id: string;
     category: string;
@@ -289,10 +293,36 @@ export type AddIqaTypeData = Pick<
     | 'fileIqaName'
 >
 
+export type EditIqaTypeData = Pick<
+    IqaType,
+    | 'inspector1'
+    | 'inspector2'
+    | 'inspector3'
+    | 'inspector4'
+    | 'category'
+    | 'team'
+    | 'round'
+    | 'toName'
+    | 'dept'
+    | 'checkedProcess'
+    | 'requirements'
+    | 'detail'
+    | 'fileIqaName'
+>
+
 export type UploadIqa = Omit<IqaType, 'id' | 'createdAt' | 'updatedAt'> & {
     createdAt?: firebase.firestore.FieldValue
     updatedAt?: firebase.firestore.FieldValue
 }
+export type UploadEditIqa = Omit<IqaType,
+    | 'id'
+    | 'code'
+    | 'branch'
+    | 'iqaStatus'
+    | 'creator'
+    | 'createdAt'
+    | 'updatedAt'
+> & { updatedAt: firebase.firestore.FieldValue }
 
 export type IqaTabAll = { [key in NcrTab]: IqaType[] }
 

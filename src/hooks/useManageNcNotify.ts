@@ -21,7 +21,7 @@ import {
 export const useManageNcNotify = () => {
     const [uploadProgression, setUploadProgression] = useState(0)
     const [addNcNotifyFinished, setAddNcNotifyFinished] = useState(false)
-    const [editNcFinished, setEditFinished] = useState(false)
+    const [editFinished, setEditFinished] = useState(false)
 
     const { loading, setLoading, error, setError } = useAsyncCall()
 
@@ -218,7 +218,7 @@ export const useManageNcNotify = () => {
                 topicType,
                 detail,
                 fileNcUrl,
-                fileNcName: fileNcName,
+                fileNcName,
                 fileNcRef: filePath,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
             }
@@ -377,7 +377,7 @@ export const useManageNcNotify = () => {
         updateStatus,
         uploadProgression,
         addNcNotifyFinished,
-        editNcFinished,
+        editFinished,
         loading,
         error
     }

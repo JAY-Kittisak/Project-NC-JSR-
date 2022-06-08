@@ -173,8 +173,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
         }
     }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
 
-    console.log(iqaAnswer?.fileAnswerIqaName)
-
     return (
         <IqaAnswerStyled className='box-shadows'>
             <h4>ผู้รับผิดชอบการแก้ไข/ป้องกัน</h4>
