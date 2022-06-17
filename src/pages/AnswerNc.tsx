@@ -13,14 +13,12 @@ const AnswerNc: React.FC<Props> = () => {
     return (
         <MainLayout>
             <Title title={'Answer NC'} span={'Answer NC'} />
-            <div>
-                <InnerLayout>
-                    {(!userInfo || userInfo.dept === 'null') ? (
-                        <h2 className='header--center'>No. User INFO หรือยังไม่ได้มีการตั้งค่าแผนกของคุณ</h2>
-                    ) : (<NcHistoryToDept dept={userInfo.dept} branch={userInfo.branch}/>)}
-                    
-                </InnerLayout>
-            </div>
+            <InnerLayout>
+                {(!userInfo || userInfo.dept === 'null') ? (
+                    <h2 className='header--center'>No. User INFO หรือยังไม่ได้มีการตั้งค่าแผนกของคุณ</h2>
+                ) : (<NcHistoryToDept dept={userInfo.dept} branch={userInfo.branch}/>)}
+                
+            </InnerLayout>
         </MainLayout>
 
     )

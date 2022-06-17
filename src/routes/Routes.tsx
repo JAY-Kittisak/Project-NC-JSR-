@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import HomePage from "../pages/HomePage";
 import PageNotFound from "../pages/PageNotFound";
+import UserRoutes from './UserRoutes';
 import IqAuditRouter from "./IqAuditRouter"
 import NcRouter from "./NcRouter"
 import AdminRoutes from "./AdminRoutes"
@@ -13,6 +14,11 @@ interface Props { }
 const Routes: React.FC<Props> = () => {
     return (
         <Switch>
+            <Route path="/users">
+                <PrivateRoute>
+                    <UserRoutes />
+                </PrivateRoute>
+            </Route>
             <Route path="/iqa">
                 <PrivateRoute>
                     <IqAuditRouter />

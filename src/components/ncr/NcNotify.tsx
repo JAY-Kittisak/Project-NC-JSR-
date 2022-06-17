@@ -135,7 +135,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
 
     return (
         <NcNotifyStyled>
-            <div className='nc-notify-title'>
+            <div className='nc-notify-title truncated'>
                 <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
             </div>
 
@@ -174,7 +174,7 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
                 {errors && (
                     <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
                 )}
-                <div className='flex-between'>
+                <div className='flex-dept'>
                     {user?.branch === 'ลาดกระบัง' ? (
                         departments && <div className='form-field'>
                             <label htmlFor='dept'>
@@ -372,6 +372,19 @@ const NcNotifyStyled = styled.section`
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .flex-dept{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 1rem;
+        
+        @media screen and (max-width: 1200px) and (min-width: 980px) {
+            grid-template-columns: repeat(1, 1fr);
+        }
+        @media screen and (max-width: 700px) {
+            grid-template-columns: repeat(1, 1fr);
+        }
     }
 
     .form{

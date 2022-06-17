@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import Tab from '../Tab'
 import Spinner from '../Spinner'
 import Pagination from '../Pagination'
+import ButtonActive from '../ButtonActive'
 import { useIqaAdminContext } from '../../state/iqa-admin-context'
 import { useSelectTab } from '../../hooks/useSelectTab'
 import { usePagination } from '../../hooks/usePagination'
 import { NcrTab, IqaType } from '../../types'
 import { orderTabs } from '../../helpers'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
-import PrimaryButton from '../PrimaryButton'
 import IqaToDeptItem from './IqaToDeptItem'
 
 const prodTabType = 'iqaStatus'
@@ -54,15 +54,6 @@ const IqaAdminView: React.FC<Props> = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, iqa, page, iqaCounts])
 
-    if (loading) return (
-        <SpinnerStyled>
-            <div className='typography'>
-                <Spinner color='#007bff' height={50} width={50} />
-                <span>Loading... </span>
-            </div>
-        </SpinnerStyled>
-    )
-
     if (error) return <h2 className='header--center'>{error}</h2>
 
     return (
@@ -83,14 +74,10 @@ const IqaAdminView: React.FC<Props> = () => {
             </section>
 
             <IqaPaginationStyled>
-                <section className='flex-between'>
-                    <div onClick={() => setBranch('ลาดกระบัง')}>
-                        <PrimaryButton  title={"ลาดกระบัง"}/>
-                    </div>
-                    <div onClick={() => setBranch('ชลบุรี')}>
-                        <PrimaryButton  title={"ชลบุรี"}/>
-                    </div>
-                </section>
+                <div className='flex-between'>
+                    <ButtonActive active={branch === 'ลาดกระบัง'} onClick={() => setBranch('ลาดกระบัง')}>ลาดกระบัง</ButtonActive>
+                    <ButtonActive active={branch === 'ชลบุรี'}  onClick={() => setBranch('ชลบุรี')}>ชลบุรี</ButtonActive>
+                </div>
 
                 <Pagination
                     page={page}
@@ -100,31 +87,40 @@ const IqaAdminView: React.FC<Props> = () => {
                 />
             </IqaPaginationStyled>
 
-            <HistoryDetail>
-                <div className="nc-content">
-                    <div className="nc-column">
-                        <p className='header--center'>เลขที่</p>
+            {loading ? (
+                <SpinnerStyled>
+                    <div className='typography' style={{ height: '600px' }}>
+                        <Spinner color='#007bff' height={50} width={50} />
+                        <span>Loading... </span>
                     </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>วันที่ออก IQA</p>
+                </SpinnerStyled>
+            ) : (
+                <HistoryDetail>
+                    <div className="nc-content">
+                        <div className="nc-column table-cell--hide">
+                            <p className='header--center'>เลขที่</p>
+                        </div>
+                        <div className='nc-column'>
+                            <p className='header--center'>วันที่ออก IQA</p>
+                        </div>
+                        <div className='nc-column-dept'>
+                            <p className='header--center'>จากทีม</p>
+                        </div>
+                        <div className='nc-column'>
+                            <p className='header--center'>ออกให้กับ</p>
+                        </div>
+                        <div className='nc-column nc-column--hide'>
+                            <p className='header--center'>ผิดข้อกำหนด ISO 9001</p>
+                        </div>
+                        <div className='nc-column-dept'>
+                            <p className='header--center'>สถานะ</p>
+                        </div>
                     </div>
-                    <div className='nc-column-dept'>
-                        <p className='header--center'>ทีมที่ออก IQA</p>
-                    </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>ออกให้กับ</p>
-                    </div>
-                    <div className='nc-column nc-column--hide'>
-                        <p className='header--center'>ผิดข้อกำหนด ISO 9001</p>
-                    </div>
-                    <div className='nc-column-dept'>
-                        <p className='header--center'>สถานะ</p>
-                    </div>
-                </div>
-                {iqaByStatus.map(item => (
-                    <IqaToDeptItem key={item.id} item={item} />
-                ))}
-            </HistoryDetail>
+                    {iqaByStatus.map(item => (
+                        <IqaToDeptItem key={item.id} item={item} />
+                    ))}
+                </HistoryDetail>
+            )}
         </IqaHistory>
     )
 }
@@ -165,6 +161,12 @@ const HistoryDetail = styled.section`
         margin: 1rem 0;
         text-align: center;
         font-size: 1.2rem;
+    }
+
+    @media screen and (max-width: 900px) {
+        .table-cell--hide {
+            display: none;
+        }
     }
 `
 

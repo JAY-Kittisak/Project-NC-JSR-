@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-// import PersonIcon from '@material-ui/icons/Person';
-// import EditIcon from '@material-ui/icons/Edit';
-// import Settings from '@material-ui/icons/Settings';
+import { Link } from 'react-router-dom'
 import LogoutIcon from '@material-ui/icons/OpenInBrowser';
 import Switch from '@material-ui/core/Switch'
 import Brightness4Icon from '@material-ui/icons/Brightness4'
+import BadgeIcon from '@material-ui/icons/SupervisorAccount';
+// import BadgeIcon from '@mui/icons-material/Badge';
 
 import { openUserDropdown, useAuthContext, signOutRedirect } from '../state/auth-context';
 import { useAuthenticate } from '../hooks/useAuthenticate'
 
 interface Props {
-    // open: boolean
-    // setOpen: (value: React.SetStateAction<boolean>) => void
     name: string | null
     email: string | null
 }
@@ -51,6 +49,21 @@ const AccountDropdown: React.FC<Props> = ({ name, email }) => {
                 </h3>
                 <ul>
                     <li>
+                        <LinKing to='/users/profile'>
+                            <BadgeIcon />
+                            <p>View Profile</p>
+                        </LinKing>
+                    </li>
+                    <li>
+                        <button onClick={() => {
+                            signOut()
+                            authDispatch(signOutRedirect(true))
+                        }}>
+                            <LogoutIcon />
+                            <p>Logout</p>
+                        </button>
+                    </li>
+                    <li>
                         <Brightness4Icon />
                         <Switch
                             color='default'
@@ -61,20 +74,25 @@ const AccountDropdown: React.FC<Props> = ({ name, email }) => {
                             onClick={themeToggler}
                         />
                     </li>
-                    <li>
-                        <button onClick={() => {
-                            signOut()
-                            authDispatch(signOutRedirect(true))
-                        }}>
-                            <LogoutIcon />
-                            Logout
-                        </button>
-                    </li>
                 </ul>
             </div>
         </DropdownStyled>
     )
 }
+
+const LinKing = styled(Link)`
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--white-color);
+    font-weight: 500;
+    transition: 0.5s;
+    background-color: transparent;
+
+    :hover {
+        color: var(--primary-color-light);
+    }
+`
 
 const DropdownStyled = styled.section`
     position: fixed;
@@ -86,7 +104,7 @@ const DropdownStyled = styled.section`
         position: absolute;
         top: 75px;
         right: -23px;
-        padding: 10px 20px;
+        padding: 10px 20px 0px;
         background: var(--background-dark-color);
         width: 200px;
         box-sizing: 0 5px 25px rgba(0,0,0,0.1);
@@ -133,10 +151,14 @@ const DropdownStyled = styled.section`
         align-items: center;
     }
     .menu ul li svg {
-        margin-right: 10px;
         opacity: 0.5;
         transition: 0.5s;
     }
+
+    .menu ul li p{
+        margin-left: 10px;
+    }
+
     .menu ul li:hover svg {
         opacity: 1;
     }

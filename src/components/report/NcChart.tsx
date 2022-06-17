@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ChangeEvent, } from 'react'
 import styled from 'styled-components';
 
 import NcBarChartJsr from './NcBarChartJsr';
@@ -11,9 +11,16 @@ import { SpinnerStyled } from '../../styles/LayoutStyle'
 
 interface Props { }
 
+const today = new Date();
+const [isoYear, isoMonth] = today.toISOString().split('-')
+const countDayInMonth = new Date(+isoYear, +isoMonth, 0).getDate();
+
+const firstDayOfMonth = `${isoYear}-${isoMonth}-01`
+const lastDayOfMonth = `${isoYear}-${isoMonth}-${countDayInMonth}`
+
 const NcChart: React.FC<Props> = () => {
-    const [dataBarJsr, setDataBarJsr] = useState<NcrNotify[] | null>(null);
-    const [dataBarCdc, setDataBarCdc] = useState<NcrNotify[] | null>(null);
+    const [dataBarJsr, setDataBarJsr] = useState<NcrNotify[] | null>(null)
+    const [dataBarCdc, setDataBarCdc] = useState<NcrNotify[] | null>(null)
 
     const [ncJsrToDept, setNcJsrToDept] = useState<NcrNotify[]>()
     const [ncCdcToDept, setNcCdcToDept] = useState<NcrNotify[]>()
@@ -21,13 +28,19 @@ const NcChart: React.FC<Props> = () => {
     const [branchChart, setBranchChart] = useState<Branch>('ลาดกระบัง')
     const [deptChart, setDeptChart] = useState('SC')
 
-    // const [dateStart, setDateStart] = useState('2022-01-01');
-    // const [dateEnd, setDateEnd] = useState('2022-12-31');
+    const [dateBegin, setDateBegin] = useState(firstDayOfMonth);
+    const [dateEnd, setDateEnd] = useState(lastDayOfMonth);
 
-    const dateStart = '2022-01-01'
-    const dateEnd = '2022-12-31'
+    const { ncNotify, loading, error } = useQueryNcReport(dateBegin,dateEnd)
 
-    const { ncNotify, loading, error } = useQueryNcReport(dateStart,dateEnd)
+    const onChangeDateBegin = (e : ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value.length === 0) return
+        else return setDateBegin(e.target.value)
+    }
+    const onChangeDateEnd = (e : ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value.length === 0) return
+        else return setDateEnd(e.target.value)
+    }
 
     useEffect(() => {
         if (!ncNotify) return
@@ -42,15 +55,6 @@ const NcChart: React.FC<Props> = () => {
 
     }, [ncNotify])
 
-    if (loading) return (
-        <SpinnerStyled>
-            <div className='typography'>
-                <Spinner color='#007bff' height={50} width={50} />
-                <span>Loading... </span>
-            </div>
-        </SpinnerStyled>
-    )
-
     if (error) return <h2 className='header--center'>{error}</h2>
 
     return (
@@ -58,57 +62,63 @@ const NcChart: React.FC<Props> = () => {
             <div className="flex-between">
                 <FilterDateStyled>
                     <InputStyled>
-                        <label htmlFor="containmentDueDate">จากวันที่</label>
+                        <label htmlFor="dateBegin">จากวันที่</label>
                         <input
-                            disabled
                             type="date"
-                            name='containmentDueDate'
-                            id="containmentDueDate"
+                            id="dateBegin"
                             min="2022-01-01"
-                            defaultValue="2022-01-01"
-                            // onChange={e => setDateStart(e.target.value)}
+                            defaultValue={firstDayOfMonth}
+                            onChange={onChangeDateBegin}
                         />
                     </InputStyled>
                     <InputStyled>
-                        <label htmlFor="containmentDueDate">ถึงวันที่</label>
+                        <label htmlFor="dateEnd">ถึงวันที่</label>
                         <input
-                            disabled
                             type="date"
-                            name='containmentDueDate'
-                            id="containmentDueDate"
+                            id="dateEnd"
                             min="2022-01-01"
-                            defaultValue="2022-12-31"
-                            // onChange={e => setDateEnd(e.target.value)}
+                            defaultValue={lastDayOfMonth}
+                            onChange={onChangeDateEnd}
                         />
                     </InputStyled>
                 </FilterDateStyled>
             </div>
-            <NcChartStyled>
-                <div className="left-content">
-                    {/* ลาดกระบัง */}
-                    <NcBarChartJsr
-                        dataBarJsr={dataBarJsr}
-                        setNcJsrToDept={setNcJsrToDept}
-                        setBranchChart={setBranchChart}
-                        setDeptChart={setDeptChart}
-                    />
+            {loading ? (
+                <SpinnerStyled style={{ height: '600px' }}>
+                    <div className='typography'>
+                        <Spinner color='#007bff' height={50} width={50} />
+                        <span>Loading... </span>
+                    </div>
+                </SpinnerStyled>
+            ) : (
+                <NcChartStyled>
+                    <div className="left-content">
+                        {/* ลาดกระบัง */}
+                        <NcBarChartJsr
+                            dataBarJsr={dataBarJsr}
+                            setNcJsrToDept={setNcJsrToDept}
+                            setBranchChart={setBranchChart}
+                            setDeptChart={setDeptChart}
+                        />
 
-                    {/* ชลบุรี */}
-                    <NcBarChartCdc
-                        dataBarCdc={dataBarCdc}
-                        setNcCdcToDept={setNcCdcToDept}
-                        setBranchChart={setBranchChart}
-                        setDeptChart={setDeptChart}
-                    />
-                </div>
+                        {/* ชลบุรี */}
+                        <NcBarChartCdc
+                            dataBarCdc={dataBarCdc}
+                            setNcCdcToDept={setNcCdcToDept}
+                            setBranchChart={setBranchChart}
+                            setDeptChart={setDeptChart}
+                        />
+                    </div>
 
-                {/* แผนก */}
-                {branchChart === 'ลาดกระบัง' ? (
-                    <NcChartDept ncJsrToDept={ncJsrToDept} deptChart={deptChart} branchChart={branchChart}/>
-                ): (
-                    <NcChartDept ncJsrToDept={ncCdcToDept} deptChart={deptChart} branchChart={branchChart}/>
-                )}
-            </NcChartStyled>
+                    {/* แผนก */}
+                    {branchChart === 'ลาดกระบัง' ? (
+                            <NcChartDept ncJsrToDept={ncJsrToDept} deptChart={deptChart} branchChart={branchChart}/>
+                        ): (
+                            <NcChartDept ncJsrToDept={ncCdcToDept} deptChart={deptChart} branchChart={branchChart}/>
+                        )
+                    }
+                </NcChartStyled>
+            )}
         </>
     )
 }

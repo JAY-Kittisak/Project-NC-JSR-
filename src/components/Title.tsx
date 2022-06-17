@@ -23,7 +23,7 @@ const TitleStyled = styled.div`
     position: relative;
 
     animation-name: ${animation};
-    animation-duration: 4s;
+    animation-duration: 1s;
 
     h2{
         color: var(--white-color);

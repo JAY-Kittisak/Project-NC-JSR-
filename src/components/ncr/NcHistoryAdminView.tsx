@@ -5,13 +5,13 @@ import NcHistoryToDeptItem from './NcHistoryToDeptItem'
 import Tab from '../Tab'
 import Spinner from '../Spinner'
 import Pagination from '../Pagination'
+import ButtonActive from '../ButtonActive'
 import { useNcAdminContext } from '../../state/nc-admin-context'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
 import { useSelectTab } from '../../hooks/useSelectTab'
 import { usePagination } from '../../hooks/usePagination'
 import { orderTabs } from '../../helpers'
 import { NcrTab, NcrNotify } from '../../types'
-import PrimaryButton from '../PrimaryButton'
 
 export const prodTabType = 'ncStatus'
 export const ncPerPage = 10
@@ -55,18 +55,9 @@ const NcHistoryAdminView: React.FC<Props> = () => {
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, ncNotify, page, ncCounts])
-
-    if (loading) return (
-        <SpinnerStyled>
-            <div className='typography'>
-                <Spinner color='#007bff' height={50} width={50} />
-                <span>Loading... </span>
-            </div>
-        </SpinnerStyled>
-    )
-
+    
     if (error) return <h2 className='header--center'>{error}</h2>
-
+    
     return (
         <NcHistory>
             <section className='header-status'>
@@ -85,14 +76,9 @@ const NcHistoryAdminView: React.FC<Props> = () => {
             </section>
 
             <NcPaginationStyled>
-
                 <div className='flex-between'>
-                    <div onClick={() => setBranch('ลาดกระบัง')}>
-                        <PrimaryButton  title={"ลาดกระบัง"}/>
-                    </div>
-                    <div onClick={() => setBranch('ชลบุรี')}>
-                        <PrimaryButton  title={"ชลบุรี"}/>
-                    </div>
+                    <ButtonActive active={branch === 'ลาดกระบัง'} onClick={() => setBranch('ลาดกระบัง')}>ลาดกระบัง</ButtonActive>
+                    <ButtonActive active={branch === 'ชลบุรี'}  onClick={() => setBranch('ชลบุรี')}>ชลบุรี</ButtonActive>
                 </div>
 
                 <Pagination
@@ -103,31 +89,40 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                 />
             </NcPaginationStyled>
 
-            <HistoryDetail>
-                <div className="nc-content">
-                    <div className="nc-column">
-                        <p className='header--center'>เลขที่</p>
+            {loading ? (
+                <SpinnerStyled>
+                    <div className='typography' style={{ height: '600px' }}>
+                        <Spinner color='#007bff' height={50} width={50} />
+                        <span>Loading... </span>
                     </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>วันที่ออก NC</p>
+                </SpinnerStyled>
+            ) : (
+                <HistoryDetail>
+                    <div className="nc-content">
+                        <div className="nc-column">
+                            <p className='header--center'>เลขที่</p>
+                        </div>
+                        <div className='nc-column'>
+                            <p className='header--center'>วันที่ออก NC</p>
+                        </div>
+                        <div className='nc-column-dept'>
+                                <p className='header--center'>ออกโดย</p>
+                        </div>
+                        <div className='nc-column-dept'>
+                                <p className='header--center'>ออกให้กับ</p>
+                        </div>
+                        <div className='nc-column'>
+                            <p className='header--center'>ประเด็น</p>
+                        </div>
+                        <div className='nc-column'>
+                            <p className='header--center'>สถานะ</p>
+                        </div>
                     </div>
-                    <div className='nc-column-dept'>
-                            <p className='header--center'>ออกโดย</p>
-                    </div>
-                    <div className='nc-column-dept'>
-                            <p className='header--center'>ออกให้กับ</p>
-                    </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>ประเด็น</p>
-                    </div>
-                    <div className='nc-column'>
-                        <p className='header--center'>สถานะ</p>
-                    </div>
-                </div>
-                {ncByStatus.map(item => (
-                    <NcHistoryToDeptItem key={item.id} item={item} />
-                ))}
-            </HistoryDetail>
+                    {ncByStatus.map(item => (
+                        <NcHistoryToDeptItem key={item.id} item={item} />
+                    ))}
+                </HistoryDetail>
+            )}
         </NcHistory>
     )
 }

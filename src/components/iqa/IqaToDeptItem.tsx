@@ -13,7 +13,7 @@ const IqaToDeptItem: React.FC<Props> = ({ item }) => {
     return (
         <Link to={`/iqa/notify/${item.id}`}>
             <ItemStyled status={item.iqaStatus}>
-                <div className="nc-column">
+                <div className="nc-column nc-column--hide">
                     <p>{item.code}</p>
                 </div>
                 <div className="nc-column">

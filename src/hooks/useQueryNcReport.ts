@@ -4,18 +4,18 @@ import { useAsyncCall } from './useAsyncCall'
 import { ncNotifyRef, snapshotToDoc } from '../firebase'
 import { NcrNotify } from '../types'
 
-export const useQueryNcReport = (dateStart: string, dateEnd: string) => {
+export const useQueryNcReport = (dateBegin: string, dateEnd: string) => {
     const [ncNotify , setNcNotify] = useState<NcrNotify[] | null>(null)
     const { loading, setLoading, error, setError } = useAsyncCall()
     
     useEffect(() => {
         setLoading(true)
 
-        const start = new Date(dateStart)
+        const begin = new Date(dateBegin)
         const end = new Date(dateEnd)
 
         const unsubscribe = ncNotifyRef
-            .where('createdAt', '>=', start)
+            .where('createdAt', '>=', begin)
             .where('createdAt', '<=', end)
             .orderBy('createdAt', 'desc')
             .onSnapshot({
@@ -47,7 +47,7 @@ export const useQueryNcReport = (dateStart: string, dateEnd: string) => {
 
             return () => unsubscribe()
             // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateStart,dateEnd])
+    }, [dateBegin,dateEnd])
 
     return { ncNotify, loading, error }
 }

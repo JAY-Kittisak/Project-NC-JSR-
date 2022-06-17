@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+
 import { MainLayout,InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
 import NcHistoryAdminView from '../components/ncr/NcHistoryAdminView'
@@ -11,16 +11,11 @@ const ManageNc: React.FC<Props> = () => {
     return (
         <MainLayout>
             <Title title={'Manage NCR'} span={'Manage NCR'} />
-            <ManageNcStyled>
-                <InnerLayout>
-                    <NcHistoryAdminView />
-                </InnerLayout>
-            </ManageNcStyled>
+            <InnerLayout>
+                <NcHistoryAdminView />
+            </InnerLayout>
         </MainLayout>
     )
 }
 
-const ManageNcStyled = styled.div`
-    
-`
 export default ManageNc

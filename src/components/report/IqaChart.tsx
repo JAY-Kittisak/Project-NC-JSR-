@@ -6,53 +6,32 @@ import IqaBarChart from './IqaBarChart'
 import { useQueryIqaReport } from '../../hooks/useQueryIqaReport'
 import { IqaType } from '../../types'
 import { SpinnerStyled } from '../../styles/LayoutStyle'
+import TabIqa from './TabIqa'
 
 interface Props { }
 
-const currentYear = new Date().getFullYear()
+const initialYears = ["2022","2023","2024","2025","2026"]
 
 const IqaChart: React.FC<Props> = () => {
     const [dataJsr, setDataJsr] = useState<IqaType[] | null>(null)
     const [dataCdc, setDataCdc] = useState<IqaType[] | null>(null)
     
-    const [years, setYears] = useState<number[]>([])
-    const [selectYear, setSelectYear] = useState(currentYear)
+    const [year, setYear] = useState("2022")
     const [selectRound, setSelectRound] = useState("1")
 
-
-    const { iqa, loading, error } = useQueryIqaReport()
+    const { iqa, loading, error } = useQueryIqaReport(year)
 
     useEffect(() => {
         if (!iqa) return
 
-        let yearArray: number[] = []
-        const mapIqa = iqa.map(value => {
-            const createDate = value.createdAt.toDate()
-            const createYear = createDate.getFullYear()
-            return createYear
-        })
-
-        const newSetYearIqa = new Set(mapIqa)
-        newSetYearIqa.forEach(year => {
-            yearArray.push(year)
-        })
-
-        const filterYear = iqa.filter(value => {
-            const createDate = value.createdAt.toDate()
-            const createYear = createDate.getFullYear()
-
-            return createYear === selectYear
-        })
-
-        const filterRound = filterYear.filter(value => value.round === selectRound)
+        const filterRound = iqa.filter(value => value.round === selectRound)
         
         const branchLkb = filterRound.filter(value => value.branch === 'ลาดกระบัง')
         const branchCdc = filterRound.filter(value => value.branch === 'ชลบุรี')
 
-        setYears(yearArray)
         setDataJsr(branchLkb)
         setDataCdc(branchCdc)
-    }, [iqa, selectYear, selectRound])
+    }, [iqa, selectRound])
 
     if (loading) return (
         <SpinnerStyled>
@@ -70,8 +49,8 @@ const IqaChart: React.FC<Props> = () => {
             <section className='filter-iql'>
                 <div className='form-field'>
                     <label htmlFor='year'>Year</label>
-                    <select id='year' onChange={(e) => setSelectYear(+e.target.value)}>
-                        {years.map((item,i) => {
+                    <select id='year' onChange={(e) => setYear(e.target.value)}>
+                        {initialYears.map((item,i) => {
                             return (
                                 <option key={i} value={item}>{item}</option>
                             )
@@ -86,6 +65,7 @@ const IqaChart: React.FC<Props> = () => {
                     </select>
                 </div>
             </section>
+
             <section>
                 <IqaBarChart 
                     title='ลาดกระบัง'
@@ -104,6 +84,8 @@ const IqaChart: React.FC<Props> = () => {
                     dataChart={dataCdc}
                 />
             </section>
+            
+            <TabIqa dataJsr={dataJsr} dataCdc={dataCdc}/>
         </IqaCartStyled>
     )
 }

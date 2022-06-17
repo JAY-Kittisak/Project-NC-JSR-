@@ -26,7 +26,7 @@ const Pagination = <T extends string>({page, totalPages, tabType, activeTab}: Pr
                 style={{ cursor: page === 1 ? 'not-allowed' : undefined }}
                 onClick={page === 1 ? (e) => e.preventDefault() : undefined}
             >
-                <p className="paragraph--center">Prev</p>
+                <p className="paragraph--center paragraph--hover">Prev</p>
             </Link>
 
             <div className='page-total'>
@@ -47,7 +47,7 @@ const Pagination = <T extends string>({page, totalPages, tabType, activeTab}: Pr
                 style={{ cursor: page === totalPages ? 'not-allowed' : undefined }}
                 onClick={page === totalPages ? (e) => e.preventDefault() : undefined}
             >
-                <p className="paragraph--center">Next</p>
+                <p className="paragraph--center paragraph--hover">Next</p>
             </Link>
         </PaginationStyled>
     )
@@ -60,8 +60,15 @@ const PaginationStyled = styled.div`
     align-items: center;
 
     .paragraph--center {
-        margin: 5px 0;
+        padding: 5px 0;
         text-align: center;
+        transition: ease-out 0.3s;
+    }
+
+    .paragraph--hover {
+        :hover {
+            background-color: var(--background-hover-color);
+        }
     }
     
     .page-total {

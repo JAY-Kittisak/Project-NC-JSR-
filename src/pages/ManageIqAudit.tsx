@@ -13,11 +13,9 @@ const ManageIqAudit: React.FC<Props> = () => {
     return (
         <MainLayout>
             <Title title={'Manage IQA'} span={'Manage IQA'} />
-            <div>
-                <InnerLayout className='manage-iqa'>
-                    <IqaAdminView />
-                </InnerLayout>
-            </div>
+            <InnerLayout className='manage-iqa'>
+                <IqaAdminView />
+            </InnerLayout>
         </MainLayout>
     )
 }

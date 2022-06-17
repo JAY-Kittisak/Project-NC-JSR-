@@ -4,14 +4,19 @@ import { useAsyncCall } from './useAsyncCall'
 import { iqaRef, snapshotToDoc } from '../firebase'
 import { IqaType } from '../types'
 
-export const useQueryIqaReport = () => {
+export const useQueryIqaReport = (year: string) => {
     const [ iqa, setIqa ] = useState<IqaType[] | null>(null)
     const { loading, setLoading, error, setError } = useAsyncCall()
 
     useEffect(() => {
         setLoading(true)
 
+        const begin = new Date(`${year}-01-01`)
+        const end = new Date(`${year}-12-31`)
+
         const unsubscribe = iqaRef
+            .where('createdAt', '>=', begin)
+            .where('createdAt', '<=', end)
             .orderBy('createdAt', 'desc')
             .onSnapshot({
                 next: (snapshots) => {
@@ -42,7 +47,7 @@ export const useQueryIqaReport = () => {
 
         return () => unsubscribe()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [year])
 
     return { iqa, loading, error }
 }
