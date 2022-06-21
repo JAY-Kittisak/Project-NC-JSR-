@@ -38,6 +38,18 @@ const IqAuditDetail: React.FC<Props> = () => {
         documentTitle: `${iqa?.code}`
     })
 
+    const approveEdit = () => {
+        if (iqa?.branch === userInfo?.branch) {
+            if (iqa?.dept === userInfo?.dept) {
+                if ((iqa?.iqaStatus === 'รอตอบ') || (iqa?.iqaStatus === 'ไม่อนุมัติ')) {
+                    return false
+                }
+            }
+        }
+        
+        return true
+    }
+
     if (loading) return (
         <SpinnerStyled>
             <div className="typography">
@@ -76,7 +88,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                             iqaId={params.id}
                             iqaAnswer={iqaAnswer}
                             iqaStatus={iqa.iqaStatus}
-                            iqaToDept={iqa.dept}
+                            approveEdit={approveEdit()}
                             setAlertWarning={setAlertWarning}
                             setAlertState={setAlertState}
                         />

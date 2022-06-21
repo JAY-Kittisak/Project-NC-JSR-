@@ -45,20 +45,3 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-## set Admin
-    0. /jsr-nc ตาม ep.26
-    1. firebase functions:config:set admin.super_admin="<Email>"
-    2. firebase deploy --only functions
-    
-## แก้ error
-    0. ลบ "eslint:recommended", ใน .eslintrc.js
-    1. ใช้งานใน powershell
-    2. cd functions
-    3. ./node_modules/.bin/eslint --fix ./src/index.ts
-    4. firebase deploy --only functions:<"ชื่อ function">
-
-## วิธี Deploy
-    1. ต้องอยู่ที่ /jsr-cn
-    2. npm run build
-    3. firebase deploy    --- firebase deploy --only hosting
-

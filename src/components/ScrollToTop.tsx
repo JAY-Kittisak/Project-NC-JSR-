@@ -7,7 +7,6 @@ interface Props { }
 
 type ToTopProps = {scrollState: boolean}
 
-
 const ScrollToTop: React.FC<Props> = () => {
     const [ scrollState, setScrollState] = useState(false)
 
@@ -27,7 +26,6 @@ const ScrollToTop: React.FC<Props> = () => {
 }
 
 const ToTop = styled.div<ToTopProps>`
-    display: ${(props) => (props.scrollState ? "block" : "none")};
     position: fixed;
     bottom: 1rem;
     right: 1rem;
@@ -38,6 +36,9 @@ const ToTop = styled.div<ToTopProps>`
     border-radius: 50%;
     background-color: var(--primary-color);
     padding: 1rem;
+    transition: 1s;
+    visibility: ${(props) => (props.scrollState ? "visible" : "hidden")};
+    opacity: ${(props) => (props.scrollState ? "1" : "0")};
 
     svg {
         width: 40px;

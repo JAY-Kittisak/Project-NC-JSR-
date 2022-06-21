@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect, ChangeEvent} from 'react'
+import React, { useState, useRef, useEffect, ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -9,34 +9,31 @@ import { IqaAnswer, AddAnswerIqaData, StatusNc, AlertNt, AlertType } from '../..
 import Button from '../Button';
 import { useManageAnswerIqa } from '../../hooks/useManageAnswerIqa'
 import { selectEditedDoc, selectRootDoc, fileType, formatDate } from '../../helpers'
-import { useAuthContext } from '../../state/auth-context';
 import { storageRef } from '../../firebase/config'
 
 interface Props {
     iqaId: string
     iqaAnswer: IqaAnswer | null
     iqaStatus: StatusNc
-    iqaToDept: string
+    approveEdit: boolean
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const ManageIqaAnswer: React.FC<Props> = ({ 
-    iqaId, 
-    iqaAnswer, 
-    iqaStatus, 
-    iqaToDept,
+const ManageIqaAnswer: React.FC<Props> = ({
+    iqaId,
+    iqaAnswer,
+    iqaStatus,
+    approveEdit,
     setAlertWarning,
     setAlertState
- }) => {
-    
+}) => {
+
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const { register, handleSubmit, errors } = useForm<AddAnswerIqaData>()
 
     const inputRef = useRef<HTMLInputElement>(null)
-
-    const { authState: { userInfo } } = useAuthContext()
 
     const {
         uploadFileToStorage,
@@ -153,8 +150,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
         }
     })
 
-    const editBoolean = (userInfo?.dept === iqaToDept) && ((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ'))
-
     useEffect(() => {
         if (addAnswerIqaFinished) {
             setSelectedFile(null)
@@ -173,11 +168,13 @@ const ManageIqaAnswer: React.FC<Props> = ({
         }
     }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
 
+    console.log(approveEdit)
+
     return (
         <IqaAnswerStyled className='box-shadows'>
             <h4>ผู้รับผิดชอบการแก้ไข/ป้องกัน</h4>
             <form className="form" onSubmit={iqaAnswer ? handleEditAnswerIqa : handleAddAnswerIqa}>
-            {iqaAnswer?.createdAt && (
+                {iqaAnswer?.createdAt && (
                     <FlexStyled>
                         <div>
                             <p><span>วันที่ตอบ :</span></p>
@@ -204,7 +201,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 <div className="form-field">
                     <label htmlFor="answerName">ชื่อ-นามสกุล ผู้ตอบ</label>
                     <input
-                        readOnly={!editBoolean}
+                        readOnly={approveEdit}
                         name='answerName'
                         id="answerName"
                         defaultValue={iqaAnswer ? iqaAnswer.answerName : ''}
@@ -219,7 +216,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 <div className="form-field">
                     <label htmlFor="containmentAction">การแก้ไขเบื้องต้น</label>
                     <textarea
-                        readOnly={!editBoolean}
+                        readOnly={approveEdit}
                         cols={30}
                         rows={3}
                         name='containmentAction'
@@ -237,7 +234,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
                         <input
-                            readOnly={!editBoolean}
+                            readOnly={approveEdit}
                             type="date"
                             min="2022-01-01"
                             name='containmentDueDate'
@@ -251,7 +248,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="containmentName">ผู้รับผิดชอบ</label>
                         <input
-                            readOnly={!editBoolean}
+                            readOnly={approveEdit}
                             name='containmentName'
                             id="containmentName"
                             defaultValue={iqaAnswer ? iqaAnswer.containmentName : ''}
@@ -274,7 +271,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                             <CheckboxStyled key={i}>
                                 <div className="group" style={{ padding: '8px 0px 8px 38px' }}>
                                     <input
-                                        disabled={!editBoolean}
+                                        disabled={approveEdit}
                                         type="checkbox"
                                         name="editedRootDoc"
                                         id={item}
@@ -292,7 +289,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
                         <textarea
-                            readOnly={!editBoolean}
+                            readOnly={approveEdit}
                             cols={30}
                             rows={11}
                             name="rootCause"
@@ -310,7 +307,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 <div className="form-field">
                     <label htmlFor="correctiveAction">การแก้ไขปัญหาและการป้องกัน</label>
                     <textarea
-                        readOnly={!editBoolean}
+                        readOnly={approveEdit}
                         cols={30}
                         rows={3}
                         name='correctiveAction'
@@ -328,7 +325,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="correctiveDueDate">กำหนดเสร็จ</label>
                         <input
-                            readOnly={!editBoolean}
+                            readOnly={approveEdit}
                             type="date"
                             min="2022-01-01"
                             name='correctiveDueDate'
@@ -341,7 +338,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <div className="form-field">
                         <label htmlFor="correctiveName">ผู้รับผิดชอบ</label>
                         <input
-                            readOnly={!editBoolean}
+                            readOnly={approveEdit}
                             name='correctiveName'
                             id="correctiveName"
                             defaultValue={iqaAnswer ? iqaAnswer.correctiveName : ''}
@@ -363,7 +360,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                         <CheckboxStyled key={i}>
                             <div className="group">
                                 <input
-                                    disabled={!editBoolean}
+                                    disabled={approveEdit}
                                     type="checkbox"
                                     name="editedDoc"
                                     id={item}
@@ -381,7 +378,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                 <div className="form-field">
                     <label htmlFor="docDetail">เลขที่เอกสาร/เอกสารอื่นๆ(หากมี)</label>
                     <textarea
-                        readOnly={!editBoolean}
+                        readOnly={approveEdit}
                         cols={30}
                         rows={3}
                         name='docDetail'
@@ -395,7 +392,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <p className='paragraph-error text-center'>{errors.docDetail?.message}</p>
                 )}
 
-{
+                {
                     !((iqaStatus === 'รอตอบ') || (iqaStatus === 'ไม่อนุมัติ')) ?
                         null : (
                             <FlexUploadStyled>
@@ -434,8 +431,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                                             : ''
                                                 }
                                                 ref={register}
-                                                />
-                                                {/* ref={register({ required: 'โปรดแนบไฟล์ของคุณ' })}
+                                            />
+                                            {/* ref={register({ required: 'โปรดแนบไฟล์ของคุณ' })}
                                             {errors && (
                                                 <p className='paragraph-error text-center'>{errors.fileAnswerIqaName?.message}</p>
                                             )} */}
@@ -463,7 +460,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                 </ButtonStyled>
                                 <input
                                     type='file'
-                                    disabled={!editBoolean}
+                                    disabled={approveEdit}
                                     ref={inputRef}
                                     style={{ display: 'none' }}
                                     onChange={handleSelectFile}
@@ -472,7 +469,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
 
                         )}
 
-                {editBoolean && (
+                {!approveEdit && (
                     <Button
                         type='submit'
                         loading={loading}

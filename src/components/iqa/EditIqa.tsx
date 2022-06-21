@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
 import styled from 'styled-components'
-import { useForm } from 'react-hook-form';
-import AttachFileIcon from "@material-ui/icons/AttachFile";
+import { useForm } from 'react-hook-form'
+import AttachFileIcon from "@material-ui/icons/AttachFile"
 
 import { IqaType, EditIqaTypeData } from '../../types'
 import { selectTeams, requirements, fileType } from '../../helpers'
-import { useDepartmentsContext } from '../../state/dept-context';
-import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
+import { useDepartmentsContext } from '../../state/dept-context'
+import { useDepartmentsCdcContext } from '../../state/dept-cdc-context'
 import { useManageIqa } from '../../hooks/useManageIqa'
 import { storageRef } from '../../firebase/config'
 import Input from '../Input'
@@ -159,38 +159,34 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
                 <form onSubmit={handleEditIqa}>
                     {/* inspector1 */}
                     <GridStyled>
-                        <Input
-                            label='ชื่อผู้ตรวจ/พบ 1'
-                            name='inspector1'
-                            defaultValue={iqa.inspector1}
-                            ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
-                            error={errors.inspector1?.message}
-                        />
-                        {iqa.inspector2 && (
+                            <Input
+                                label='ชื่อผู้ตรวจ/พบ 1'
+                                name='inspector1'
+                                defaultValue={iqa.inspector1}
+                                ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
+                                error={errors.inspector1?.message}
+                            />
                             <Input
                                 label='ชื่อผู้ตรวจ/พบ 2'
                                 name='inspector2'
                                 ref={register}
                             />
-                        )}
                     </GridStyled>
+
                     {/* inspector3 */}
-                    {iqa.inspector3 && (
-                        <GridStyled>
-                            <Input
-                                label='ชื่อผู้ตรวจ/พบ 3'
-                                name='inspector3'
-                                ref={register}
-                            />
-                            {iqa.inspector4 && (
-                                <Input
-                                    label='ชื่อผู้ตรวจ/พบ 4'
-                                    name='inspector4'
-                                    ref={register}
-                                />
-                            )}
-                        </GridStyled>
-                    )}
+                    <GridStyled>
+                        <Input
+                            label='ชื่อผู้ตรวจ/พบ 3'
+                            name='inspector3'
+                            ref={register}
+                        />
+                        <Input
+                            label='ชื่อผู้ตรวจ/พบ 4'
+                            name='inspector4'
+                            ref={register}
+                        />
+                    </GridStyled>
+                    
                     <GridCarStyled>
                         <div className="flex-between">
                             {/* Category */}
