@@ -22,7 +22,7 @@ const TabIqa: React.FC<Props> = ({ dataJsr, dataCdc}) => {
 
             <section>
                 <div className="nc-content">
-                    <div className="nc-column nc-column--hide">
+                    <div className="nc-column table-phone--hide">
                         <p className='header--center'>เลขที่</p>
                     </div>
                     <div className='nc-column'>
@@ -34,7 +34,7 @@ const TabIqa: React.FC<Props> = ({ dataJsr, dataCdc}) => {
                     <div className='nc-column'>
                         <p className='header--center'>ออกให้กับ</p>
                     </div>
-                    <div className='nc-column nc-column--hide'>
+                    <div className='nc-column table-ipad--hide'>
                         <p className='header--center'>ผิดข้อกำหนด ISO 9001</p>
                     </div>
                     <div className='nc-column-dept'>

@@ -46,7 +46,7 @@ export const useAuthenticate = () => {
 
     const signOut = () => {
         auth.signOut().then(() => {
-            if (isUserDropdownOpen) authDispatch (openUserDropdown(false))
+            if (isUserDropdownOpen) authDispatch(openUserDropdown(false))
         }).catch(err => alert('Sign Out Error! sorry, something went wrong.'))
     }
 

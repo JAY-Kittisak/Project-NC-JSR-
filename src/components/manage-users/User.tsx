@@ -5,7 +5,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { branchSelect, formatDate } from '../../helpers'
-import { UserInfo, Branch, Department } from '../../types'
+import { UserInfo, Role, Branch, Department } from '../../types'
 import { useUpdateUser } from '../../hooks/useUpdateUser'
 import Button from '../Button';
 import { useDepartmentsContext } from '../../state/dept-context';
@@ -13,7 +13,7 @@ import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 
 interface Props {
     user: UserInfo
-    admin: UserInfo
+    admin: Role
 }
 
 type TableWidth = {
@@ -168,7 +168,7 @@ const User: React.FC<Props> = ({
             </SvgStyled>
 
             {/* Edit */}
-            {admin.role === 'SUPER_ADMIN' && (
+            {admin === 'SUPER_ADMIN' && (
                 <SvgStyled radius={'10%'}>
                     {role !== 'SUPER_ADMIN' && (
                         <>

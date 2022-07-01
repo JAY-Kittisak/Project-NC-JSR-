@@ -43,10 +43,10 @@ const AccountDropdown: React.FC<Props> = ({ name, email }) => {
     return (
         <DropdownStyled onMouseLeave={() => authDispatch(openUserDropdown(false))}>
             <div className={`menu ${isUserDropdownOpen && 'active'}`}>
-                <h3>{name}
-                    <br />
+                <div>
+                    <p>{name}</p>
                     <span>{email}</span>
-                </h3>
+                </div>
                 <ul>
                     <li>
                         <LinKing to='/users/profile'>
@@ -114,7 +114,7 @@ const DropdownStyled = styled.section`
         opacity: 0;
     }
     .menu.active {
-        top: 83px;
+        top: 60px;
         visibility: visible;
         opacity: 1;
     }
@@ -128,20 +128,21 @@ const DropdownStyled = styled.section`
         background: var(--background-dark-color);
         transform: rotate(45deg);
     }
-    .menu h3 {
+    .menu div {
         width: 100%;
         text-align: center;
-        font-size: 18px;
-        padding: 20px 0;
-        font-weight: 500;
+        padding: 15px 0;
+    }
+    .menu div p {
         font-size: 1.1rem;
+        font-weight: 500;
         color: var(--primary-color);
         line-height: 1.2em;
     }
-    .menu h3 span {
+    .menu div span {
         font-size: .9rem;
-        color: var(--white-color);
         font-weight: 400;
+        color: var(--white-color);
     }
     .menu ul li {
         list-style: none;

@@ -6,9 +6,7 @@ import ArrowUpwardIcon from "@material-ui/icons/ArrowDropUp";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 import BarChartIcon from "@material-ui/icons/BarChart";
 
-
-import avatar from '../assets/image/demo-user.png'
-import avatarJsr from '../assets/image/JSR-Logo-new-PNG.png'
+import logo from '../assets/image/JSR-Logo-new-PNG.png'
 import { openUserDropdown, useAuthContext } from '../state/auth-context'
 import { isAdmin, isClient } from '../helpers'
 import AccountDropdown from './AccountDropdown'
@@ -73,17 +71,13 @@ const Navigation: React.FC<Props> = () => {
     return (
         <NavigationStyled>
             <div>
-                {authUser ? (
+                {authUser && (
                     <div className='avatar'>
-                        <img src={avatar} alt="" onMouseOver={() => authDispatch(openUserDropdown(true))} />
+                        <img src={logo} alt="" onMouseOver={() => authDispatch(openUserDropdown(true))} />
                         <AccountDropdown
                             name={authUser.displayName}
                             email={authUser.email}
                         />
-                    </div>
-                ) : (
-                    <div className='avatar'>
-                        <img src={avatarJsr} alt="" />
                     </div>
                 )}
                 <ul className="nav-items">
@@ -170,8 +164,6 @@ const NavigationStyled = styled.nav`
         padding: 1rem 0;
         img {
             width: 70%;
-            border-radius: 50%;
-            border: 8px solid var(--border-color);
         }
     }
     .nav-items{

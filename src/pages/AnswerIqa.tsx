@@ -13,15 +13,13 @@ const AnswerIqa: React.FC<Props> = () => {
     return (
         <MainLayout>
             <Title title={'Answer IQA'} span={'Answer IQA'} />
-            <div>
-                <InnerLayout>
-                    {(!userInfo || userInfo.dept === 'null') ? (
-                        <h2 className='header--center'>No. User INFO หรือยังไม่ได้มีการตั้งค่าแผนกของคุณ</h2>
-                    ) : (
-                        <IqaToDept dept={userInfo.dept} branch={userInfo.branch} />
-                    )}
-                </InnerLayout>
-            </div>
+            <InnerLayout>
+                {(!userInfo || userInfo.dept === 'null') ? (
+                    <h2 className='header--center'>No. User INFO หรือยังไม่ได้มีการตั้งค่าแผนกของคุณ</h2>
+                ) : (
+                    <IqaToDept dept={userInfo.dept} branch={userInfo.branch} />
+                )}
+            </InnerLayout>
         </MainLayout>
     )
 }

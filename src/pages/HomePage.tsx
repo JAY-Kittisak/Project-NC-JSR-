@@ -7,6 +7,7 @@ import YouTubeIcon from "@material-ui/icons/YouTube";
 import Hero from "../components/hero/Hero";
 import { useAuthContext } from "../state/auth-context";
 import { useModalContext } from "../state/modal-context";
+import { InnerLayout, MainLayout } from '../styles/LayoutStyle'
 
 function HomePage() {
     const { setModalType } = useModalContext()
@@ -28,43 +29,42 @@ function HomePage() {
     }, [setModalType, state, authUser, history, signOutRedirect])
 
     return (
-        <>
-            <HomePageStyled>
-                <div className="typography">
-                    <h1>
-                        <span className="span-primary">JSR</span> NC System
-                    </h1>
-                    <p>
-                        เรา JSR มุ่งมั่นที่จะเป็นผู้นำด้านการจำหน่ายเครื่องมืออุตสาหกรรม ที่มีผลิตภัณฑ์ หลากหลาย ครอบคลุมความต้องการของลูกค่า
-                    </p>
-                    <p>
-                        ตลอดจนการคัดสรรผลิตภัณฑ์ให้มีคุณภาพสูงสุดโดยการพัฒนาศักยภาพยุคลากร และ ระบบงานอย่างต่อเนื่อง
-                    </p>
-                    <p>
-                        <span className="span-slogan">ดังสโลแกน</span> "ผู้นำด้านเครื่องเมืออุตสาหกรรม ผลิตภัณฑ์ครอบคลุมคุณภาพมาตรฐานบริการประทับใจ พร้อมก้าวไปกับทุกอุตสาหกรรม ของประเทศไทย"
-                    </p>
-
-                    <div className="icons">
-                        <a href="https://www.facebook.com/jsrimpex" className="icon i-facebook">
-                            <FacebookIcon />
-                        </a>
-                        <a href="https://www.youtube.com/channel/UCG07ZN0IwxB1ri7jf6Z5V2g/featured" className="icon i-youtube">
-                            <YouTubeIcon />
-                        </a>
+        <MainLayout>
+            <InnerLayout>
+                <HomePageStyled>
+                    <div className="typography">
+                        <h1>
+                            <span className="span-primary">JSR</span> NC System
+                        </h1>
+                        <p>
+                            เรา JSR มุ่งมั่นที่จะเป็นผู้นำด้านการจำหน่ายเครื่องมืออุตสาหกรรม ที่มีผลิตภัณฑ์ หลากหลาย ครอบคลุมความต้องการของลูกค่า
+                        </p>
+                        <p>
+                            ตลอดจนการคัดสรรผลิตภัณฑ์ให้มีคุณภาพสูงสุดโดยการพัฒนาศักยภาพยุคลากร และ ระบบงานอย่างต่อเนื่อง
+                        </p>
+                        <p>
+                            <span className="span-slogan">ดังสโลแกน</span> "ผู้นำด้านเครื่องเมืออุตสาหกรรม ผลิตภัณฑ์ครอบคลุมคุณภาพมาตรฐานบริการประทับใจ พร้อมก้าวไปกับทุกอุตสาหกรรม ของประเทศไทย"
+                        </p>
+                        <div className="icons">
+                            <a href="https://www.facebook.com/jsrimpex" className="icon i-facebook">
+                                <FacebookIcon />
+                            </a>
+                            <a href="https://www.youtube.com/channel/UCG07ZN0IwxB1ri7jf6Z5V2g/featured" className="icon i-youtube">
+                                <YouTubeIcon />
+                            </a>
+                        </div>
+                        {!authUser && (
+                            <Hero />
+                        )}
                     </div>
-                    {!authUser && (
-                        <Hero />
-                    )}
-                </div>
-            </HomePageStyled>
-        </>
+                </HomePageStyled>
+            </InnerLayout>
+        </MainLayout>
     );
 }
 
 const HomePageStyled = styled.header`
     width: 100%;
-    height: 100vh;
-    position: relative;
 
     .typography {
         position: absolute;

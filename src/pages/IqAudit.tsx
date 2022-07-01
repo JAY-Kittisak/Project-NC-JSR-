@@ -31,7 +31,7 @@ const IqAudit: React.FC<Props> = () => {
                         <p className='paragraph-null'>User ของคุณยังไม่ได้รับการอนุมัติใช้งาน โปรดแจ้งผู้ดูแลระบบ</p>
                     ) : (
                         <>
-                            <AddIqa 
+                            <AddIqa
                                 userInfo={userInfo} 
                                 setAlertWarning={setAlertWarning} 
                                 setAlertState={setAlertState}

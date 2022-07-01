@@ -97,10 +97,10 @@ const IqaAdminView: React.FC<Props> = () => {
             ) : (
                 <HistoryDetail>
                     <div className="nc-content">
-                        <div className="nc-column table-cell--hide">
+                        <div className="nc-column">
                             <p className='header--center'>เลขที่</p>
                         </div>
-                        <div className='nc-column'>
+                        <div className='nc-column table-phone--hide'>
                             <p className='header--center'>วันที่ออก IQA</p>
                         </div>
                         <div className='nc-column-dept'>
@@ -109,7 +109,7 @@ const IqaAdminView: React.FC<Props> = () => {
                         <div className='nc-column'>
                             <p className='header--center'>ออกให้กับ</p>
                         </div>
-                        <div className='nc-column nc-column--hide'>
+                        <div className='nc-column table-ipad--hide'>
                             <p className='header--center'>ผิดข้อกำหนด ISO 9001</p>
                         </div>
                         <div className='nc-column-dept'>
@@ -161,12 +161,6 @@ const HistoryDetail = styled.section`
         margin: 1rem 0;
         text-align: center;
         font-size: 1.2rem;
-    }
-
-    @media screen and (max-width: 900px) {
-        .table-cell--hide {
-            display: none;
-        }
     }
 `
 

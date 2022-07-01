@@ -134,7 +134,6 @@ const ModalStyled = styled.div`
         font-style: italic;
         color: grey;
         font-size: .9rem;
-        color: green;
         text-align: center;
     }
 `;

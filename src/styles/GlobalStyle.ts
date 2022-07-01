@@ -136,7 +136,13 @@ const GlobalStyled = createGlobalStyle`
         .ham-burger-menu{
             display: block;
         }
-        .nc-column--hide {
+        .table-ipad--hide {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 900px) {
+        .table-phone--hide {
             display: none;
         }
     }

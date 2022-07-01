@@ -102,7 +102,7 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                         <div className="nc-column">
                             <p className='header--center'>เลขที่</p>
                         </div>
-                        <div className='nc-column'>
+                        <div className='nc-column table-phone--hide'>
                             <p className='header--center'>วันที่ออก NC</p>
                         </div>
                         <div className='nc-column-dept'>
@@ -111,7 +111,7 @@ const NcHistoryAdminView: React.FC<Props> = () => {
                         <div className='nc-column-dept'>
                                 <p className='header--center'>ออกให้กับ</p>
                         </div>
-                        <div className='nc-column'>
+                        <div className='nc-column table-ipad--hide'>
                             <p className='header--center'>ประเด็น</p>
                         </div>
                         <div className='nc-column'>

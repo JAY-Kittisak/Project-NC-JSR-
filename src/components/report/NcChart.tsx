@@ -8,6 +8,7 @@ import Spinner from '../Spinner'
 import { NcrNotify, Branch } from '../../types';
 import { useQueryNcReport } from '../../hooks/useQueryNcReport';
 import { SpinnerStyled } from '../../styles/LayoutStyle'
+import NcList from './NcList';
 
 interface Props { }
 
@@ -91,33 +92,39 @@ const NcChart: React.FC<Props> = () => {
                     </div>
                 </SpinnerStyled>
             ) : (
-                <NcChartStyled>
-                    <div className="left-content">
-                        {/* ลาดกระบัง */}
-                        <NcBarChartJsr
-                            dataBarJsr={dataBarJsr}
-                            setNcJsrToDept={setNcJsrToDept}
-                            setBranchChart={setBranchChart}
-                            setDeptChart={setDeptChart}
-                        />
+                <>
+                    <NcChartStyled>
+                        <div className="left-content">
+                            {/* ลาดกระบัง */}
+                            <NcBarChartJsr
+                                dataBarJsr={dataBarJsr}
+                                setNcJsrToDept={setNcJsrToDept}
+                                setBranchChart={setBranchChart}
+                                setDeptChart={setDeptChart}
+                            />
 
-                        {/* ชลบุรี */}
-                        <NcBarChartCdc
-                            dataBarCdc={dataBarCdc}
-                            setNcCdcToDept={setNcCdcToDept}
-                            setBranchChart={setBranchChart}
-                            setDeptChart={setDeptChart}
-                        />
-                    </div>
+                            {/* ชลบุรี */}
+                            <NcBarChartCdc
+                                dataBarCdc={dataBarCdc}
+                                setNcCdcToDept={setNcCdcToDept}
+                                setBranchChart={setBranchChart}
+                                setDeptChart={setDeptChart}
+                            />
+                        </div>
 
-                    {/* แผนก */}
-                    {branchChart === 'ลาดกระบัง' ? (
-                            <NcChartDept ncJsrToDept={ncJsrToDept} deptChart={deptChart} branchChart={branchChart}/>
+                        {/* แผนก */}
+                        {branchChart === 'ลาดกระบัง' ? (
+                            <NcChartDept ncToDept={ncJsrToDept} deptChart={deptChart} branchChart={branchChart}/>
                         ): (
-                            <NcChartDept ncJsrToDept={ncCdcToDept} deptChart={deptChart} branchChart={branchChart}/>
-                        )
-                    }
-                </NcChartStyled>
+                            <NcChartDept ncToDept={ncCdcToDept} deptChart={deptChart} branchChart={branchChart}/>
+                        )}
+                    </NcChartStyled>
+                        {branchChart === 'ลาดกระบัง' ? (
+                            <NcList ncToDept={ncJsrToDept} />
+                        ): (
+                            <NcList ncToDept={ncCdcToDept} />
+                        )}
+                </>
             )}
         </>
     )

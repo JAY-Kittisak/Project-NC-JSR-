@@ -13,10 +13,10 @@ const IqaToDeptItem: React.FC<Props> = ({ item }) => {
     return (
         <Link to={`/iqa/notify/${item.id}`}>
             <ItemStyled status={item.iqaStatus}>
-                <div className="nc-column nc-column--hide">
+                <div className="nc-column">
                     <p>{item.code}</p>
                 </div>
-                <div className="nc-column">
+                <div className="nc-column table-phone--hide">
                     <p>{formatDate(item.createdAt)}</p>
                     {item.iqaStatus === 'รอตอบ' && (
                         <p style={{ color: sumNewDate(item.createdAt) ? 'red' : 'green' }}>
@@ -30,7 +30,7 @@ const IqaToDeptItem: React.FC<Props> = ({ item }) => {
                 <div className="nc-column">
                     <p>{item.toName} ({item.dept})</p>
                 </div>
-                <div className="nc-column nc-column--hide">
+                <div className="nc-column table-ipad--hide">
                     <p>{item.requirements}</p>
                 </div>
                 <div className="nc-column-dept">

@@ -5,25 +5,34 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import Sidebar from './components/Sidebar';
 import { useModalContext } from './state/modal-context'
+import { useAuthContext } from './state/auth-context'
 
 interface Props { }
 
 const Layout: React.FC<Props> = ({ children }) => {
   const [navToggle, setNavToggle] = useState(false)
+  const { authState: { authUser } } = useAuthContext()
 
   const { modal } = useModalContext()
 
+  const isUser = !!authUser
+
   return (
     <div>
-      <Sidebar navToggle={navToggle} />
 
-      <div className='ham-burger-menu'>
-        <IconButton onClick={() => setNavToggle(!navToggle)}>
-          <MenuIcon />
-        </IconButton>
-      </div>
+      {isUser && (
+        <>
+          <Sidebar navToggle={navToggle} />
 
-      <MainContentStyled>
+          <div className='ham-burger-menu'>
+            <IconButton onClick={() => setNavToggle(!navToggle)}>
+              <MenuIcon />
+            </IconButton>
+          </div>
+        </>
+      )}
+
+      <MainContentStyled isUser={isUser}>
         <div className='lines'>
           <div className='line-1'></div>
           <div className='line-2'></div>
@@ -39,10 +48,10 @@ const Layout: React.FC<Props> = ({ children }) => {
   )
 }
 
-const MainContentStyled = styled.main`
+const MainContentStyled = styled.main<{ isUser: boolean }>`
   position: relative;
-  margin-left: 16.3rem;
   min-height: 100vh;
+  margin-left: ${props => props.isUser ? '16.3rem' : '0'};
   
   @media screen and (max-width: 1400px){
     margin-left: 0;

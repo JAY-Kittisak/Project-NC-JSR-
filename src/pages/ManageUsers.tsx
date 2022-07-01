@@ -79,7 +79,7 @@ const ManageUsers: React.FC<Props> = ({ userInfo }) => {
 
                         <tbody>
                             {usersByPage && usersByPage.map(user => (
-                                <User key={user.id} user={user} admin={userInfo} />
+                                <User key={user.id} user={user} admin={userInfo.role} />
                             ))}
                         </tbody>
                     </TableStyled>

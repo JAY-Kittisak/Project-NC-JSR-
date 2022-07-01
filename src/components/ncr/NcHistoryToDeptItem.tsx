@@ -16,7 +16,7 @@ const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
                 <div className="nc-column">
                     <p>{item.code}</p>
                 </div>
-                <div className="nc-column">
+                <div className="nc-column table-phone--hide">
                     <p>{formatDate(item.createdAt)}</p>
                     {item.ncStatus === 'รอตอบ' && (
                         <p style={{ color: sumNewDate(item.createdAt) ? 'red' : 'green' }}>
@@ -30,7 +30,7 @@ const NcHistoryToDeptItem: React.FC<Props> = ({ item }) => {
                 <div className="nc-column-dept">
                     <p>{item.dept}</p>
                 </div>
-                <div className="nc-column">
+                <div className="nc-column table-ipad--hide">
                     <p className='truncated'>{item.topic}</p>
                 </div>
                 <div className="nc-column">

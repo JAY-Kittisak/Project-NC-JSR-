@@ -8,7 +8,7 @@ import {
 import { NcrNotify, Branch, ChartColor, ChartColorType } from '../../types';
 
 interface Props {
-    ncJsrToDept: NcrNotify[] | undefined
+    ncToDept: NcrNotify[] | undefined
     branchChart: Branch
     deptChart: string
 }
@@ -65,7 +65,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) => {
+const NcChartDept: React.FC<Props> = ({ ncToDept, branchChart , deptChart}) => {
     const [dataCat, setDataCat] = useState(data)
     const [dataPieChart, setDataPieChart] = useState<ValueDept[]>([])
     const [chartColor, setChartColor] = useState<ChartColor>('#007bff')
@@ -82,11 +82,11 @@ const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) =
     } ,[branchChart])
 
     useEffect(() => {
-        if (!ncJsrToDept) return
+        if (!ncToDept) return
 
-        const ncr = ncJsrToDept.filter(item => item.category === 'NCR')
-        const ccr = ncJsrToDept.filter(item => item.category === 'CCR')
-        const scr = ncJsrToDept.filter(item => item.category === 'SCR')
+        const ncr = ncToDept.filter(item => item.category === 'NCR')
+        const ccr = ncToDept.filter(item => item.category === 'CCR')
+        const scr = ncToDept.filter(item => item.category === 'SCR')
 
         const ncrProcess = ncr.filter(item => item.topicType === 'Process')
         const ncrProduct = ncr.filter(item => item.topicType === 'Product')
@@ -95,9 +95,9 @@ const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) =
         const scrProcess = scr.filter(item => item.topicType === 'Process')
         const scrProduct = scr.filter(item => item.topicType === 'Product')
 
-        const topics = ncJsrToDept.map(item => item.topic)
+        const topics = ncToDept.map(item => item.topic)
         
-        const onlyTopics = new Set(ncJsrToDept.map(item => item.topic))
+        const onlyTopics = new Set(ncToDept.map(item => item.topic))
         
         let valuesPieChart: ValueDept[] = []
 
@@ -126,7 +126,7 @@ const NcChartDept: React.FC<Props> = ({ ncJsrToDept, branchChart , deptChart}) =
             },
         ])
 
-    }, [ncJsrToDept])
+    }, [ncToDept])
 
     return (
         <DeptChartStyled colors={chartColor}>
