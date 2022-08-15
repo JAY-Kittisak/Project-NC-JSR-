@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import { CheckboxStyled } from '../../styles/LayoutStyle';
-import { IqaAnswer, AddAnswerIqaData, StatusNc, AlertNt, AlertType } from '../../types';
+import { IqaAnswer, AddAnswerIqaData, StatusNc, AlertNt, AlertType, CatIqa } from '../../types';
 import Button from '../Button';
 import { useManageAnswerIqa } from '../../hooks/useManageAnswerIqa'
 import { selectEditedDoc, selectRootDoc, fileType, formatDate } from '../../helpers'
@@ -15,6 +15,7 @@ interface Props {
     iqaId: string
     iqaAnswer: IqaAnswer | null
     iqaStatus: StatusNc
+    iqaCategory: CatIqa
     approveEdit: boolean
     setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
     setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
@@ -24,11 +25,11 @@ const ManageIqaAnswer: React.FC<Props> = ({
     iqaId,
     iqaAnswer,
     iqaStatus,
+    iqaCategory,
     approveEdit,
     setAlertWarning,
     setAlertState
 }) => {
-
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const { register, handleSubmit, errors } = useForm<AddAnswerIqaData>()
@@ -168,8 +169,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
         }
     }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
 
-    console.log(approveEdit)
-
     return (
         <IqaAnswerStyled className='box-shadows'>
             <h4>ผู้รับผิดชอบการแก้ไข/ป้องกัน</h4>
@@ -212,95 +211,99 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <p className='paragraph-error text-center'>{errors.answerName?.message}</p>
                 )}
 
-                {/* containmentAction */}
-                <div className="form-field">
-                    <label htmlFor="containmentAction">การแก้ไขเบื้องต้น</label>
-                    <textarea
-                        readOnly={approveEdit}
-                        cols={30}
-                        rows={3}
-                        name='containmentAction'
-                        id="containmentAction"
-                        defaultValue={iqaAnswer ? iqaAnswer.containmentAction : ''}
-                        ref={register({ required: 'โปรดใส่ containmentAction' })}
-                    />
-                </div>
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.containmentAction?.message}</p>
-                )}
+                {iqaCategory === 'CAR' && (
+                    <>
+                        {/* containmentAction */}
+                        <div className="form-field">
+                            <label htmlFor="containmentAction">การแก้ไขเบื้องต้น</label>
+                            <textarea
+                                readOnly={approveEdit}
+                                cols={30}
+                                rows={3}
+                                name='containmentAction'
+                                id="containmentAction"
+                                defaultValue={iqaAnswer ? iqaAnswer.containmentAction : ''}
+                                ref={register}
+                            />
+                        </div>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.containmentAction?.message}</p>
+                        )}
 
-                {/* containmentDueDate */}
-                <div className='flex-between'>
-                    <div className="form-field">
-                        <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
-                        <input
-                            readOnly={approveEdit}
-                            type="date"
-                            min="2022-01-01"
-                            name='containmentDueDate'
-                            id="containmentDueDate"
-                            defaultValue={iqaAnswer ? iqaAnswer.containmentDueDate : ''}
-                            ref={register({ required: 'โปรดใส่ containmentDueDate' })}
-                        />
-                    </div>
+                        {/* containmentDueDate */}
+                        <div className='flex-between'>
+                            <div className="form-field">
+                                <label htmlFor="containmentDueDate">กำหนดเสร็จ</label>
+                                <input
+                                    readOnly={approveEdit}
+                                    type="date"
+                                    min="2022-01-01"
+                                    name='containmentDueDate'
+                                    id="containmentDueDate"
+                                    defaultValue={iqaAnswer ? iqaAnswer.containmentDueDate : ''}
+                                    ref={register}
+                                />
+                            </div>
 
-                    {/* containmentName */}
-                    <div className="form-field">
-                        <label htmlFor="containmentName">ผู้รับผิดชอบ</label>
-                        <input
-                            readOnly={approveEdit}
-                            name='containmentName'
-                            id="containmentName"
-                            defaultValue={iqaAnswer ? iqaAnswer.containmentName : ''}
-                            ref={register({ required: 'โปรดใส่ containmentName' })}
-                        />
-                    </div>
-                </div>
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.containmentDueDate?.message}</p>
-                )}
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.containmentName?.message}</p>
-                )}
+                            {/* containmentName */}
+                            <div className="form-field">
+                                <label htmlFor="containmentName">ผู้รับผิดชอบ</label>
+                                <input
+                                    readOnly={approveEdit}
+                                    name='containmentName'
+                                    id="containmentName"
+                                    defaultValue={iqaAnswer ? iqaAnswer.containmentName : ''}
+                                    ref={register}
+                                />
+                            </div>
+                        </div>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.containmentDueDate?.message}</p>
+                        )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.containmentName?.message}</p>
+                        )}
 
-                {/* editedRootDoc */}
-                <div className="flex-root">
-                    <p className='title-select-doc'>สาเหตุ</p>
-                    <div className="select-root">
-                        {selectRootDoc.map((item, i) => (
-                            <CheckboxStyled key={i}>
-                                <div className="group" style={{ padding: '8px 0px 8px 38px' }}>
-                                    <input
-                                        disabled={approveEdit}
-                                        type="checkbox"
-                                        name="editedRootDoc"
-                                        id={item}
-                                        value={item}
-                                        defaultChecked={iqaAnswer?.editedRootDoc?.includes(item)}
-                                        ref={register}
-                                    />
-                                    <label htmlFor={item}>{item}</label>
-                                </div>
-                            </CheckboxStyled>
-                        ))}
-                    </div>
+                        {/* editedRootDoc */}
+                        <div className="flex-root">
+                            <p className='title-select-doc'>สาเหตุ</p>
+                            <div className="select-root">
+                                {selectRootDoc.map((item, i) => (
+                                    <CheckboxStyled key={i}>
+                                        <div className="group" style={{ padding: '8px 0px 8px 38px' }}>
+                                            <input
+                                                disabled={approveEdit}
+                                                type="checkbox"
+                                                name="editedRootDoc"
+                                                id={item}
+                                                value={item}
+                                                defaultChecked={iqaAnswer?.editedRootDoc?.includes(item)}
+                                                ref={register}
+                                            />
+                                            <label htmlFor={item}>{item}</label>
+                                        </div>
+                                    </CheckboxStyled>
+                                ))}
+                            </div>
 
-                    {/* rootCause */}
-                    <div className="form-field">
-                        <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
-                        <textarea
-                            readOnly={approveEdit}
-                            cols={30}
-                            rows={11}
-                            name="rootCause"
-                            id="rootCause"
-                            defaultValue={iqaAnswer ? iqaAnswer.rootCause : ''}
-                            ref={register({ required: 'โปรดใส่ rootCause' })}
-                        />
-                    </div>
-                </div>
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.rootCause?.message}</p>
+                            {/* rootCause */}
+                            <div className="form-field">
+                                <label htmlFor="rootCause">รายละเอียดสาเหตุ</label>
+                                <textarea
+                                    readOnly={approveEdit}
+                                    cols={30}
+                                    rows={11}
+                                    name="rootCause"
+                                    id="rootCause"
+                                    defaultValue={iqaAnswer ? iqaAnswer.rootCause : ''}
+                                    ref={register}
+                                />
+                            </div>
+                        </div>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.rootCause?.message}</p>
+                        )}
+                    </>
                 )}
 
                 {/* correctiveAction */}
@@ -309,7 +312,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     <textarea
                         readOnly={approveEdit}
                         cols={30}
-                        rows={3}
+                        rows={7}
                         name='correctiveAction'
                         id="correctiveAction"
                         defaultValue={iqaAnswer ? iqaAnswer.correctiveAction : ''}

@@ -88,6 +88,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                             iqaId={params.id}
                             iqaAnswer={iqaAnswer}
                             iqaStatus={iqa.iqaStatus}
+                            iqaCategory={iqa.category}
                             approveEdit={approveEdit()}
                             setAlertWarning={setAlertWarning}
                             setAlertState={setAlertState}

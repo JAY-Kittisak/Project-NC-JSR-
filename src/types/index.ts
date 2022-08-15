@@ -337,12 +337,12 @@ export type IqaAnswer = {
     id: string
     iqaId: string
     answerName: string
-    containmentAction: string
-    containmentDueDate: string
-    containmentName: string
+    containmentAction?: string
+    containmentDueDate?: string
+    containmentName?: string
 
     editedRootDoc: EditedRootDoc[]
-    rootCause: string
+    rootCause?: string
 
     correctiveAction: string
     correctiveDueDate: string
