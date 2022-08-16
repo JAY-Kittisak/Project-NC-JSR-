@@ -6,18 +6,17 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '../Button';
 import { useManageNcNotify } from '../../hooks/useManageNcNotify';
 import { RadioStyled } from '../../styles/LayoutStyle';
-import { AddNcrNotifyData, UserInfo, AlertType, AlertNt } from '../../types';
+import { AddNcrNotifyData, UserInfo } from '../../types';
 import { categories, fileType } from '../../helpers'
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
+import { useAlertContext } from '../../state/alert-context'
 
 interface Props {
     user: UserInfo | null
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => {
+const NcNotify: React.FC<Props> = ({ user }) => {
     const [radioBtn, setRadioBtn] = useState('NCR')
 
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
@@ -32,6 +31,8 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
     const {
         departmentsState: { departments: deptCdc }
     } = useDepartmentsCdcContext()
+    
+    const { setAlertType } = useAlertContext()
 
     const {
         addNewNcNotify,
@@ -122,15 +123,13 @@ const NcNotify: React.FC<Props> = ({ user, setAlertWarning, setAlertState }) => 
             reset()
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
     }, [
         addNcNotifyFinished,
         reset,
         setUploadProgression,
-        setAlertState,
-        setAlertWarning
+        setAlertType
     ])
 
     return (

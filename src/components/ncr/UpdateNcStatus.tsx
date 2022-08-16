@@ -2,20 +2,21 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
-import { StatusNc, AlertNt, AlertType } from '../../types'
+import { useAlertContext } from '../../state/alert-context'
+import { StatusNc } from '../../types'
 import { selectStatusNC } from '../../helpers'
 import Button from '../Button'
 
 interface Props {
     ncId: string
     ncStatus: StatusNc
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
     setIsEditing: (value: boolean) => void
 }
 
-const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning, setAlertState, setIsEditing }) => {
+const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setIsEditing }) => {
     const [newStatus, setNewStatus] = useState<StatusNc>(ncStatus)
+
+    const { setAlertType } = useAlertContext()
 
     const { updateStatus, loading, error } = useManageNcNotify()
 
@@ -25,8 +26,7 @@ const UpdateNcStatus: React.FC<Props> = ({ ncId, ncStatus, setAlertWarning, setA
         const finished = await updateStatus(ncId, newStatus)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
             setIsEditing(false)
         }
 

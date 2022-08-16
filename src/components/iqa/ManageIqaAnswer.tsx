@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import { CheckboxStyled } from '../../styles/LayoutStyle';
-import { IqaAnswer, AddAnswerIqaData, StatusNc, AlertNt, AlertType, CatIqa } from '../../types';
+import { IqaAnswer, AddAnswerIqaData, StatusNc, CatIqa } from '../../types';
 import Button from '../Button';
 import { useManageAnswerIqa } from '../../hooks/useManageAnswerIqa'
+import { useAlertContext } from '../../state/alert-context'
 import { selectEditedDoc, selectRootDoc, fileType, formatDate } from '../../helpers'
 import { storageRef } from '../../firebase/config'
 
@@ -17,8 +18,6 @@ interface Props {
     iqaStatus: StatusNc
     iqaCategory: CatIqa
     approveEdit: boolean
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
 const ManageIqaAnswer: React.FC<Props> = ({
@@ -26,13 +25,13 @@ const ManageIqaAnswer: React.FC<Props> = ({
     iqaAnswer,
     iqaStatus,
     iqaCategory,
-    approveEdit,
-    setAlertWarning,
-    setAlertState
+    approveEdit
 }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const { register, handleSubmit, errors } = useForm<AddAnswerIqaData>()
+    
+    const { setAlertType } = useAlertContext()
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -155,19 +154,17 @@ const ManageIqaAnswer: React.FC<Props> = ({
         if (addAnswerIqaFinished) {
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
-    }, [addAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
+    }, [addAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertType])
 
     useEffect(() => {
         if (editAnswerIqaFinished) {
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
-    }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
+    }, [editAnswerIqaFinished, setUploadProgression, setSelectedFile, setAlertType ])
 
     return (
         <IqaAnswerStyled className='box-shadows'>

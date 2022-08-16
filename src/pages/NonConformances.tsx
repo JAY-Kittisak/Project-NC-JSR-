@@ -1,28 +1,20 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import { MainLayout, InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
 import NcHistoryNotify from '../components/ncr/NcHistoryNotify'
 import NcNotify from '../components/ncr/NcNotify'
-import { UserInfo, AlertNt, AlertType } from '../types'
-import AlertNotification from '../components/dialogs/AlertNotification'
+import { UserInfo } from '../types'
 
 interface Props {
     user: UserInfo | null
 }
 
 const NonConformances: React.FC<Props> = ({ user }) => {
-    const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
-    const [alertState, setAlertState] = useState<AlertType>('success');
 
     return (
         <MainLayout>
-            <AlertNotification
-                alertWarning={alertWarning}
-                setAlertWarning={setAlertWarning}
-                alert={alertState}
-            />
             <Title title={'NCR'} span={'Non Conformance Report'} />
             <NcStyled>
                 <InnerLayout className='ncr-section'>
@@ -30,11 +22,7 @@ const NonConformances: React.FC<Props> = ({ user }) => {
                         <p className='paragraph-null'>User ของคุณยังไม่ได้รับการอนุมัติใช้งาน โปรดแจ้งผู้ดูแลระบบ</p>
                     ) : (
                         <>
-                            <NcNotify 
-                                user={user}
-                                setAlertWarning={setAlertWarning} 
-                                setAlertState={setAlertState}
-                            />
+                            <NcNotify user={user}/>
                             <NcHistoryNotify />
                         </>
                     )}

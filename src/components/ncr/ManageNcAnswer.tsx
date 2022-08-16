@@ -5,19 +5,17 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import { CheckboxStyled } from '../../styles/LayoutStyle';
 import Button from '../Button'
-
 import { useManageAnswerNc } from '../../hooks/useManageAnswerNc'
-import { AddAnswerNcData, StatusNc, NcAnswer, AlertNt, AlertType } from '../../types';
+import { useAuthContext } from '../../state/auth-context';
+import { useAlertContext } from '../../state/alert-context'
+import { AddAnswerNcData, StatusNc, NcAnswer } from '../../types';
 import { storageRef } from '../../firebase/config'
 import { fileType, formatDate } from '../../helpers';
-import { useAuthContext } from '../../state/auth-context';
 interface Props {
     ncId: string
     ncAnswer: NcAnswer | null
     ncStatus: StatusNc
     ncToDept: string
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
 const ManageNcAnswer: React.FC<Props> = ({
@@ -25,8 +23,6 @@ const ManageNcAnswer: React.FC<Props> = ({
     ncAnswer,
     ncStatus,
     ncToDept,
-    setAlertWarning,
-    setAlertState
 }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
@@ -35,6 +31,8 @@ const ManageNcAnswer: React.FC<Props> = ({
     const inputRef = useRef<HTMLInputElement>(null)
 
     const { authState: { userInfo } } = useAuthContext()
+
+    const { setAlertType } = useAlertContext()
 
     const {
         uploadImageToStorage,
@@ -159,19 +157,17 @@ const ManageNcAnswer: React.FC<Props> = ({
         if (addAnswerNcFinished) {
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
-    }, [addAnswerNcFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
+    }, [addAnswerNcFinished, setUploadProgression, setSelectedFile, setAlertType])
 
     useEffect(() => {
         if (editAnswerNcFinished) {
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
-    }, [editAnswerNcFinished, setUploadProgression, setSelectedFile, setAlertState, setAlertWarning])
+    }, [editAnswerNcFinished, setUploadProgression, setSelectedFile, setAlertType])
 
     return (
         <NcAnswerStyled className='box-shadows'>

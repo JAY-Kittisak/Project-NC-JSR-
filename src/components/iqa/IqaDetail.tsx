@@ -5,7 +5,7 @@ import PrintRoundedIcon from "@material-ui/icons/PrintRounded";
 
 import Button from '../Button'
 import { formatDate, isAdmin, diffDay, getStatusColor } from '../../helpers'
-import { IqaType, UserInfo, AlertNt, AlertType, StatusProps } from '../../types'
+import { IqaType, UserInfo, StatusProps } from '../../types'
 import { firebase } from '../../firebase/config'
 import UpdateIqaStatus from './UpdateIqaStatus';
 
@@ -13,8 +13,6 @@ interface Props {
     iqa: IqaType
     userInfo: UserInfo
     answerDateAt: firebase.firestore.Timestamp | undefined
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
     setOpenIqaForm: React.Dispatch<React.SetStateAction<boolean>>
     printNcDetail: () => void
 }
@@ -23,8 +21,6 @@ const IqaDetail: React.FC<Props> = ({
     iqa, 
     userInfo, 
     answerDateAt, 
-    setAlertWarning,
-    setAlertState, 
     setOpenIqaForm,
     printNcDetail
 }) => {
@@ -106,8 +102,6 @@ const IqaDetail: React.FC<Props> = ({
                                     <UpdateIqaStatus
                                         iqaId={id}
                                         iqaStatus={iqaStatus}
-                                        setAlertWarning={setAlertWarning}
-                                        setAlertState={setAlertState}
                                         setIsEditing={setIsEditing}
                                     />
                                 ) : (

@@ -4,24 +4,25 @@ import { useForm } from 'react-hook-form';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import Button from '../Button';
-import { AddIqaTypeData, UserInfo, AlertType, AlertNt, CountsCode } from '../../types'
+import { AddIqaTypeData, UserInfo, CountsCode } from '../../types'
 import { requirements, fileType, selectTeams } from '../../helpers';
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
+import { useAlertContext } from '../../state/alert-context';
 import { useManageIqa } from '../../hooks/useManageIqa';
 import { iqaCountsCodeRef, iqaCountsCodeCdcRef} from '../../firebase'
 
 interface Props {
     userInfo: UserInfo | null
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) => {
+const AddIqa: React.FC<Props> = ({ userInfo }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [nameTwo, setNameTwo] = useState(false)
     const [nameThree, setNameThree] = useState(false)
     const [nameFour, setNameFour] = useState(false)
+
+    const { setAlertType } = useAlertContext()
 
     const {
         register,
@@ -136,15 +137,13 @@ const AddIqa: React.FC<Props> = ({ userInfo, setAlertWarning, setAlertState }) =
             reset()
             setSelectedFile(null)
             setUploadProgression(0)
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
     }, [
         addIqaFinished,
         reset,
         setUploadProgression,
-        setAlertState,
-        setAlertWarning
+        setAlertType
     ])
 
     return (

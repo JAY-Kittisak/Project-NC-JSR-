@@ -102,8 +102,6 @@ export const selectRootDoc: EditedRootDoc[] = [
     'สาเหตุอื่นๆ',
 ]
 
-export type AlertNotify = "show" | "hide"
-
 export const calculateTotalPages = (totalItems: number, perPage: number) =>
     Math.ceil(totalItems / perPage)
 

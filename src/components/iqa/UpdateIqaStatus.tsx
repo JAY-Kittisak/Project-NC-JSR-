@@ -2,20 +2,21 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import Button from '../Button'
-import { StatusNc, AlertNt, AlertType } from '../../types'
+import { StatusNc } from '../../types'
 import { selectStatusNC } from '../../helpers'
 import { useManageIqa } from '../../hooks/useManageIqa';
+import { useAlertContext } from '../../state/alert-context'
 
 interface Props {
     iqaId: string
     iqaStatus: StatusNc
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
     setIsEditing: (value: boolean) => void
 }
 
-const UpdateIqaStatus: React.FC<Props> = ({ iqaId, iqaStatus, setAlertWarning, setAlertState, setIsEditing }) => {
+const UpdateIqaStatus: React.FC<Props> = ({ iqaId, iqaStatus, setIsEditing }) => {
     const [newStatus, setNewStatus] = useState<StatusNc>(iqaStatus)
+
+    const { setAlertType } = useAlertContext()
 
     const { updateIqaStatus, loading, error} = useManageIqa()
 
@@ -25,8 +26,7 @@ const UpdateIqaStatus: React.FC<Props> = ({ iqaId, iqaStatus, setAlertWarning, s
         const finished = await updateIqaStatus(iqaId, newStatus)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
             setIsEditing(false)
         }
 

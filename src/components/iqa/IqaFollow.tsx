@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { useForm } from 'react-hook-form';
 
 import Button from '../Button'
-import { FollowIqa, StatusNc, AlertNt, AlertType, FoundFix, AddFollowIqaData } from '../../types'
+import { FollowIqa, StatusNc, FoundFix, AddFollowIqaData } from '../../types'
 import { formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
+import { useAlertContext } from '../../state/alert-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
 import { useManageIqa } from '../../hooks/useManageIqa';
 
@@ -14,8 +15,6 @@ interface Props {
     follow: FollowIqa | undefined
     iqaStatus: StatusNc
     creatorId: string
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
 const IqaFollow: React.FC<Props> = ({
@@ -23,14 +22,13 @@ const IqaFollow: React.FC<Props> = ({
     follow,
     iqaStatus,
     creatorId,
-    setAlertWarning,
-    setAlertState
 }) => {
     const [radioBtn, setRadioBtn] = useState<FoundFix | undefined>(follow?.followIqa)
 
     const { register, handleSubmit, errors } = useForm<AddFollowIqaData>()
 
     const { authState: { userInfo } } = useAuthContext()
+    const { setAlertType } = useAlertContext()
 
     const { updateIqaFollow, loading, error} = useManageIqa()
 
@@ -41,8 +39,7 @@ const IqaFollow: React.FC<Props> = ({
         const finished = await updateIqaFollow(iqaId,data)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         } else {
             alert('Update follow nc. ไม่สำเร็จ โปรดแจ้งผู้ดูแลระบบ')
         }

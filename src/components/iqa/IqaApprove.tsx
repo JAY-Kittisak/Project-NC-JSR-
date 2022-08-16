@@ -5,24 +5,24 @@ import { useForm } from 'react-hook-form';
 import Button from '../Button'
 import { RadioStyled } from '../../styles/LayoutStyle'
 import { useAuthContext } from '../../state/auth-context';
+import { useAlertContext } from '../../state/alert-context';
 import { useManageIqa } from '../../hooks/useManageIqa'
 import { formatDate } from '../../helpers'
-import { StatusNc, ApproveIqa, AddApproveIqaData, Approve, AlertNt, AlertType } from '../../types'
+import { StatusNc, ApproveIqa, AddApproveIqaData, Approve } from '../../types'
 
 interface Props {
     iqaId: string
     approve: ApproveIqa | undefined
     iqaStatus: StatusNc
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const IqaApprove: React.FC<Props> = ({ iqaId, approve, iqaStatus, setAlertWarning, setAlertState }) => {
+const IqaApprove: React.FC<Props> = ({ iqaId, approve, iqaStatus}) => {
     const [approveBtn, setApproveBtn] = useState<Approve | undefined>(approve?.approveIqa)
 
     const { register, handleSubmit, errors } = useForm<AddApproveIqaData>()
 
     const { authState: { userInfo } } = useAuthContext()
+    const { setAlertType } = useAlertContext()
 
     const { updateIqaApprove, loading, error } = useManageIqa()
 
@@ -39,8 +39,7 @@ const IqaApprove: React.FC<Props> = ({ iqaId, approve, iqaStatus, setAlertWarnin
         const finished = await updateIqaApprove(iqaId, spreadOp)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         } else {
             alert('Approve nc. ไม่สำเร็จ โปรดแจ้งผู้ดูแลระบบ')
         }

@@ -4,26 +4,27 @@ import { useForm } from 'react-hook-form';
 
 import Button from '../Button'
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
+import { useAlertContext } from '../../state/alert-context'
 import { formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
-import { FollowNc, AddFollowNcData, FoundFix, StatusNc, AlertNt, AlertType } from '../../types'
+import { FollowNc, AddFollowNcData, FoundFix, StatusNc } from '../../types'
 
 interface Props {
     ncId: string
     follow: FollowNc | undefined
     ncStatus: StatusNc
     creatorId: string
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlertWarning, setAlertState }) => {
+const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
     const [radioBtn, setRadioBtn] = useState<FoundFix | undefined>(follow?.followNc)
 
     const { register, handleSubmit, errors } = useForm<AddFollowNcData>()
 
     const { authState: { userInfo } } = useAuthContext()
+
+    const { setAlertType } = useAlertContext()
 
     const {
         updateNcFollow,
@@ -38,8 +39,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, setAlert
         const finished = await updateNcFollow(ncId,data)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         } else {
             alert('Update follow nc. ไม่สำเร็จ โปรดแจ้งผู้ดูแลระบบ')
         }

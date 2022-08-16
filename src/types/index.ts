@@ -219,10 +219,6 @@ export type AddTopic = Pick<Department, 'topic'>
 
 export type CountsCode = { counts: number }
 
-export type AlertNt = "show" | "hide"
-
-export type AlertType = 'success' | 'warning'
-
 export type Nc = { [key in NcrTab]: NcrNotify[] }
 
 // TODO: IQA

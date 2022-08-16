@@ -13,16 +13,12 @@ import IqaDetail from '../components/iqa/IqaDetail'
 import ManageIqaAnswer from '../components/iqa/ManageIqaAnswer'
 import IqaFollow from '../components/iqa/IqaFollow'
 import IqaApprove from '../components/iqa/IqaApprove'
-import { AlertNt, AlertType } from '../types'
-import AlertNotification from '../components/dialogs/AlertNotification'
 import IqaPrint from '../components/iqa/IqaPrint'
 import EditIqa from '../components/iqa/EditIqa'
 
 interface Props { }
 
 const IqAuditDetail: React.FC<Props> = () => {
-    const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
-    const [alertState, setAlertState] = useState<AlertType>('success');
     const [openIqaForm, setOpenIqaForm] = useState(false)
 
     const params = useParams<{ id: string }>()
@@ -64,11 +60,6 @@ const IqAuditDetail: React.FC<Props> = () => {
 
     return (
         <MainLayout>
-            <AlertNotification
-                alertWarning={alertWarning}
-                setAlertWarning={setAlertWarning}
-                alert={alertState}
-            />
             <Title title={'IQA Detail'} span={'IQA Detail'} />
             <IqAuditDetailStyled>
                 <InnerLayout className='iqa-detail-section'>
@@ -77,8 +68,6 @@ const IqAuditDetail: React.FC<Props> = () => {
                         iqa={iqa}
                         userInfo={userInfo}
                         answerDateAt={iqaAnswer?.createdAt}
-                        setAlertWarning={setAlertWarning}
-                        setAlertState={setAlertState}
                         setOpenIqaForm={setOpenIqaForm}
                         printNcDetail={printNcDetail}
                     />
@@ -90,8 +79,6 @@ const IqAuditDetail: React.FC<Props> = () => {
                             iqaStatus={iqa.iqaStatus}
                             iqaCategory={iqa.category}
                             approveEdit={approveEdit()}
-                            setAlertWarning={setAlertWarning}
-                            setAlertState={setAlertState}
                         />
                         {answerError && <p className='paragraph-error'>!!Query Error IQA Answer : {answerError}</p>}
                     </section>
@@ -101,16 +88,12 @@ const IqAuditDetail: React.FC<Props> = () => {
                         follow={iqa.follow}
                         iqaStatus={iqa.iqaStatus}
                         creatorId={iqa.creator.id}
-                        setAlertWarning={setAlertWarning}
-                        setAlertState={setAlertState}
                     />
 
                     <IqaApprove 
                         iqaId={params.id}
                         approve={iqa.approve}
                         iqaStatus={iqa.iqaStatus}
-                        setAlertWarning={setAlertWarning}
-                        setAlertState={setAlertState}
                     />
 
                 </InnerLayout>

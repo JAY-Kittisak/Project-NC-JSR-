@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components'
 
@@ -7,15 +7,15 @@ import Title from '../components/Title'
 import Button from '../components/Button';
 import DeptItem from '../components/manage-dept/DeptItem'
 import Input from '../components/Input';
-import { AddDepartment, AlertNt, AlertType} from '../types';
+import { AddDepartment } from '../types';
 import { useManageDept } from '../hooks/useManageDept';
-import AlertNotification from '../components/dialogs/AlertNotification';
+import { useAlertContext } from '../state/alert-context'
 
 interface Props { }
 
 const ManageDepartments: React.FC<Props> = () => {
-    const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
-    const [alertState, setAlertState] = useState<AlertType>('success');
+
+    const { setAlertType } = useAlertContext()
 
     const {
         addNewDept,
@@ -38,18 +38,12 @@ const ManageDepartments: React.FC<Props> = () => {
     useEffect(() => { 
         if (addDeptFinished) {
             reset()
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         }
-    },[addDeptFinished,reset] )
+    },[ addDeptFinished, reset, setAlertType] )
 
     return (
         <MainLayout>
-            <AlertNotification
-                alertWarning={alertWarning}
-                setAlertWarning={setAlertWarning}
-                alert={alertState}
-            />
             <Title title={'Manage Dept'} span={'Manage Departments'} />
             <ManageDeptStyled>
                 <InnerLayout>

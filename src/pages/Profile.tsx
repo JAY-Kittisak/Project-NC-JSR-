@@ -14,7 +14,7 @@ const Profile: React.FC<Props> = () => {
             <Title title={'Profile'} span={'Profile'} />
             <InnerLayout>
                 <div>
-                <p>UserName</p><p>{userInfo?.username}</p>
+                    <p>UserName</p><p>{userInfo?.username}</p>
                 </div>
             </InnerLayout>
         </MainLayout>

@@ -6,6 +6,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Sidebar from './components/Sidebar';
 import { useModalContext } from './state/modal-context'
 import { useAuthContext } from './state/auth-context'
+import { useAlertContext } from './state/alert-context'
 
 interface Props { }
 
@@ -14,6 +15,7 @@ const Layout: React.FC<Props> = ({ children }) => {
   const { authState: { authUser } } = useAuthContext()
 
   const { modal } = useModalContext()
+  const { alertState } = useAlertContext()
 
   const isUser = !!authUser
 
@@ -39,6 +41,7 @@ const Layout: React.FC<Props> = ({ children }) => {
           <div className='line-3'></div>
           <div className='line-4'></div>
         </div>
+        {alertState && alertState}
         {children}
 
         {modal && modal}

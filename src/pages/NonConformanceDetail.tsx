@@ -14,19 +14,16 @@ import UpdateNcStatus from '../components/ncr/UpdateNcStatus'
 import Spinner from '../components/Spinner'
 import Title from '../components/Title'
 import Button from '../components/Button'
-import AlertNotification from '../components/dialogs/AlertNotification'
 import { useAuthContext } from '../state/auth-context'
 import { useQueryNc } from '../hooks/useQueryNc'
 import { useQueryNcAnswer } from '../hooks/useQueryNcAnswer'
 import { InnerLayout, MainLayout, SpinnerStyled } from '../styles/LayoutStyle'
-import { StatusProps, AlertNt, AlertType } from '../types'
+import { StatusProps } from '../types'
 import { formatDate, diffDay, isAdmin, getStatusColor } from '../helpers'
 
 interface Props { }
 
 const NonConformanceDetail: React.FC<Props> = () => {
-    const [alertWarning, setAlertWarning] = useState<AlertNt>('hide');
-    const [alertState, setAlertState] = useState<AlertType>('success');
     const [openNcForm, setOpenNcForm] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
 
@@ -73,11 +70,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
 
     return (
         <MainLayout>
-            <AlertNotification
-                alertWarning={alertWarning}
-                setAlertWarning={setAlertWarning}
-                alert={alertState}
-            />
             <Title title={'NCR Detail'} span={'NCR Detail'} />
             <NcDetailStyled>
                 <InnerLayout className='nc-detail-section' >
@@ -135,8 +127,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
                                     <UpdateNcStatus
                                         ncId={nc.id}
                                         ncStatus={ncStatus}
-                                        setAlertWarning={setAlertWarning}
-                                        setAlertState={setAlertState}
                                         setIsEditing={setIsEditing}
                                     />
                                 ) : (
@@ -202,8 +192,6 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             ncAnswer={ncAnswer}
                             ncStatus={ncStatus}
                             ncToDept={dept}
-                            setAlertWarning={setAlertWarning}
-                            setAlertState={setAlertState}
                         />
                         {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError}</p>}
                     </section>
@@ -213,16 +201,12 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         follow={follow}
                         ncStatus={ncStatus}
                         creatorId={creator.id}
-                        setAlertWarning={setAlertWarning}
-                        setAlertState={setAlertState}
                     />
 
                     <NcApprove
                         ncId={params.id}
                         approve={approve}
                         ncStatus={ncStatus}
-                        setAlertWarning={setAlertWarning}
-                        setAlertState={setAlertState}
                     />
 
                 </InnerLayout>

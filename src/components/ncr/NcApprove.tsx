@@ -4,25 +4,26 @@ import { useForm } from 'react-hook-form';
 
 import Button from '../Button'
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
+import { useAlertContext } from '../../state/alert-context'
 import { formatDate } from '../../helpers'
 import { useAuthContext } from '../../state/auth-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
-import { StatusNc, ApproveNc, AddApproveNcData, Approve, AlertNt, AlertType } from '../../types'
+import { StatusNc, ApproveNc, AddApproveNcData, Approve } from '../../types'
 
 interface Props {
     ncId: string
     approve: ApproveNc | undefined
     ncStatus: StatusNc
-    setAlertWarning: React.Dispatch<React.SetStateAction<AlertNt>>
-    setAlertState: React.Dispatch<React.SetStateAction<AlertType>>
 }
 
-const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, setAlertState }) => {
+const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus }) => {
     const [approveBtn, setApproveBtn] = useState<Approve | undefined>(approve?.approveNc)
 
     const { register, handleSubmit, errors } = useForm<AddApproveNcData>()
 
     const { authState: { userInfo } } = useAuthContext()
+    
+    const { setAlertType } = useAlertContext()
 
     const {
         updateNcApprove,
@@ -43,8 +44,7 @@ const NcApprove: React.FC<Props> = ({ ncId, approve, ncStatus, setAlertWarning, 
         const finished = await updateNcApprove(ncId, spreadOp)
 
         if (finished) {
-            setAlertState('success')
-            setAlertWarning('show')
+            setAlertType('success')
         } else {
             alert('Approve nc. ไม่สำเร็จ โปรดแจ้งผู้ดูแลระบบ')
         }
