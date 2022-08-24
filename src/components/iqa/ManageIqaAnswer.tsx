@@ -71,7 +71,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
             selectedFile,
             addNewAnswerIqa(
                 data,
-                iqaId
+                iqaId,
+                iqaCategory
             )
         )
     })
@@ -124,7 +125,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
                         iqaAnswer.id,
                         data,
                         iqaAnswer.iqaId,
-                        iqaStatus
+                        iqaStatus,
+                        iqaCategory
                     )
                 )
             } else {
@@ -133,7 +135,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     iqaAnswer.id,
                     data,
                     iqaAnswer.iqaId,
-                    iqaStatus
+                    iqaStatus,
+                    iqaCategory
                 )(fileAnswerIqaUrl, fileAnswerIqaRef)
             }
 
@@ -144,7 +147,8 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     iqaAnswer.id,
                     data,
                     iqaAnswer.iqaId,
-                    iqaStatus
+                    iqaStatus,
+                    iqaCategory
                 )
             )
         }
@@ -469,8 +473,9 @@ const ManageIqaAnswer: React.FC<Props> = ({
 
                         )}
 
-                {!approveEdit && (
+                {/* {!approveEdit && ( */}
                     <Button
+                        className='btn-submit'
                         type='submit'
                         loading={loading}
                         disabled={loading}
@@ -478,7 +483,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     >
                         {iqaAnswer ? 'อัพเดท' : 'บันทึก'}
                     </Button>
-                )}
+                {/* )} */}
             </form>
             {error && <p className='paragraph-error'>{error}</p>}
         </IqaAnswerStyled>
@@ -487,6 +492,10 @@ const ManageIqaAnswer: React.FC<Props> = ({
 
 const IqaAnswerStyled = styled.div`
     background-color: var(--background-dark-color);
+
+    .btn-submit {
+        margin-top: 1rem;
+    }
     
     .title-select-doc {
         margin-top: 14px; 
@@ -523,7 +532,7 @@ const IqaAnswerStyled = styled.div`
 `
 const FlexUploadStyled = styled.div`
     display: flex;
-    margin: -1rem 0rem 1rem;
+    margin-top: -.5rem;
 `
 
 const ButtonStyled = styled.section`

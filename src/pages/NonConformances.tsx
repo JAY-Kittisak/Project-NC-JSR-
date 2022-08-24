@@ -18,7 +18,7 @@ const NonConformances: React.FC<Props> = ({ user }) => {
             <Title title={'NCR'} span={'Non Conformance Report'} />
             <NcStyled>
                 <InnerLayout className='ncr-section'>
-                    {user?.dept === 'null' ? (
+                    {!user || (user.dept === 'null') ? (
                         <p className='paragraph-null'>User ของคุณยังไม่ได้รับการอนุมัติใช้งาน โปรดแจ้งผู้ดูแลระบบ</p>
                     ) : (
                         <>

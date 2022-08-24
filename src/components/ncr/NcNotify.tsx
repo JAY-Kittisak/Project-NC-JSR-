@@ -13,7 +13,7 @@ import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 import { useAlertContext } from '../../state/alert-context'
 
 interface Props {
-    user: UserInfo | null
+    user: UserInfo
 }
 
 const NcNotify: React.FC<Props> = ({ user }) => {
@@ -31,7 +31,7 @@ const NcNotify: React.FC<Props> = ({ user }) => {
     const {
         departmentsState: { departments: deptCdc }
     } = useDepartmentsCdcContext()
-    
+
     const { setAlertType } = useAlertContext()
 
     const {
@@ -75,7 +75,9 @@ const NcNotify: React.FC<Props> = ({ user }) => {
     }
 
     const handleAddNotifyNc = handleSubmit(async (data) => {
-        if (!user) return
+        const signature = user.personnel?.find(item => item.personnelName === data.creatorName)
+
+        if (!signature?.imageFileName) return alert('!Error No. imageFileName')
 
         const creator = {
             id: user.id,
@@ -88,19 +90,20 @@ const NcNotify: React.FC<Props> = ({ user }) => {
 
         const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
 
+        console.log(data, code, signature.imageUrl)
+
         return addNewNcNotify(
             selectedFile,
             data,
             creator,
             code,
             user.branch,
+            signature.imageUrl,
             'รอตอบ',
         )
     })
 
     useEffect(() => {
-        if (!user) return
-
         if (user.branch === 'ลาดกระบัง') {
             if (departments) {
                 const filterTopic = departments.filter((value) => value.dept === dept)
@@ -138,196 +141,204 @@ const NcNotify: React.FC<Props> = ({ user }) => {
                 <h4>รายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด/ข้อบกพร่อง</h4>
             </div>
 
-            <form className='form' onSubmit={handleAddNotifyNc}>
-                <div className='radio-group'>
-                    {categories.map((radio, i) => (
-                        <RadioStyled key={i}>
-                            <div className='group'>
-                                <input
-                                    type='radio'
-                                    name='category'
-                                    id={radio}
-                                    value={radio}
-                                    checked={isRadioSelected(radio)}
-                                    onChange={handleRadioClick}
-                                    ref={register({ required: 'Category is required.' })}
-                                />
-                                <label htmlFor={radio}>{radio}</label>
-                            </div>
-                        </RadioStyled>
-                    ))}
-                </div>
-                {errors && (
-                    <p>{errors.category?.message}</p>
-                )}
-                <div className='form-field'>
-                    <label htmlFor='creatorName'>ชื่อ-นามสกุล ผู้ออก NC</label>
-                    <input
-                        type='text'
-                        name='creatorName'
-                        id='creatorName'
-                        placeholder='โปรดใส่ชื่อ และ นามสกุล'
-                        ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
-                    />
-                </div>
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
-                )}
-                <div className='flex-dept'>
-                    {user?.branch === 'ลาดกระบัง' ? (
-                        departments && <div className='form-field'>
-                            <label htmlFor='dept'>
-                                ถึงแผนก
-                            </label>
-                            <select
-                                name='dept'
-                                onChange={(e) => setDept(e.target.value)}
-                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
-                            >
-                                <option style={{ display: 'none' }}></option>
-                                {departments.map((cat) => (
-                                    <option key={cat.id} value={cat.dept}>
-                                        {cat.dept}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    ) : (
-                        deptCdc && <div className='form-field'>
-                            <label htmlFor='dept'>
-                                ถึงแผนก
-                            </label>
-                            <select
-                                name='dept'
-                                onChange={(e) => setDept(e.target.value)}
-                                ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
-                            >
-                                <option style={{ display: 'none' }}></option>
-                                {deptCdc.map((cat) => (
-                                    <option key={cat.id} value={cat.dept}>
-                                        {cat.dept}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+            {!user.personnel ? (
+                <p className='paragraph-error text-center'>!โปรดเพิ่มชื่อผู้ใช้งานที่ Profile ของคุณ</p>
+            ) : (
+                <form className='form' onSubmit={handleAddNotifyNc}>
+                    <div className='radio-group'>
+                        {categories.map((radio, i) => (
+                            <RadioStyled key={i}>
+                                <div className='group'>
+                                    <input
+                                        type='radio'
+                                        name='category'
+                                        id={radio}
+                                        value={radio}
+                                        checked={isRadioSelected(radio)}
+                                        onChange={handleRadioClick}
+                                        ref={register({ required: 'Category is required.' })}
+                                    />
+                                    <label htmlFor={radio}>{radio}</label>
+                                </div>
+                            </RadioStyled>
+                        ))}
+                    </div>
+                    {errors && (
+                        <p>{errors.category?.message}</p>
                     )}
                     <div className='form-field'>
-                        <label htmlFor='topicType'>
-                            ประเภทความไม่สอดคล้อง
-                        </label>
-                        <select name='topicType' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
+                        <label htmlFor='creatorName'>ชื่อ-นามสกุล ผู้ออก NC</label>
+                        <select
+                            name='creatorName'
+                            ref={register({ required: 'โปรดเลือก ชื่อ-นามสกุล ผู้ออก NC ให้' })}
+                        >
                             <option style={{ display: 'none' }}></option>
-                            <option value='Product'>Product</option>
-                            <option value='Process'>Process</option>
+                            {(user.personnel.length > 0) && user.personnel.map((item, i) => (
+                                <option key={i} value={item.personnelName}>
+                                    {item.personnelName}
+                                </option>
+                            ))}
                         </select>
                     </div>
-                </div>
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.dept?.message}</p>
-                )}
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.topicType?.message}</p>
-                )}
-                {topic && <div className='form-field'>
-                    <label htmlFor='topic'>
-                        ประเด็นความไม่สอดคล้อง
-                    </label>
-                    <select name='topic' ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}>
-                        <option style={{ display: 'none' }}></option>
-                        {topic.map(item => (
-                            <option key={item} value={item}>
-                                {item}
-                            </option>
-                        ))}
-                    </select>
-                </div>}
-                {errors && (
-                    <p className='paragraph-error text-center'>{errors.topic?.message}</p>
-                )}
-                <div className='form-field'>
-                    <label htmlFor='detail'>
-                        รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
-                    </label>
-                    <textarea
-                        cols={30}
-                        rows={5}
-                        name='detail'
-                        id='detail'
-                        ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
-                    />
-                </div>
-                {errors.detail && (
-                    <p className='paragraph-error text-center'>{errors.detail?.message}</p>
-                )}
-
-                <FlexStyled>
-                    <div className='form-field' style={{ width: '70%' }}>
-                        {uploadProgression ? (
-                            <>
-                                <input
-                                    readOnly
-                                    type='text'
-                                    className='upload-progression'
-                                    style={{
-                                        width: `${uploadProgression}%`,
-                                        color: 'white',
-                                        textAlign: 'center',
-                                    }}
-                                    // uploadProgression={uploadProgression}
-                                    value={`${uploadProgression}%`}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <label>
-                                    ชื่อไฟล์ (หากมี)
+                    {errors && (
+                        <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
+                    )}
+                    <div className='flex-dept'>
+                        {user.branch === 'ลาดกระบัง' ? (
+                            departments && <div className='form-field'>
+                                <label htmlFor='dept'>
+                                    ถึงแผนก
                                 </label>
-                                <input
-                                    readOnly
-                                    type='text'
-                                    name='fileNcName'
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={handleOpenUploadBox}
-                                    value={selectedFile ? selectedFile.name : ''}
-                                    ref={register}
-                                />
-                            </>
+                                <select
+                                    name='dept'
+                                    onChange={(e) => setDept(e.target.value)}
+                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                >
+                                    <option style={{ display: 'none' }}></option>
+                                    {departments.map((cat) => (
+                                        <option key={cat.id} value={cat.dept}>
+                                            {cat.dept}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : (
+                            deptCdc && <div className='form-field'>
+                                <label htmlFor='dept'>
+                                    ถึงแผนก
+                                </label>
+                                <select
+                                    name='dept'
+                                    onChange={(e) => setDept(e.target.value)}
+                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                >
+                                    <option style={{ display: 'none' }}></option>
+                                    {deptCdc.map((cat) => (
+                                        <option key={cat.id} value={cat.dept}>
+                                            {cat.dept}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         )}
-
+                        <div className='form-field'>
+                            <label htmlFor='topicType'>
+                                ประเภทความไม่สอดคล้อง
+                            </label>
+                            <select name='topicType' ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
+                                <option style={{ display: 'none' }}></option>
+                                <option value='Product'>Product</option>
+                                <option value='Process'>Process</option>
+                            </select>
+                        </div>
                     </div>
-                    <ButtonStyled>
-                        <Button
-                            width='100%'
-                            type='button'
-                            onClick={handleOpenUploadBox}
-                            disabled={loading}
-                            style={{
-                                borderRadius: '0',
-                                border: '1px solid #007bff',
-                                background: '#007bff'
-                            }}
-                        >
-                            <span>แนบไฟล์<AttachFileIcon /></span>
-                        </Button>
-                    </ButtonStyled>
-                    <input
-                        type='file'
-                        ref={inputRef}
-                        style={{ display: 'none' }}
-                        onChange={handleSelectFile}
-                    />
-                </FlexStyled>
+                    {errors && (
+                        <p className='paragraph-error text-center'>{errors.dept?.message}</p>
+                    )}
+                    {errors && (
+                        <p className='paragraph-error text-center'>{errors.topicType?.message}</p>
+                    )}
+                    {topic && <div className='form-field'>
+                        <label htmlFor='topic'>
+                            ประเด็นความไม่สอดคล้อง
+                        </label>
+                        <select name='topic' ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}>
+                            <option style={{ display: 'none' }}></option>
+                            {topic.map(item => (
+                                <option key={item} value={item}>
+                                    {item}
+                                </option>
+                            ))}
+                        </select>
+                    </div>}
+                    {errors && (
+                        <p className='paragraph-error text-center'>{errors.topic?.message}</p>
+                    )}
+                    <div className='form-field'>
+                        <label htmlFor='detail'>
+                            รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
+                        </label>
+                        <textarea
+                            cols={30}
+                            rows={5}
+                            name='detail'
+                            id='detail'
+                            ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
+                        />
+                    </div>
+                    {errors.detail && (
+                        <p className='paragraph-error text-center'>{errors.detail?.message}</p>
+                    )}
 
-                <Button
-                    type='submit'
-                    loading={loading}
-                    disabled={loading}
-                    width='100%'
-                    style={{ margin: '0.5rem 0' }}
-                >
-                    SAVE
-                </Button>
-            </form>
+                    <FlexStyled>
+                        <div className='form-field' style={{ width: '70%' }}>
+                            {uploadProgression ? (
+                                <>
+                                    <input
+                                        readOnly
+                                        type='text'
+                                        className='upload-progression'
+                                        style={{
+                                            width: `${uploadProgression}%`,
+                                            color: 'white',
+                                            textAlign: 'center',
+                                        }}
+                                        // uploadProgression={uploadProgression}
+                                        value={`${uploadProgression}%`}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <label>
+                                        ชื่อไฟล์ (หากมี)
+                                    </label>
+                                    <input
+                                        readOnly
+                                        type='text'
+                                        name='fileNcName'
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={handleOpenUploadBox}
+                                        value={selectedFile ? selectedFile.name : ''}
+                                        ref={register}
+                                    />
+                                </>
+                            )}
+
+                        </div>
+                        <ButtonStyled>
+                            <Button
+                                width='100%'
+                                type='button'
+                                onClick={handleOpenUploadBox}
+                                disabled={loading}
+                                style={{
+                                    borderRadius: '0',
+                                    border: '1px solid #007bff',
+                                    background: '#007bff'
+                                }}
+                            >
+                                <span>แนบไฟล์<AttachFileIcon /></span>
+                            </Button>
+                        </ButtonStyled>
+                        <input
+                            type='file'
+                            ref={inputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleSelectFile}
+                        />
+                    </FlexStyled>
+
+                    <Button
+                        type='submit'
+                        loading={loading}
+                        disabled={loading}
+                        width='100%'
+                        style={{ margin: '0.5rem 0' }}
+                    >
+                        SAVE
+                    </Button>
+                </form>
+            )}
             {error && <p className='paragraph-error text-center'>{error}</p>}
         </NcNotifyStyled>
     )

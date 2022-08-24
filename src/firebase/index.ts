@@ -32,6 +32,7 @@ export const iqaCountsCdcRef = db.collection('iqa-counts-cdc')
 export const iqaCountsCodeRef = db.collection('iqa-code-counts')
 export const iqaCountsCodeCdcRef = db.collection('iqa-code-counts-cdc')
 export const iqaFileFolder = 'iqa'
+export const signatureFileFolder = 'signature'
 export const iqaAnswerFileFolder = 'iqa-answer'
 
 export const snapshotToDoc = <T extends
@@ -75,4 +76,10 @@ export const createFileIqaAnswerRef = (fileName: string) => {
     const uuid = uuidV4()
 
     return storageRef.child(`${iqaAnswerFileFolder}/${fileName}-${uuid}`)
+}
+
+export const createFileSignatureRef = (fileName: string) => {
+    const uuid = uuidV4()
+
+    return storageRef.child(`${signatureFileFolder}/${fileName}-${uuid}`)
 }

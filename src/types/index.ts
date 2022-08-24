@@ -38,6 +38,16 @@ export type SelectMonth = "เดือน" |
     "พฤศจิกายน" |
     "ธันวาคม"
 
+export type Personnel = {
+    index?: number
+    personnelName: string
+    imageUrl: string
+    imageRef: string
+    imageFileName: string
+}
+
+export type PersonnelInput = Omit<Personnel, 'index' | 'imageUrl' | 'imageRef'>
+
 export type UserInfo = {
     id: string
     username: string
@@ -47,6 +57,7 @@ export type UserInfo = {
     dept: string
     createdAt: firebase.firestore.Timestamp
     imageUrl?: string
+    personnel?: Personnel[]
     ncr?: Ncr[]
     Iqa?: Iqa[]
     updateAt?: firebase.firestore.Timestamp
@@ -136,6 +147,7 @@ export type NcrNotify = {
     ncStatus: StatusNc
     branch: Branch
     creatorName: string
+    signature?: string
     creator: UserCreator
     follow?: FollowNc
     approve?: ApproveNc
@@ -337,7 +349,7 @@ export type IqaAnswer = {
     containmentDueDate?: string
     containmentName?: string
 
-    editedRootDoc: EditedRootDoc[]
+    editedRootDoc?: EditedRootDoc[]
     rootCause?: string
 
     correctiveAction: string

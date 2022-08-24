@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAsyncCall } from './useAsyncCall'
-import { AddAnswerIqaData, UploadAnswerIqa, StatusNc } from "../types"
+import { AddAnswerIqaData, UploadAnswerIqa, StatusNc, CatIqa } from "../types"
 import { iqaRef, iqaAnswerRef, createFileIqaAnswerRef } from '../firebase'
 import { firebase } from '../firebase/config'
 
@@ -47,84 +47,99 @@ export const useManageAnswerIqa = () => {
 
     const addNewAnswerIqa = (
         data: AddAnswerIqaData,
-        iqaId: string
+        iqaId: string,
+        iqaCategory: CatIqa
     ) => (
         fileAnswerIqaUrl: string | undefined,
         filePath: string | undefined
     ) => {
-            const {
-                answerName,
-                containmentAction,
-                containmentDueDate,
-                containmentName,
-                editedRootDoc,
-                rootCause,
-                correctiveAction,
-                correctiveDueDate,
-                correctiveName,
-                editedDoc,
-                docDetail,
-                fileAnswerIqaName
-            } = data
-
             setLoading(true)
             setAddAnswerIqaFinished(false)
 
-            if (fileAnswerIqaUrl && fileAnswerIqaName && filePath) {
-                const newAnswerIqa: UploadAnswerIqa = {
-                    iqaId,
-                    answerName,
-                    containmentAction,
-                    containmentDueDate,
-                    containmentName,
-                    editedRootDoc,
-                    rootCause,
-                    correctiveAction,
-                    correctiveDueDate,
-                    correctiveName,
-                    editedDoc,
-                    docDetail,
-                    fileAnswerIqaName,
-                    fileAnswerIqaUrl,
-                    fileAnswerIqaRef: filePath,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            if (fileAnswerIqaUrl && data.fileAnswerIqaName && filePath) {
+                if (iqaCategory === 'OBS') {
+                    const newAnswerIqa: UploadAnswerIqa = {
+                        iqaId,
+                        answerName: data.answerName,
+                        correctiveAction: data.correctiveAction,
+                        correctiveDueDate: data.correctiveDueDate,
+                        correctiveName: data.correctiveName,
+                        editedDoc: data.editedDoc,
+                        docDetail: data.docDetail,
+                        fileAnswerIqaName: data.fileAnswerIqaName,
+                        fileAnswerIqaUrl,
+                        fileAnswerIqaRef: filePath,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }
+    
+    
+                    iqaRef
+                        .doc(iqaId)
+                        .update({ iqaStatus: 'ตอบแล้ว' })
+                        .catch((err) => {
+                            const { message } = err as { message: string }
+                            setError(message)
+                        })
+    
+                    iqaAnswerRef
+                        .add(newAnswerIqa).then(() => {
+    
+                            setLoading(false)
+                            setAddAnswerIqaFinished(true)
+                        })
+                        .catch((err) => {
+                            const { message } = err as { message: string }
+    
+                            setError(message)
+                            setLoading(false)
+                        })
+                } else {
+                    const newAnswerIqa: UploadAnswerIqa = {
+                        iqaId,
+                        answerName: data.answerName,
+                        containmentAction: data.containmentAction,
+                        containmentDueDate: data.containmentDueDate,
+                        containmentName: data.containmentName,
+                        editedRootDoc: data.editedRootDoc,
+                        rootCause: data.rootCause,
+                        correctiveAction: data.correctiveAction,
+                        correctiveDueDate: data.correctiveDueDate,
+                        correctiveName: data.correctiveName,
+                        fileAnswerIqaName: data.fileAnswerIqaName,
+                        editedDoc: data.editedDoc,
+                        docDetail: data.docDetail,
+                        fileAnswerIqaUrl,
+                        fileAnswerIqaRef: filePath,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }
+    
+    
+                    iqaRef
+                        .doc(iqaId)
+                        .update({ iqaStatus: 'ตอบแล้ว' })
+                        .catch((err) => {
+                            const { message } = err as { message: string }
+                            setError(message)
+                        })
+    
+                    iqaAnswerRef
+                        .add(newAnswerIqa).then(() => {
+    
+                            setLoading(false)
+                            setAddAnswerIqaFinished(true)
+                        })
+                        .catch((err) => {
+                            const { message } = err as { message: string }
+    
+                            setError(message)
+                            setLoading(false)
+                        })
+
                 }
-
-
-                iqaRef
-                    .doc(iqaId)
-                    .update({ iqaStatus: 'ตอบแล้ว' })
-                    .catch((err) => {
-                        const { message } = err as { message: string }
-                        setError(message)
-                    })
-
-                iqaAnswerRef
-                    .add(newAnswerIqa).then(() => {
-                        
-                        setLoading(false)
-                        setAddAnswerIqaFinished(true)
-                    })
-                    .catch((err) => {
-                        const { message } = err as { message: string }
-                        
-                        setError(message)
-                        setLoading(false)
-                    })
             } else {
                 const newAnswerIqa: UploadAnswerIqa = {
                     iqaId,
-                    answerName,
-                    containmentAction,
-                    containmentDueDate,
-                    containmentName,
-                    editedRootDoc,
-                    rootCause,
-                    correctiveAction,
-                    correctiveDueDate,
-                    correctiveName,
-                    editedDoc,
-                    docDetail,
+                    ...data,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 }
 
@@ -138,7 +153,7 @@ export const useManageAnswerIqa = () => {
 
                 iqaAnswerRef
                     .add(newAnswerIqa).then(() => {
-                        
+
                         setLoading(false)
                         setAddAnswerIqaFinished(true)
                     })
@@ -157,99 +172,129 @@ export const useManageAnswerIqa = () => {
         answerIqaId: string,
         data: AddAnswerIqaData,
         iqaId: string,
-        iqaStatus: StatusNc
+        iqaStatus: StatusNc,
+        iqaCategory: CatIqa
     ) => (
         fileAnswerIqaUrl: string | undefined,
         filePath: string | undefined
     ) => {
-            const {
-                answerName,
-                containmentAction,
-                containmentDueDate,
-                containmentName,
-                editedRootDoc,
-                rootCause,
-                correctiveAction,
-                correctiveDueDate,
-                correctiveName,
-                fileAnswerIqaName,
-                editedDoc,
-                docDetail,
-            } = data
-
             setLoading(true)
             setEditAnswerIqaFinished(false)
 
-            if (fileAnswerIqaUrl && filePath && fileAnswerIqaName) {
-                const editedAnswerIqa: UploadAnswerIqa = {
-                    iqaId,
-                    answerName,
-                    containmentAction,
-                    containmentDueDate,
-                    containmentName,
-                    editedRootDoc,
-                    rootCause,
-                    correctiveAction,
-                    correctiveDueDate,
-                    correctiveName,
-                    editedDoc,
-                    docDetail,
-                    fileAnswerIqaUrl,
-                    fileAnswerIqaName,
-                    fileAnswerIqaRef: filePath,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }
+            if (fileAnswerIqaUrl && filePath && data.fileAnswerIqaName) {
+                if (iqaCategory === 'OBS') {
+                    const editedAnswerIqa: UploadAnswerIqa = {
+                        iqaId,
+                        answerName: data.answerName,
+                        correctiveAction: data.correctiveAction,
+                        correctiveDueDate: data.correctiveDueDate,
+                        correctiveName: data.correctiveName,
+                        editedDoc: data.editedDoc,
+                        docDetail: data.docDetail,
+                        fileAnswerIqaName: data.fileAnswerIqaName,
+                        fileAnswerIqaUrl,
+                        fileAnswerIqaRef: filePath,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }
 
-                if (iqaStatus === 'รอตอบ') {
-                    iqaRef
-                        .doc(iqaId)
-                        .update({ iqaStatus: 'ตอบแล้ว' })
-                        .catch((err) => {
+                    if (iqaStatus === 'รอตอบ') {
+                        iqaRef
+                            .doc(iqaId)
+                            .update({ iqaStatus: 'ตอบแล้ว' })
+                            .catch((err) => {
+                                const { message } = err as { message: string }
+
+                                setError(message)
+                                setLoading(false)
+                            })
+                    } else if (iqaStatus === 'ไม่อนุมัติ') {
+                        iqaRef
+                            .doc(iqaId)
+                            .update({ iqaStatus: 'รอปิด' })
+                            .catch((err) => {
+                                const { message } = err as { message: string }
+
+                                setError(message)
+                                setLoading(false)
+                            })
+                    }
+
+                    iqaAnswerRef
+                        .doc(answerIqaId)
+                        .set(editedAnswerIqa, { merge: true })
+                        .then(() => {
+                            setEditAnswerIqaFinished(true)
+                            setLoading(false)
+
+                        })
+                        .catch(err => {
                             const { message } = err as { message: string }
 
                             setError(message)
                             setLoading(false)
                         })
-                } else if (iqaStatus === 'ไม่อนุมัติ') {
-                    iqaRef
-                        .doc(iqaId)
-                        .update({ iqaStatus: 'รอปิด' })
-                        .catch((err) => {
+
+                } else {
+                    const editedAnswerIqa: UploadAnswerIqa = {
+                        iqaId,
+                        answerName: data.answerName,
+                        containmentAction: data.containmentAction,
+                        containmentDueDate: data.containmentDueDate,
+                        containmentName: data.containmentName,
+                        editedRootDoc: data.editedRootDoc,
+                        rootCause: data.rootCause,
+                        correctiveAction: data.correctiveAction,
+                        correctiveDueDate: data.correctiveDueDate,
+                        correctiveName: data.correctiveName,
+                        fileAnswerIqaName: data.fileAnswerIqaName,
+                        editedDoc: data.editedDoc,
+                        docDetail: data.docDetail,
+                        fileAnswerIqaUrl,
+                        fileAnswerIqaRef: filePath,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }
+
+                    if (iqaStatus === 'รอตอบ') {
+                        iqaRef
+                            .doc(iqaId)
+                            .update({ iqaStatus: 'ตอบแล้ว' })
+                            .catch((err) => {
+                                const { message } = err as { message: string }
+
+                                setError(message)
+                                setLoading(false)
+                            })
+                    } else if (iqaStatus === 'ไม่อนุมัติ') {
+                        iqaRef
+                            .doc(iqaId)
+                            .update({ iqaStatus: 'รอปิด' })
+                            .catch((err) => {
+                                const { message } = err as { message: string }
+
+                                setError(message)
+                                setLoading(false)
+                            })
+                    }
+
+                    iqaAnswerRef
+                        .doc(answerIqaId)
+                        .set(editedAnswerIqa, { merge: true })
+                        .then(() => {
+                            setEditAnswerIqaFinished(true)
+                            setLoading(false)
+
+                        })
+                        .catch(err => {
                             const { message } = err as { message: string }
 
                             setError(message)
                             setLoading(false)
                         })
                 }
-
-                iqaAnswerRef
-                    .doc(answerIqaId)
-                    .set(editedAnswerIqa, { merge: true })
-                    .then(() => {
-                        setEditAnswerIqaFinished(true)
-                        setLoading(false)
-
-                    })
-                    .catch(err => {
-                        const { message } = err as { message: string }
-
-                        setError(message)
-                        setLoading(false)
-                    })
             } else {
                 const editedAnswerIqa: UploadAnswerIqa = {
                     iqaId,
-                    answerName,
-                    containmentAction,
-                    containmentDueDate,
-                    containmentName,
-                    editedRootDoc,
-                    rootCause,
-                    correctiveAction,
-                    correctiveDueDate,
-                    correctiveName,
-                    editedDoc,
-                    docDetail,
+                    ...data,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }
 

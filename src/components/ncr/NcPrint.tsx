@@ -247,7 +247,9 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                    {/* FIXME: */}
                                     <p>{answerName}</p>
+                                    {/* <SignatureImage src={Signature} alt="signature" /> */}
                                     <p>ผู้ตอบ NC</p>
                                     <p>{formatDate(answerAt)}</p>
                                 </div>
@@ -287,6 +289,8 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             <TwentyFive height='100%'>
                                 <div>
                                     <p>{creatorName}</p>
+                                    {/* FIXME: */}
+                                    {/* <SignatureImage src={SignatureThree} alt="signature" /> */}
                                     <p>ผู้ออก NC</p>
 
                                     {follow?.followedAt && (
@@ -396,11 +400,6 @@ const NcPrintStyled = styled.section`
     margin: 2rem 2rem 0rem 2rem;
     color: #000;
 
-    img {
-        padding: 10px;
-        width: 90px;
-    }
-
     h5 {
         font-size: 1.2rem;
         padding-right: 1rem;
@@ -419,6 +418,11 @@ const NcPrintStyled = styled.section`
     .header-left {
         border-right: 1px solid;
         width: 70%;
+
+        img {
+            padding: 10px;
+            width: 90px;
+        }
     }
 
     .header-right {
@@ -534,4 +538,9 @@ const NcPrintStyled = styled.section`
     }
 `
 
+// const SignatureImage = styled.img`
+//     height: 30px;
+//     width: 170px;
+//     object-fit: cover;
+// `
 export default NcPrint

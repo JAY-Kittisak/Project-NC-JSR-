@@ -158,6 +158,10 @@ const InputStyled = styled.div`
         color: inherit;
         box-shadow: none;
     }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+    }
 `
 
 const NcChartStyled = styled.div`

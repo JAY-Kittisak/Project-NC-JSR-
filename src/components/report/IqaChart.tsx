@@ -116,6 +116,7 @@ const IqaCartStyled = styled.div`
                 color: inherit;
             }
             select{
+                cursor: pointer;
                 border: 1px solid var(--border-color);
                 outline: none;
                 height: 40px;

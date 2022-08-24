@@ -163,7 +163,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='ด้านเอกสาร'
                                             value='ด้านเอกสาร'
-                                            defaultChecked={editedRootDoc.includes('ด้านเอกสาร')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('ด้านเอกสาร')}
                                         />
                                         <label htmlFor='ด้านเอกสาร'>ด้านเอกสาร</label>
                                     </div>
@@ -173,7 +173,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='การไม่ปฏิบัติตามแผนงาน'
                                             value='การไม่ปฏิบัติตามแผนงาน'
-                                            defaultChecked={editedRootDoc.includes('การไม่ปฏิบัติตามแผนงาน')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('การไม่ปฏิบัติตามแผนงาน')}
                                         />
                                         <label htmlFor='การไม่ปฏิบัติตามแผนงาน'>การไม่ปฏิบัติตามแผนงาน</label>
                                     </div>
@@ -183,7 +183,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='การประสานงาน/สื่อสาร'
                                             value='การประสานงาน/สื่อสาร'
-                                            defaultChecked={editedRootDoc.includes('การประสานงาน/สื่อสาร')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('การประสานงาน/สื่อสาร')}
                                         />
                                         <label htmlFor='การประสานงาน/สื่อสาร'>การประสานงาน/สื่อสาร</label>
                                     </div>
@@ -193,7 +193,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='อุปกรณ์/เครื่องมือ'
                                             value='อุปกรณ์/เครื่องมือ'
-                                            defaultChecked={editedRootDoc.includes('อุปกรณ์/เครื่องมือ')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('อุปกรณ์/เครื่องมือ')}
                                         />
                                         <label htmlFor='อุปกรณ์/เครื่องมือ'>อุปกรณ์/เครื่องมือ</label>
                                     </div>
@@ -203,7 +203,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='ความบกพร่องจากมาตรฐาน'
                                             value='ความบกพร่องจากมาตรฐาน'
-                                            defaultChecked={editedRootDoc.includes('ความบกพร่องจากมาตรฐาน')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('ความบกพร่องจากมาตรฐาน')}
                                         />
                                         <label htmlFor='ความบกพร่องจากมาตรฐาน'>ความบกพร่องจากมาตรฐาน</label>
                                     </div>
@@ -213,7 +213,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                                             name="editedRootDoc"
                                             id='สาเหตุอื่นๆ'
                                             value='สาเหตุอื่นๆ'
-                                            defaultChecked={editedRootDoc.includes('สาเหตุอื่นๆ')}
+                                            defaultChecked={editedRootDoc && editedRootDoc.includes('สาเหตุอื่นๆ')}
                                         />
                                         <label htmlFor='สาเหตุอื่นๆ'>สาเหตุอื่นๆ</label>
                                     </div>

@@ -66,6 +66,7 @@ export const useManageNcNotify = () => {
         creator: UserCreator,
         code: string,
         branch: Branch,
+        signature: string,
         ncStatus: StatusNc
     ) => {
 
@@ -126,6 +127,7 @@ export const useManageNcNotify = () => {
 
                     const newNcNotify: UploadNcNotify = {
                         creatorName,
+                        signature,
                         code: codeFinished,
                         category,
                         dept,
@@ -164,6 +166,7 @@ export const useManageNcNotify = () => {
 
             const newNcNotify: UploadNcNotify = {
                 creatorName,
+                signature,
                 code: codeFinished,
                 category,
                 dept,
@@ -191,7 +194,8 @@ export const useManageNcNotify = () => {
 
     const editNc = (
         ncId: string,
-        data: EditNcrNotifyData
+        data: EditNcrNotifyData,
+        signature: string,
     ) => (
         fileNcUrl: string | undefined,
         filePath: string | undefined
@@ -212,6 +216,7 @@ export const useManageNcNotify = () => {
         if (fileNcUrl && filePath && fileNcName) {
             const editedNc: UploadEditNcNotify = {
                 creatorName,
+                signature,
                 category,
                 dept,
                 topic,
@@ -239,6 +244,7 @@ export const useManageNcNotify = () => {
         } else {
             const editedNc: UploadEditNcNotify = {
                 creatorName,
+                signature,
                 category,
                 dept,
                 topic,

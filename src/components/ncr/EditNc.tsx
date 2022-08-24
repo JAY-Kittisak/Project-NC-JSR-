@@ -3,21 +3,21 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 
-import { EditNcrNotifyData, NcrNotify } from '../../types';
+import { EditNcrNotifyData, NcrNotify, Personnel } from '../../types';
 import { useDepartmentsContext } from '../../state/dept-context';
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context';
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
 import { storageRef } from '../../firebase/config'
-import Input from '../Input'
 import Button from '../Button';
 import { categories, fileType } from '../../helpers';
 
 interface Props {
     nc: NcrNotify
     setOpenNcForm: (open: boolean) => void
+    personnel: Personnel[] | undefined
 }
 
-const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
+const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
     const [selectDept, setSelectDept] = useState(nc.dept)
     const [topic, setTopic] = useState<string[] | undefined>(undefined)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -93,6 +93,10 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
         // 1. Nothing Changed
         if (isNotEdited) return
 
+        const signature = personnel?.find(item => item.personnelName === creatorName)
+
+        if (!signature) return alert('!Error No. imageFileName')
+
         // 2. file NcName is not undefined
         if (fileNcUrl && fileNcRef && fileNcName) {
             // 3. Something changed
@@ -106,19 +110,18 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
 
                 return uploadImageToStorage(
                     selectedFile,
-                    editNc(id, data)
+                    editNc(id, data, signature.imageUrl)
                 )
             } else {
                 // The image has not been changed
-                return editNc(id,data)(fileNcUrl, fileNcRef)
+                return editNc(id, data, signature.imageUrl)(fileNcUrl, fileNcRef)
             }
         } else {
-            return uploadImageToStorage(selectedFile,editNc(id,data))
+            return uploadImageToStorage(selectedFile, editNc(id, data, signature.imageUrl))
         }
     })
 
     useEffect(() => {
-
         if (nc.branch === 'ลาดกระบัง') {
             if (departments) {
                 const filterTopic = departments.filter((value) => value.dept === selectDept)
@@ -185,16 +188,29 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm }) => {
                         </div>
 
                         {/* Creator Name */}
-                        <Input
-                            label='ชื่อ-นามสกุล ผู้ออก NC'
-                            name='creatorName'
-                            defaultValue={nc.creatorName}
-                            ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
-                            error={errors.creatorName?.message}
-                        />
+
+                        <div className='form__input-container'>
+                            <label htmlFor='dept' className='form__input-label'>
+                                ชื่อ-นามสกุล ผู้ออก NC
+                            </label>
+                            <select
+                                name='creatorName'
+                                className='input'
+                                defaultValue={nc.creatorName}
+                                onChange={(e) => setSelectDept(e.target.value)}
+                                ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
+                            >=
+                                <option style={{ display: 'none' }}>{nc.creatorName}</option>
+                                {(personnel && personnel.length > 0) && personnel.map((item, i) => (
+                                    <option key={i} value={item.personnelName}>
+                                        {item.personnelName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </GridStyled>
                     {errors && (
-                        <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                        <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
                     )}
 
                     {/* dept */}

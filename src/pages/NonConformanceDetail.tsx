@@ -221,7 +221,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
-            {openNcForm && <EditNc nc={nc} setOpenNcForm={setOpenNcForm} />}
+            {openNcForm && <EditNc nc={nc} setOpenNcForm={setOpenNcForm} personnel={userInfo.personnel}/>}
         </MainLayout>
     )
 }
@@ -265,7 +265,7 @@ const FlexStyled = styled.div`
 `
 
 const PrintStyled = styled.div`
-    display: none;
+    display: block;
 `
 
 const NcStatusStyled = styled.section`

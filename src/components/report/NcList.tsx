@@ -9,7 +9,6 @@ interface Props {
 }
 
 const NcList: React.FC<Props> = ({ ncToDept }) => {
-    console.log(ncToDept)
     return (
         <NcListStyled>
             {ncToDept && ncToDept.length > 0 && (
