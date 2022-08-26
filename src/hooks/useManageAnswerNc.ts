@@ -50,6 +50,7 @@ export const useManageAnswerNc = () => {
     const addNewAnswerNc = (
         data: AddAnswerNcData, 
         ncId: string,
+        signature: string,
     ) => (
         fileAnswerNcUrl: string | undefined,
         filePath: string | undefined
@@ -75,6 +76,7 @@ export const useManageAnswerNc = () => {
             const newAnswerNc: UploadAnswerNc = {
                 ncId,
                 answerName,
+                signature,
                 containmentAction,
                 containmentDueDate,
                 containmentName,
@@ -114,6 +116,7 @@ export const useManageAnswerNc = () => {
             const newAnswerNc: UploadAnswerNc = {
                 ncId,
                 answerName,
+                signature,
                 containmentAction,
                 containmentDueDate,
                 containmentName,
@@ -153,7 +156,8 @@ export const useManageAnswerNc = () => {
         answerNcId: string,
         data: AddAnswerNcData, 
         ncId: string,
-        ncStatus: StatusNc
+        ncStatus: StatusNc,
+        signature: string,
     ) => (
         fileAnswerNcUrl: string | undefined, 
         filePath: string | undefined
@@ -179,6 +183,7 @@ export const useManageAnswerNc = () => {
             const editedAnswerNc: UploadAnswerNc = {
                 ncId,
                 answerName,
+                signature,
                 containmentAction,
                 containmentDueDate,
                 containmentName,
@@ -235,6 +240,7 @@ export const useManageAnswerNc = () => {
             const editedAnswerNc: UploadAnswerNc = {
                 ncId,
                 answerName,
+                signature,
                 containmentAction,
                 containmentDueDate,
                 containmentName,
@@ -270,7 +276,7 @@ export const useManageAnswerNc = () => {
                     })
             }
     
-                ncAnswerRef
+            ncAnswerRef
                 .doc(answerNcId)
                 .set(editedAnswerNc, {merge: true})
                 .then(() => {

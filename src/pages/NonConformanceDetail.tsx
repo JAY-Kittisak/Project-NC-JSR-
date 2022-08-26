@@ -192,6 +192,7 @@ const NonConformanceDetail: React.FC<Props> = () => {
                             ncAnswer={ncAnswer}
                             ncStatus={ncStatus}
                             ncToDept={dept}
+                            userInfo={userInfo}
                         />
                         {queryError && <p className='paragraph-error'>!!Query Error NC Answer : {queryError}</p>}
                     </section>
@@ -201,12 +202,14 @@ const NonConformanceDetail: React.FC<Props> = () => {
                         follow={follow}
                         ncStatus={ncStatus}
                         creatorId={creator.id}
+                        userInfo={userInfo}
                     />
 
                     <NcApprove
                         ncId={params.id}
                         approve={approve}
                         ncStatus={ncStatus}
+                        userInfo={userInfo}
                     />
 
                 </InnerLayout>
@@ -265,7 +268,7 @@ const FlexStyled = styled.div`
 `
 
 const PrintStyled = styled.div`
-    display: block;
+    display: none;
 `
 
 const NcStatusStyled = styled.section`

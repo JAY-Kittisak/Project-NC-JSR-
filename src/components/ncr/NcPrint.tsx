@@ -23,6 +23,7 @@ type WidthProps = {
 const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
     const {
         creatorName,
+        signature,
         code,
         createdAt,
         category,
@@ -47,6 +48,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
         editedDoc,
         docDetail,
         answerName,
+        signature: signatureAnswer,
         createdAt: answerAt
     } = ncAnswer
 
@@ -247,9 +249,8 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
-                                    {/* FIXME: */}
+                                    {signatureAnswer && <SignatureImage src={signatureAnswer} alt="signatureAnswer" />}
                                     <p>{answerName}</p>
-                                    {/* <SignatureImage src={Signature} alt="signature" /> */}
                                     <p>ผู้ตอบ NC</p>
                                     <p>{formatDate(answerAt)}</p>
                                 </div>
@@ -288,11 +289,9 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                    {signature && <SignatureImage src={signature} alt="signature" />}
                                     <p>{creatorName}</p>
-                                    {/* FIXME: */}
-                                    {/* <SignatureImage src={SignatureThree} alt="signature" /> */}
                                     <p>ผู้ออก NC</p>
-
                                     {follow?.followedAt && (
                                         <p>{formatDate(follow?.followedAt)}</p>
                                     )}
@@ -332,6 +331,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                    {approve?.signature && <SignatureImage src={approve.signature} alt="signature" />}
                                     <p>{approve?.qmrName}</p>
                                     <p >QMR</p>
 
@@ -538,9 +538,10 @@ const NcPrintStyled = styled.section`
     }
 `
 
-// const SignatureImage = styled.img`
-//     height: 30px;
-//     width: 170px;
-//     object-fit: cover;
-// `
+const SignatureImage = styled.img`
+    height: 60px;
+    width: 99%;
+    object-fit: cover;
+`
+
 export default NcPrint

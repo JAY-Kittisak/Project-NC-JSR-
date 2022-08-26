@@ -48,7 +48,7 @@ const IqaHistory: React.FC<Props> = () => {
                     <IqaHistoryItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
-            {iqa.All.length > 11 && (
+            {iqa.All.length > 12 && (
                 <div className='flex-center'>
                     <Button
                         type='button'

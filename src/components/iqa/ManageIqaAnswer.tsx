@@ -473,7 +473,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
 
                         )}
 
-                {/* {!approveEdit && ( */}
+                {!approveEdit && (
                     <Button
                         className='btn-submit'
                         type='submit'
@@ -483,7 +483,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
                     >
                         {iqaAnswer ? 'อัพเดท' : 'บันทึก'}
                     </Button>
-                {/* )} */}
+                )}
             </form>
             {error && <p className='paragraph-error'>{error}</p>}
         </IqaAnswerStyled>

@@ -6,23 +6,21 @@ import Button from '../Button'
 import { useManageNcNotify } from '../../hooks/useManageNcNotify'
 import { useAlertContext } from '../../state/alert-context'
 import { formatDate } from '../../helpers'
-import { useAuthContext } from '../../state/auth-context';
 import { RadioStyled } from '../../styles/LayoutStyle'
-import { FollowNc, AddFollowNcData, FoundFix, StatusNc } from '../../types'
+import { FollowNc, AddFollowNcData, FoundFix, StatusNc, UserInfo } from '../../types'
 
 interface Props {
     ncId: string
     follow: FollowNc | undefined
     ncStatus: StatusNc
     creatorId: string
+    userInfo: UserInfo
 }
 
-const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
+const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId, userInfo }) => {
     const [radioBtn, setRadioBtn] = useState<FoundFix | undefined>(follow?.followNc)
 
     const { register, handleSubmit, errors } = useForm<AddFollowNcData>()
-
-    const { authState: { userInfo } } = useAuthContext()
 
     const { setAlertType } = useAlertContext()
 
@@ -61,7 +59,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
                             name="followNc"
                             id="foundAFix"
                             value='Found fix'
-                            disabled={creatorId !== userInfo?.id}
+                            disabled={creatorId !== userInfo.id}
                             checked={isRadioSelected('Found fix')}
                             onChange={handleRadioClick}
                             ref={register({ required: 'จำเป็นต้องเลือกหนึ่งตัวเลือกด้านบน' })}
@@ -74,7 +72,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
                             name="followNc"
                             id="canNotFix"
                             value='Can not fix'
-                            disabled={creatorId !== userInfo?.id}
+                            disabled={creatorId !== userInfo.id}
                             checked={isRadioSelected('Can not fix')}
                             onChange={handleRadioClick}
                             ref={register({ required: 'จำเป็นต้องเลือกหนึ่งตัวเลือกด้านบน' })}
@@ -94,7 +92,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
                         rows={3}
                         name="followDetail"
                         id="followDetail"
-                        readOnly={creatorId !== userInfo?.id}
+                        readOnly={creatorId !== userInfo.id}
                         defaultValue={follow?.followDetail ? follow.followDetail : ''}
                         ref={register}
                     />
@@ -102,7 +100,7 @@ const NcFollow: React.FC<Props> = ({ ncId, follow, ncStatus, creatorId }) => {
                         <p className='paragraph-error text-center'>{errors.followDetail?.message}</p>
                     )}
                 </div>
-                {creatorId === userInfo?.id && (
+                {creatorId === userInfo.id && (
                     (ncStatus === 'ตอบแล้ว') && (
                         <Button
                             type='submit'

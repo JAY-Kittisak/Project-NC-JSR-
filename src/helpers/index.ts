@@ -36,7 +36,9 @@ export const selectMonth: SelectMonth[] = [
     "ธันวาคม"
 ]
 
-export const formatDate = (value: firebase.firestore.Timestamp) => {
+export const formatDate = (value: firebase.firestore.Timestamp | undefined) => {
+    if (!value) return
+    
     const date = value.toDate()
     const dd = date.getDate()
     const mm = date.getMonth()
@@ -62,8 +64,10 @@ export const formatAddDate = (value: firebase.firestore.Timestamp) => {
 
 export const diffDay = (
     value1: firebase.firestore.Timestamp,
-    value2: firebase.firestore.Timestamp
+    value2: firebase.firestore.Timestamp | undefined
 ) => {
+    if (!value2) return 0
+
     const date1 = value1.toDate().valueOf();
     const date2 = value2.toDate().valueOf();
     const diffTime = Math.abs(date2 - date1);

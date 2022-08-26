@@ -265,9 +265,9 @@ export const onNcCreated = functions.firestore
           const nc = snapshot.data() as NcrNotify;
 
           const message = "message= เลขที่ " + nc.code + "\nจาก: " +
-          nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " +
-          nc.dept + "\nประเด็น: " + nc.topic +
-        "\nสถานะ: " + nc.ncStatus + "\nดูรายละเอียดที่: https://jsr-nc.web.app";
+            nc.creatorName + " แผนก " + nc.creator.dept + "\nถึงแผนก: " +
+            nc.dept + "\nประเด็น: " + nc.topic +
+          "\nสถานะ: " + nc.ncStatus + "\nดูรายละเอียดที่: https://jsr-nc.web.app";
 
           let counts: Counts;
           let countsCode: CountsCode;
@@ -551,8 +551,6 @@ export const onIqaCreated = functions.firestore
               .get();
 
           if (iqa.branch === "ลาดกระบัง") {
-            // lineNotify(message);
-
             if (!countsData.exists) {
               // First nc item
 
@@ -612,8 +610,6 @@ export const onIqaCreated = functions.firestore
             // Update the counts document in the nc-counts collection
             return {updateCount, updateCountCode};
           } else {
-            // lineNotifyCdc(message);
-
             if (!countsDataCdc.exists) {
               // First nc item
 
@@ -682,14 +678,10 @@ export const onIqaUpdated = functions.firestore
       const beforeProd = snapshot.before.data() as IqaType;
       const afterProd = snapshot.after.data() as IqaType;
 
-      // FIXME:  const message =
-
       // Check if the status has been changed
       if (beforeProd.iqaStatus !== afterProd.iqaStatus) {
         // If status is changed
         if (afterProd.branch === "ลาดกระบัง") {
-          // FIXME: lineNotify(message);
-
           const countsData = await admin
               .firestore()
               .collection(iqaCountsCollection)
@@ -710,8 +702,6 @@ export const onIqaUpdated = functions.firestore
               .doc(ncCountsDocument)
               .set(counts);
         } else {
-          // FIXME: lineNotifyCdc(message);
-
           const countsDataCdc = await admin
               .firestore()
               .collection(iqaCountsCdcCollection)

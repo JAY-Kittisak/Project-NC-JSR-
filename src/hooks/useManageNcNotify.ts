@@ -311,7 +311,11 @@ export const useManageNcNotify = () => {
         }
     }
 
-    const updateNcApprove = async (ncId: string, data: AddApproveNcData) => {
+    const updateNcApprove = async (
+        ncId: string, 
+        data: AddApproveNcData, 
+        signature: string
+    ) => {
         try {
             setLoading(true)
 
@@ -321,6 +325,7 @@ export const useManageNcNotify = () => {
                 approveNc,
                 approveDetail,
                 qmrName,
+                signature,
                 approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
             }
 

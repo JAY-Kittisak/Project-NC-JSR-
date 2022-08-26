@@ -48,7 +48,7 @@ const NcHistoryNotify: React.FC<Props> = () => {
                     <NcHistoryNotifyItem key={item.id} item={item} />
                 ))}
             </HistoryDetail>
-            {ncNotify.All.length > 11 && (
+            {ncNotify.All.length > 12 && (
                 <div className='flex-center'>
                     <Button
                         type='button'

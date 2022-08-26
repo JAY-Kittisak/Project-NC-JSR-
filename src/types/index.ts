@@ -100,6 +100,7 @@ export type NcAnswer = {
     id: string
     ncId: string
     answerName: string
+    signature?: string
     containmentAction: string
     containmentDueDate: string
     containmentName: string
@@ -131,6 +132,7 @@ export type ApproveNc = {
     approveNc: Approve
     approveDetail?: string
     qmrName: string
+    signature?: string
     approvedAt: firebase.firestore.Timestamp
 }
 export type NcrNotify = {

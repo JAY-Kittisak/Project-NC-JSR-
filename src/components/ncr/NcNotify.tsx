@@ -77,7 +77,7 @@ const NcNotify: React.FC<Props> = ({ user }) => {
     const handleAddNotifyNc = handleSubmit(async (data) => {
         const signature = user.personnel?.find(item => item.personnelName === data.creatorName)
 
-        if (!signature?.imageFileName) return alert('!Error No. imageFileName')
+        if (!signature?.imageUrl) return alert('!Error No. image signature.')
 
         const creator = {
             id: user.id,
@@ -89,8 +89,6 @@ const NcNotify: React.FC<Props> = ({ user }) => {
         const initial = user.branch === 'ลาดกระบัง' ? 'J' : 'C'
 
         const code = `${initial}-${data.category}${currentFullYear}${padCurrentMonth}`
-
-        console.log(data, code, signature.imageUrl)
 
         return addNewNcNotify(
             selectedFile,

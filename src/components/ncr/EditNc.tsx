@@ -68,6 +68,10 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
     }
 
     const handleEditNc = handleSubmit(async (data) => {
+        const signature = personnel?.find(item => item.personnelName === creatorName)
+
+        if (!signature?.imageUrl) return alert('!Error No. image signature.')
+
         const {
             id,
             category,
@@ -92,11 +96,6 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
 
         // 1. Nothing Changed
         if (isNotEdited) return
-
-        const signature = personnel?.find(item => item.personnelName === creatorName)
-
-        if (!signature) return alert('!Error No. imageFileName')
-
         // 2. file NcName is not undefined
         if (fileNcUrl && fileNcRef && fileNcName) {
             // 3. Something changed
@@ -165,240 +164,246 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
                     &times;
                 </div>
                 <h3>แก้ไข NC เลขที่ {nc.code}</h3>
-                <form onSubmit={handleEditNc}>
-                    <GridStyled>
-                        {/* Category */}
-                        <div className='form__input-container'>
-                            <label htmlFor='category' className='form__input-label'>
-                                ประเภท
-                            </label>
-                            <select
-                                name='category'
-                                className='input'
-                                defaultValue={nc.category}
-                                ref={register({ required: 'โปรดใส่ ประเภท' })}
-                            >
-                                <option style={{ display: 'none' }}></option>
-                                {categories.map((cat) => (
-                                    <option key={cat} value={cat}>
-                                        {cat}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
 
-                        {/* Creator Name */}
-
-                        <div className='form__input-container'>
-                            <label htmlFor='dept' className='form__input-label'>
-                                ชื่อ-นามสกุล ผู้ออก NC
-                            </label>
-                            <select
-                                name='creatorName'
-                                className='input'
-                                defaultValue={nc.creatorName}
-                                onChange={(e) => setSelectDept(e.target.value)}
-                                ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
-                            >=
-                                <option style={{ display: 'none' }}>{nc.creatorName}</option>
-                                {(personnel && personnel.length > 0) && personnel.map((item, i) => (
-                                    <option key={i} value={item.personnelName}>
-                                        {item.personnelName}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </GridStyled>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
-                    )}
-
-                    {/* dept */}
-                    <GridStyled>
-                        {nc.branch === 'ลาดกระบัง' ? (
-                            departments && <div className='form__input-container'>
-                                <label htmlFor='dept' className='form__input-label'>
-                                    ถึงแผนก
+                {!personnel ? (
+                    <p className='paragraph-error'>!โปรดเพิ่มชื่อผู้ใช้งานที่ Profile ของคุณ</p>
+                ) : (
+                    <form onSubmit={handleEditNc}>
+                        <GridStyled>
+                            {/* Category */}
+                            <div className='form__input-container'>
+                                <label htmlFor='category' className='form__input-label'>
+                                    ประเภท
                                 </label>
                                 <select
-                                    name='dept'
+                                    name='category'
                                     className='input'
-                                    defaultValue={nc.dept}
-                                    onChange={(e) => setSelectDept(e.target.value)}
-                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    defaultValue={nc.category}
+                                    ref={register({ required: 'โปรดใส่ ประเภท' })}
                                 >
-                                    {departments.map((cat) => (
-                                        <option key={cat.id} value={cat.dept}>
-                                            {cat.dept}
+                                    <option style={{ display: 'none' }}></option>
+                                    {categories.map((cat) => (
+                                        <option key={cat} value={cat}>
+                                            {cat}
                                         </option>
                                     ))}
                                 </select>
                             </div>
-                        ) : (
-                            deptCdc && <div className='form__input-container'>
+
+                            {/* Creator Name */}
+
+                            <div className='form__input-container'>
                                 <label htmlFor='dept' className='form__input-label'>
-                                    ถึงแผนก
+                                    ชื่อ-นามสกุล ผู้ออก NC
                                 </label>
                                 <select
-                                    name='dept'
+                                    name='creatorName'
                                     className='input'
-                                    defaultValue={nc.dept}
+                                    defaultValue={nc.creatorName}
                                     onChange={(e) => setSelectDept(e.target.value)}
-                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล ผู้ออก NC' })}
+                                >
+                                    <option style={{ display: 'none' }}>{nc.creatorName}</option>
+                                    {(personnel && personnel.length > 0) && personnel.map((item, i) => (
+                                        <option key={i} value={item.personnelName}>
+                                            {item.personnelName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </GridStyled>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.creatorName?.message}</p>
+                        )}
+
+                        {/* dept */}
+                        <GridStyled>
+                            {nc.branch === 'ลาดกระบัง' ? (
+                                departments && <div className='form__input-container'>
+                                    <label htmlFor='dept' className='form__input-label'>
+                                        ถึงแผนก
+                                    </label>
+                                    <select
+                                        name='dept'
+                                        className='input'
+                                        defaultValue={nc.dept}
+                                        onChange={(e) => setSelectDept(e.target.value)}
+                                        ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    >
+                                        {departments.map((cat) => (
+                                            <option key={cat.id} value={cat.dept}>
+                                                {cat.dept}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ) : (
+                                deptCdc && <div className='form__input-container'>
+                                    <label htmlFor='dept' className='form__input-label'>
+                                        ถึงแผนก
+                                    </label>
+                                    <select
+                                        name='dept'
+                                        className='input'
+                                        defaultValue={nc.dept}
+                                        onChange={(e) => setSelectDept(e.target.value)}
+                                        ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    >
+                                        <option style={{ display: 'none' }}></option>
+                                        {deptCdc.map((cat) => (
+                                            <option key={cat.id} value={cat.dept}>
+                                                {cat.dept}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {/* Topic Type */}
+                            <div className='form__input-container'>
+                                <label htmlFor='topicType' className='form__input-label'>
+                                    ประเภทความไม่สอดคล้อง
+                                </label>
+                                <select
+                                    name='topicType'
+                                    className='input'
+                                    defaultValue={nc.topicType}
+                                    ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
+                                    <option style={{ display: 'none' }}></option>
+                                    <option value='Product'>Product</option>
+                                    <option value='Process'>Process</option>
+                                </select>
+                            </div>
+                        </GridStyled>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.dept?.message}</p>
+                        )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.topicType?.message}</p>
+                        )}
+
+
+                        {/* Topic */}
+                        {topic && (
+                            <div className='form__input-container'>
+                                <label htmlFor='topic' className='form__input-label'>
+                                    ประเด็นความไม่สอดคล้อง
+                                </label>
+                                <select
+                                    name='topic'
+                                    className='input'
+                                    defaultValue={nc.topic}
+                                    ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}
                                 >
                                     <option style={{ display: 'none' }}></option>
-                                    {deptCdc.map((cat) => (
-                                        <option key={cat.id} value={cat.dept}>
-                                            {cat.dept}
+                                    {topic.map(item => (
+                                        <option key={item} value={item}>
+                                            {item}
                                         </option>
                                     ))}
                                 </select>
                             </div>
                         )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.topic?.message}</p>
+                        )}
 
-                        {/* Topic Type */}
+                        {/* Detail */}
                         <div className='form__input-container'>
-                            <label htmlFor='topicType' className='form__input-label'>
-                                ประเภทความไม่สอดคล้อง
+                            <label htmlFor='detail' className='form__input-label'>
+                                รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
                             </label>
-                            <select
-                                name='topicType'
+                            <textarea
                                 className='input'
-                                defaultValue={nc.topicType}
-                                ref={register({ required: 'โปรดใส่ประเภทความไม่สอดคล้อง' })}>
-                                <option style={{ display: 'none' }}></option>
-                                <option value='Product'>Product</option>
-                                <option value='Process'>Process</option>
-                            </select>
-                        </div>
-                    </GridStyled>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.dept?.message}</p>
-                    )}
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.topicType?.message}</p>
-                    )}
-
-
-                    {/* Topic */}
-                    {topic && (
-                        <div className='form__input-container'>
-                            <label htmlFor='topic' className='form__input-label'>
-                                ประเด็นความไม่สอดคล้อง
-                            </label>
-                            <select
-                                name='topic'
-                                className='input'
-                                defaultValue={nc.topic}
-                                ref={register({ required: 'โปรดใส่ประเด็นความไม่สอดคล้อง' })}
-                            >
-                                <option style={{ display: 'none' }}></option>
-                                {topic.map(item => (
-                                    <option key={item} value={item}>
-                                        {item}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.topic?.message}</p>
-                    )}
-
-                    {/* Detail */}
-                    <div className='form__input-container'>
-                        <label htmlFor='detail' className='form__input-label'>
-                            รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง
-                        </label>
-                        <textarea
-                            className='input'
-                            cols={30}
-                            rows={4}
-                            name='detail'
-                            id='detail'
-                            defaultValue={nc.detail}
-                            ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
-                        />
-                    </div>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.detail?.message}</p>
-                    )}
-
-                    {/* Upload File */}
-                    <div className='form__input-container'>
-                        <label htmlFor='fileNcName' className='form__input-label'>
-                            ชื่อไฟล์ (หากมี)
-                        </label>
-
-                        <div className='form__input-file-upload'>
-                            {uploadProgression ? (
-                                <div style={{ width: '70%' }}>
-                                    <input
-                                        type='text'
-                                        className='upload-progression'
-                                        style={{
-                                            width: `${uploadProgression}%`,
-                                            color: 'white',
-                                            textAlign: 'center',
-                                        }}
-                                        value={`${uploadProgression}%`}
-                                        readOnly
-                                    />
-                                </div>
-                            ) : (
-                                <input
-                                    type='text'
-                                    name='fileNcName'
-                                    className='input'
-                                    readOnly
-                                    style={{ width: '70%', cursor: 'pointer' }}
-                                    onClick={handleOpenUploadBox}
-                                    value={
-                                        selectedFile
-                                            ? selectedFile.name
-                                            : nc
-                                                ? nc.fileNcName
-                                                : ''
-                                    }
-                                    ref={register}
-                                />
-                            )}
-
-                            <ButtonStyled>
-                                <Button
-                                    width='100%'
-                                    type='button'
-                                    onClick={handleOpenUploadBox}
-                                    disabled={loading}
-                                    style={{
-                                        borderRadius: '0px',
-                                        border: '1px solid #007bff',
-                                        background: '#007bff',
-                                    }}
-                                >
-                                    <span>แนบไฟล์<AttachFileIcon /></span>
-                                </Button>
-                            </ButtonStyled>
-
-                            <input
-                                type='file'
-                                ref={inputRef}
-                                style={{ display: 'none' }}
-                                onChange={handleSelectFile}
+                                cols={30}
+                                rows={4}
+                                name='detail'
+                                id='detail'
+                                defaultValue={nc.detail}
+                                ref={register({ required: 'โปรดใส่รายละเอียดความไม่สอดคล้อง/ข้อบกพร่อง' })}
                             />
                         </div>
-                    </div>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.detail?.message}</p>
+                        )}
 
-                    <Button
-                        type='submit'
-                        loading={loading}
-                        disabled={loading}
-                        width='100%'
-                        style={{ margin: '1rem 0rem 0rem' }}
-                    >
-                        บันทึก
-                    </Button>
-                </form>
+                        {/* Upload File */}
+                        <div className='form__input-container'>
+                            <label htmlFor='fileNcName' className='form__input-label'>
+                                ชื่อไฟล์ (หากมี)
+                            </label>
+
+                            <div className='form__input-file-upload'>
+                                {uploadProgression ? (
+                                    <div style={{ width: '70%' }}>
+                                        <input
+                                            type='text'
+                                            className='upload-progression'
+                                            style={{
+                                                width: `${uploadProgression}%`,
+                                                color: 'white',
+                                                textAlign: 'center',
+                                            }}
+                                            value={`${uploadProgression}%`}
+                                            readOnly
+                                        />
+                                    </div>
+                                ) : (
+                                    <input
+                                        type='text'
+                                        name='fileNcName'
+                                        className='input'
+                                        readOnly
+                                        style={{ width: '70%', cursor: 'pointer' }}
+                                        onClick={handleOpenUploadBox}
+                                        value={
+                                            selectedFile
+                                                ? selectedFile.name
+                                                : nc
+                                                    ? nc.fileNcName
+                                                    : ''
+                                        }
+                                        ref={register}
+                                    />
+                                )}
+
+                                <ButtonStyled>
+                                    <Button
+                                        width='100%'
+                                        type='button'
+                                        onClick={handleOpenUploadBox}
+                                        disabled={loading}
+                                        style={{
+                                            borderRadius: '0px',
+                                            border: '1px solid #007bff',
+                                            background: '#007bff',
+                                        }}
+                                    >
+                                        <span>แนบไฟล์<AttachFileIcon /></span>
+                                    </Button>
+                                </ButtonStyled>
+
+                                <input
+                                    type='file'
+                                    ref={inputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleSelectFile}
+                                />
+                            </div>
+                        </div>
+
+                        <Button
+                            type='submit'
+                            loading={loading}
+                            disabled={loading}
+                            width='100%'
+                            style={{ margin: '1rem 0rem 0rem' }}
+                        >
+                            บันทึก
+                        </Button>
+                    </form>
+                )}
+
                 {error && <p className='paragraph-error'>{error}</p>}
             </ModalStyled>
         </>
