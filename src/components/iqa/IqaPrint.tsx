@@ -27,6 +27,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
         code,
         createdAt,
         toName,
+        signature,
         inspector1,
         inspector2,
         inspector3,
@@ -51,6 +52,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
         editedDoc,
         docDetail,
         answerName,
+        signature: signatureAnswer,
         createdAt: answerAt
     } = iqaAnswer
 
@@ -344,6 +346,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                {signatureAnswer && <SignatureImage src={signatureAnswer} alt="signatureAnswer" />}
                                     <p>{answerName}</p>
                                     <p>ผู้ตอบ</p>
                                     <p>{formatDate(answerAt)}</p>
@@ -383,6 +386,7 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                    {signature && <SignatureImage src={signature} alt="signature" />}
                                     <p>{inspector1}</p>
                                     <p>ผู้ตรวจติดตาม</p>
                                     {follow?.followedAt && (
@@ -424,8 +428,9 @@ const IqaPrint: React.FC<Props> = ({ labelRef, iqaDetail, iqaAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
+                                    {approve?.signature && <SignatureImage src={approve.signature} alt="signature" />}
                                     <p>{approve?.qmrName}</p>
-                                    <p >QMR</p>
+                                    <p>QMR</p>
                                     {approve?.approvedAt && (
                                         <p>{formatDate(approve?.approvedAt)}</p>
                                     )}
@@ -496,11 +501,6 @@ const NcPrintStyled = styled.section`
     margin: 2rem 2rem 0rem 2rem;
     color: #000;
 
-    img {
-        padding: 10px;
-        width: 90px;
-    }
-
     h5 {
         font-size: 1.2rem;
         padding-right: 1rem;
@@ -514,11 +514,17 @@ const NcPrintStyled = styled.section`
     .header-left {
         border-right: 1px solid;
         width: 70%;
+
+        img {
+            padding: 10px;
+            width: 90px;
+        }
     }
 
     .header-right {
         text-align:right;
         padding-right: 10px;
+
         p {
             font-size: 12pt;
         }
@@ -641,6 +647,13 @@ const NcPrintStyled = styled.section`
         top: 0px;
         border-radius: 50%;
     }
+`
+
+const SignatureImage = styled.img`
+    margin: 1rem .5rem 0;
+    height: 60px;
+    width: 100%;
+    object-fit: cover;
 `
 
 export default IqaPrint

@@ -48,7 +48,8 @@ export const useManageAnswerIqa = () => {
     const addNewAnswerIqa = (
         data: AddAnswerIqaData,
         iqaId: string,
-        iqaCategory: CatIqa
+        iqaCategory: CatIqa,
+        signature: string
     ) => (
         fileAnswerIqaUrl: string | undefined,
         filePath: string | undefined
@@ -61,6 +62,7 @@ export const useManageAnswerIqa = () => {
                     const newAnswerIqa: UploadAnswerIqa = {
                         iqaId,
                         answerName: data.answerName,
+                        signature,
                         correctiveAction: data.correctiveAction,
                         correctiveDueDate: data.correctiveDueDate,
                         correctiveName: data.correctiveName,
@@ -97,6 +99,7 @@ export const useManageAnswerIqa = () => {
                     const newAnswerIqa: UploadAnswerIqa = {
                         iqaId,
                         answerName: data.answerName,
+                        signature,
                         containmentAction: data.containmentAction,
                         containmentDueDate: data.containmentDueDate,
                         containmentName: data.containmentName,
@@ -140,6 +143,7 @@ export const useManageAnswerIqa = () => {
                 const newAnswerIqa: UploadAnswerIqa = {
                     iqaId,
                     ...data,
+                    signature,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 }
 
@@ -173,7 +177,8 @@ export const useManageAnswerIqa = () => {
         data: AddAnswerIqaData,
         iqaId: string,
         iqaStatus: StatusNc,
-        iqaCategory: CatIqa
+        iqaCategory: CatIqa,
+        signature: string
     ) => (
         fileAnswerIqaUrl: string | undefined,
         filePath: string | undefined
@@ -186,6 +191,7 @@ export const useManageAnswerIqa = () => {
                     const editedAnswerIqa: UploadAnswerIqa = {
                         iqaId,
                         answerName: data.answerName,
+                        signature,
                         correctiveAction: data.correctiveAction,
                         correctiveDueDate: data.correctiveDueDate,
                         correctiveName: data.correctiveName,
@@ -238,6 +244,7 @@ export const useManageAnswerIqa = () => {
                     const editedAnswerIqa: UploadAnswerIqa = {
                         iqaId,
                         answerName: data.answerName,
+                        signature,
                         containmentAction: data.containmentAction,
                         containmentDueDate: data.containmentDueDate,
                         containmentName: data.containmentName,
@@ -295,6 +302,7 @@ export const useManageAnswerIqa = () => {
                 const editedAnswerIqa: UploadAnswerIqa = {
                     iqaId,
                     ...data,
+                    signature,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }
 

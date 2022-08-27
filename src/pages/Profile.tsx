@@ -42,7 +42,6 @@ const Profile: React.FC<Props> = () => {
         <MainLayout>
             <Title title={'Profile'} span={'Profile'} />
             <InnerLayout>
-                {loading}
                 <ProfileStyled>
                     <UserDetail>
                         <p><span>Username :</span> &nbsp;{userInfo?.username}</p>

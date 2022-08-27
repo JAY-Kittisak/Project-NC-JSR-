@@ -79,6 +79,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                             iqaStatus={iqa.iqaStatus}
                             iqaCategory={iqa.category}
                             approveEdit={approveEdit()}
+                            personnel={userInfo.personnel}
                         />
                         {answerError && <p className='paragraph-error'>!!Query Error IQA Answer : {answerError}</p>}
                     </section>
@@ -94,6 +95,7 @@ const IqAuditDetail: React.FC<Props> = () => {
                         iqaId={params.id}
                         approve={iqa.approve}
                         iqaStatus={iqa.iqaStatus}
+                        userInfo={userInfo}
                     />
 
                 </InnerLayout>
@@ -108,7 +110,11 @@ const IqAuditDetail: React.FC<Props> = () => {
                     />
                 </PrintStyled>
             )}
-            {openIqaForm && <EditIqa iqa={iqa} setOpenIqaForm={setOpenIqaForm} />}
+            {openIqaForm && <EditIqa 
+                iqa={iqa}
+                setOpenIqaForm={setOpenIqaForm}
+                personnel={userInfo.personnel}
+            />}
         </MainLayout>
     )
 }
@@ -187,6 +193,7 @@ const IqAuditDetailStyled = styled.div`
             padding: 0 .5rem;
             font-size: 1.2rem;
             color: inherit;
+            z-index: 2;
         }
         input{
             border: 1px solid var(--border-color);

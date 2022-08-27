@@ -14,7 +14,7 @@ import { categories, fileType } from '../../helpers';
 interface Props {
     nc: NcrNotify
     setOpenNcForm: (open: boolean) => void
-    personnel: Personnel[] | undefined
+    personnel?: Personnel[]
 }
 
 const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
@@ -68,7 +68,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
     }
 
     const handleEditNc = handleSubmit(async (data) => {
-        const signature = personnel?.find(item => item.personnelName === creatorName)
+        const signature = personnel?.find(item => item.personnelName === data.creatorName)
 
         if (!signature?.imageUrl) return alert('!Error No. image signature.')
 
@@ -193,7 +193,7 @@ const EditNc: React.FC<Props> = ({ nc, setOpenNcForm, personnel }) => {
                             {/* Creator Name */}
 
                             <div className='form__input-container'>
-                                <label htmlFor='dept' className='form__input-label'>
+                                <label htmlFor='creatorName' className='form__input-label'>
                                     ชื่อ-นามสกุล ผู้ออก NC
                                 </label>
                                 <select

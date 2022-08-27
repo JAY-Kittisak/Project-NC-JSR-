@@ -157,7 +157,7 @@ const ManageNcAnswer: React.FC<Props> = ({
                     data,
                     ncAnswer.ncId,
                     ncStatus,
-                    signature?.imageUrl
+                    signature.imageUrl
                 )
             )
         }

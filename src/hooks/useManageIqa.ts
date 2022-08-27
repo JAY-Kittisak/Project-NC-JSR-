@@ -65,6 +65,7 @@ export const useManageIqa = () => {
         creator: UserCreator,
         code: string,
         branch: Branch,
+        signature: string,
     ) => (
         fileIqaUrl: string | undefined,
         filePath: string | undefined
@@ -99,6 +100,7 @@ export const useManageIqa = () => {
                 checkedProcess,
                 requirements,
                 detail,
+                signature,
                 inspector1,
                 inspector2: inspector2 ? inspector2 : null,
                 inspector3: inspector3 ? inspector3 : null,
@@ -133,6 +135,7 @@ export const useManageIqa = () => {
                 checkedProcess,
                 requirements,
                 detail,
+                signature,
                 inspector1,
                 inspector2: inspector2 ? inspector2 : null,
                 inspector3: inspector3 ? inspector3 : null,
@@ -157,7 +160,8 @@ export const useManageIqa = () => {
 
     const editIqa = (
         iqaId: string,
-        data: EditIqaTypeData
+        data: EditIqaTypeData,
+        signature: string,
     ) => (
         fileIqaUrl: string | undefined,
         filePath: string | undefined
@@ -183,6 +187,7 @@ export const useManageIqa = () => {
 
         if (fileIqaUrl && filePath && fileIqaName) {
             const editedIqa: UploadEditIqa = {
+                signature,
                 inspector1,
                 inspector2: inspector2 ? inspector2 : null,
                 inspector3: inspector3 ? inspector3 : null,
@@ -216,6 +221,7 @@ export const useManageIqa = () => {
                 })
         } else {
             const editedIqa: UploadEditIqa = {
+                signature,
                 inspector1,
                 inspector2: inspector2 ? inspector2 : null,
                 inspector3: inspector3 ? inspector3 : null,
@@ -289,7 +295,11 @@ export const useManageIqa = () => {
         }
     }
 
-    const updateIqaApprove = async (iqaId: string, data: AddApproveIqaData) => {
+    const updateIqaApprove = async (
+        iqaId: string,
+        data: AddApproveIqaData,
+        signature: string
+    ) => {
         try {
             setLoading(true)
 
@@ -299,6 +309,7 @@ export const useManageIqa = () => {
                 approveIqa,
                 approveDetail,
                 qmrName,
+                signature,
                 approvedAt: firebase.firestore.FieldValue.serverTimestamp()
             }
 

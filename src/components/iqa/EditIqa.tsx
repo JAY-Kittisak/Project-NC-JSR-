@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useForm } from 'react-hook-form'
 import AttachFileIcon from "@material-ui/icons/AttachFile"
 
-import { IqaType, EditIqaTypeData } from '../../types'
+import { IqaType, EditIqaTypeData, Personnel } from '../../types'
 import { selectTeams, requirements, fileType } from '../../helpers'
 import { useDepartmentsContext } from '../../state/dept-context'
 import { useDepartmentsCdcContext } from '../../state/dept-cdc-context'
@@ -15,11 +15,12 @@ import Button from '../Button';
 interface Props {
     iqa: IqaType
     setOpenIqaForm: (open: boolean) => void
+    personnel?: Personnel[]
 }
 
-const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
+const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm, personnel }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
-    
+
     const {
         register,
         handleSubmit,
@@ -72,6 +73,10 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
     }
 
     const handleEditIqa = handleSubmit(async (data) => {
+        const signature = personnel?.find(item => item.personnelName === data.inspector1)
+
+        if (!signature?.imageUrl) return alert('!Error No. image signature.')
+
         const {
             id,
             inspector1,
@@ -91,7 +96,7 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
             fileIqaRef
         } = iqa
 
-        const isNotEdited = 
+        const isNotEdited =
             inspector1 === data.inspector1 &&
             inspector2 === (data.inspector2 ? data.inspector2 : null) &&
             inspector3 === (data.inspector3 ? data.inspector3 : null) &&
@@ -120,13 +125,13 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
                 const oldFileRef = storageRef.child(fileIqaRef)
                 await oldFileRef.delete()
 
-                return uploadFileToStorage(selectedFile,editIqa(id, data))
+                return uploadFileToStorage(selectedFile, editIqa(id, data, signature.imageUrl))
             } else {
                 // The image has not been changed
-                return editIqa(id, data)(fileIqaUrl, fileIqaRef)
+                return editIqa(id, data, signature.imageUrl)(fileIqaUrl, fileIqaRef)
             }
         } else {
-            return uploadFileToStorage(selectedFile,editIqa(id, data))
+            return uploadFileToStorage(selectedFile, editIqa(id, data, signature.imageUrl))
         }
     })
 
@@ -141,12 +146,12 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
     useEffect(() => {
         document.documentElement.style.overflowY = 'hidden'
         return () => { document.documentElement.style.overflowY = 'auto' }
-    }, []) 
+    }, [])
 
     return (
         <>
-        <EditIqaStyled></EditIqaStyled>
-        <ModalStyled>
+            <EditIqaStyled></EditIqaStyled>
+            <ModalStyled>
                 <div
                     className='modal-close'
                     onClick={() => {
@@ -156,175 +161,190 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
                     &times;
                 </div>
                 <h3>แก้ไข IQA เลขที่ {iqa.code}</h3>
-                <form onSubmit={handleEditIqa}>
-                    {/* inspector1 */}
-                    <GridStyled>
-                            <Input
-                                label='ชื่อผู้ตรวจ/พบ 1'
-                                name='inspector1'
-                                defaultValue={iqa.inspector1}
-                                ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
-                                error={errors.inspector1?.message}
-                            />
+
+                {!personnel ? (
+                    <p className='paragraph-error'>!โปรดเพิ่มชื่อผู้ใช้งานที่ Profile ของคุณ</p>
+                ) : (
+                    <form onSubmit={handleEditIqa}>
+                        {/* inspector1 */}
+                        <GridStyled>
+                            <div className='form__input-container'>
+                                <label htmlFor='inspector1' className='form__input-label'>
+                                    ชื่อผู้ตรวจ/พบ 1
+                                </label>
+                                <select
+                                    name='inspector1'
+                                    className='input'
+                                    defaultValue={iqa.inspector1}
+                                    ref={register({ required: 'โปรดใส่ ชื่อ-นามสกุล' })}
+                                >
+                                    <option style={{ display: 'none' }}>{iqa.inspector1}</option>
+                                    {(personnel && personnel.length > 0) && personnel.map((item, i) => (
+                                        <option key={i} value={item.personnelName}>
+                                            {item.personnelName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <Input
                                 label='ชื่อผู้ตรวจ/พบ 2'
                                 name='inspector2'
                                 ref={register}
                             />
-                    </GridStyled>
+                        </GridStyled>
 
-                    {/* inspector3 */}
-                    <GridStyled>
-                        <Input
-                            label='ชื่อผู้ตรวจ/พบ 3'
-                            name='inspector3'
-                            ref={register}
-                        />
-                        <Input
-                            label='ชื่อผู้ตรวจ/พบ 4'
-                            name='inspector4'
-                            ref={register}
-                        />
-                    </GridStyled>
-                    
-                    <GridCarStyled>
-                        <div className="flex-between">
-                            {/* Category */}
+                        {/* inspector3 */}
+                        <GridStyled>
+                            <Input
+                                label='ชื่อผู้ตรวจ/พบ 3'
+                                name='inspector3'
+                                ref={register}
+                            />
+                            <Input
+                                label='ชื่อผู้ตรวจ/พบ 4'
+                                name='inspector4'
+                                ref={register}
+                            />
+                        </GridStyled>
+
+                        <GridCarStyled>
+                            <div className="flex-between">
+                                {/* Category */}
+                                <div className='form__input-container'>
+                                    <label htmlFor='category' className='form__input-label'>
+                                        CAR/OBS
+                                    </label>
+                                    <select
+                                        id='category'
+                                        name='category'
+                                        className='input'
+                                        defaultValue={iqa.category}
+                                        ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    >
+                                        <option style={{ display: 'none' }}></option>
+                                        <option value='CAR'>CAR</option>
+                                        <option value='OBS'>OBS</option>
+                                    </select>
+                                </div>
+
+                                {/* team */}
+                                <div className='form__input-container'>
+                                    <label htmlFor='team' className='form__input-label'>
+                                        ทีม
+                                    </label>
+                                    <select
+                                        id='team'
+                                        name='team'
+                                        className='input'
+                                        defaultValue={iqa.team}
+                                        ref={register({ required: 'โปรดใส่ทีม' })}
+                                    >
+                                        <option style={{ display: 'none' }}></option>
+                                        {selectTeams.map((item, i) => {
+                                            return (
+                                                <option key={i} value={item}>ทีม {item}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* round */}
                             <div className='form__input-container'>
-                                <label htmlFor='category' className='form__input-label'>
-                                    CAR/OBS
+                                <label htmlFor='round' className='form__input-label'>
+                                    รอบที่ตรวจประจำปี
                                 </label>
                                 <select
-                                    id='category'
-                                    name='category'
+                                    id='round'
+                                    name='round'
                                     className='input'
-                                    defaultValue={iqa.category}
-                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก NC ให้' })}
+                                    defaultValue={iqa.round}
+                                    ref={register({ required: 'โปรดใส่รอบที่ตรวจ' })}
                                 >
                                     <option style={{ display: 'none' }}></option>
-                                    <option value='CAR'>CAR</option>
-                                    <option value='OBS'>OBS</option>
+                                    <option value='1'>รอบที่ 1</option>
+                                    <option value='2'>รอบที่ 2</option>
                                 </select>
                             </div>
-
-                            {/* team */}
-                            <div className='form__input-container'>
-                                <label htmlFor='team' className='form__input-label'>
-                                    ทีม
-                                </label>
-                                <select
-                                    id='team'
-                                    name='team'
-                                    className='input'
-                                    defaultValue={iqa.team}
-                                    ref={register({ required: 'โปรดใส่ทีม' })}
-                                >
-                                    <option style={{ display: 'none' }}></option>
-                                    {selectTeams.map((item,i) => {
-                                        return (
-                                            <option key={i} value={item}>ทีม {item}</option>
-                                        )
-                                    })}
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* round */}
-                        <div className='form__input-container'>
-                            <label htmlFor='round' className='form__input-label'>
-                                รอบที่ตรวจประจำปี
-                            </label>
-                            <select
-                                id='round'
-                                name='round'
-                                className='input'
-                                defaultValue={iqa.round}
-                                ref={register({ required: 'โปรดใส่รอบที่ตรวจ' })}
-                            >
-                                <option style={{ display: 'none' }}></option>
-                                <option value='1'>รอบที่ 1</option>
-                                <option value='2'>รอบที่ 2</option>
-                             </select>
-                        </div>
-                    </GridCarStyled>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.team?.message}</p>
-                    )}
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.category?.message}</p>
-                    )}
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.round?.message}</p>
-                    )}
-
-                    {/* ถึงชื่อ & แผนก*/}
-                    <GridStyled>
-                        <Input
-                            label='ถึงชื่อ-นามสกุล'
-                            name='toName'
-                            defaultValue={iqa.toName}
-                            ref={register({ required: 'โปรดใส่ ถึงชื่อ-นามสกุล' })}
-                            error={errors.toName?.message}
-                        />
-
-                        {iqa.branch === 'ลาดกระบัง' ? (
-                            departments && <div className='form__input-container'>
-                                <label htmlFor='dept' className='form__input-label'>
-                                    ถึงแผนก
-                                </label>
-                                <select
-                                    id='dept'
-                                    name='dept'
-                                    className='input'
-                                    defaultValue={iqa.dept}
-                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
-                                >
-                                    {departments.map((cat) => (
-                                        <option key={cat.id} value={cat.dept}>
-                                            {cat.dept}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        ) : (
-                            deptCdc && <div className='form__input-container'>
-                                <label htmlFor='dept' className='form__input-label'>
-                                    ถึงแผนก
-                                </label>
-                                <select
-                                    id='dept'
-                                    name='dept'
-                                    className='input'
-                                    defaultValue={iqa.dept}
-                                    ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
-                                >
-                                    <option style={{ display: 'none' }}></option>
-                                    {deptCdc.map((cat) => (
-                                        <option key={cat.id} value={cat.dept}>
-                                            {cat.dept}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                        </GridCarStyled>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.team?.message}</p>
                         )}
-                    </GridStyled>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.dept?.message}</p>
-                    )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.category?.message}</p>
+                        )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.round?.message}</p>
+                        )}
 
-                    {/* กระบวนการถูกตรวจ & ผิดข้อกำหนด*/}
-                    <GridStyled>
-                        <Input
-                            label='กระบวนการถูกตรวจ'
-                            name='checkedProcess'
-                            defaultValue={iqa.checkedProcess}
-                            ref={register({ required: 'โปรดใส่ชื่อกระบวนการถูกตรวจ' })}
-                            error={errors.checkedProcess?.message}
-                        />
+                        {/* ถึงชื่อ & แผนก*/}
+                        <GridStyled>
+                            <Input
+                                label='ถึงชื่อ-นามสกุล'
+                                name='toName'
+                                defaultValue={iqa.toName}
+                                ref={register({ required: 'โปรดใส่ ถึงชื่อ-นามสกุล' })}
+                                error={errors.toName?.message}
+                            />
 
-                        <div className='form__input-container'>
+                            {iqa.branch === 'ลาดกระบัง' ? (
+                                departments && <div className='form__input-container'>
+                                    <label htmlFor='dept' className='form__input-label'>
+                                        ถึงแผนก
+                                    </label>
+                                    <select
+                                        id='dept'
+                                        name='dept'
+                                        className='input'
+                                        defaultValue={iqa.dept}
+                                        ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
+                                    >
+                                        {departments.map((cat) => (
+                                            <option key={cat.id} value={cat.dept}>
+                                                {cat.dept}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ) : (
+                                deptCdc && <div className='form__input-container'>
+                                    <label htmlFor='dept' className='form__input-label'>
+                                        ถึงแผนก
+                                    </label>
+                                    <select
+                                        id='dept'
+                                        name='dept'
+                                        className='input'
+                                        defaultValue={iqa.dept}
+                                        ref={register({ required: 'โปรดใส่แผนกที่คุณจะออก IQA ให้' })}
+                                    >
+                                        <option style={{ display: 'none' }}></option>
+                                        {deptCdc.map((cat) => (
+                                            <option key={cat.id} value={cat.dept}>
+                                                {cat.dept}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </GridStyled>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.dept?.message}</p>
+                        )}
+
+                        {/* กระบวนการถูกตรวจ & ผิดข้อกำหนด*/}
+                        <GridStyled>
+                            <Input
+                                label='กระบวนการถูกตรวจ'
+                                name='checkedProcess'
+                                defaultValue={iqa.checkedProcess}
+                                ref={register({ required: 'โปรดใส่ชื่อกระบวนการถูกตรวจ' })}
+                                error={errors.checkedProcess?.message}
+                            />
+
+                            <div className='form__input-container'>
                                 <label htmlFor='requirements' className='form__input-label'>
-                                ผิดข้อกำหนด ISO 9001 ข้อที่
+                                    ผิดข้อกำหนด ISO 9001 ข้อที่
                                 </label>
                                 <select
                                     id='requirements'
@@ -339,110 +359,111 @@ const EditIqa: React.FC<Props> = ({ iqa, setOpenIqaForm }) => {
                                     ))}
                                 </select>
                             </div>
-                    </GridStyled>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.checkedProcess?.message}</p>
-                    )}
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.requirements?.message}</p>
-                    )}
+                        </GridStyled>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.checkedProcess?.message}</p>
+                        )}
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.requirements?.message}</p>
+                        )}
 
-                    {/* Detail */}
-                    <div className='form__input-container'>
-                        <label htmlFor='detail' className='form__input-label'>
-                            รายละเอียดข้อบกพร่อง
-                        </label>
-                        <textarea
-                            id='detail'
-                            className='input'
-                            rows={4}
-                            name='detail'
-                            defaultValue={iqa.detail}
-                            ref={register({ required: 'โปรดใส่รายละเอียดข้อบกพร่อง' })}
-                        />
-                    </div>
-                    {errors && (
-                        <p className='paragraph-error text-center'>{errors.detail?.message}</p>
-                    )}
-
-                    {/* Upload File */}
-                    <div className='form__input-container'>
-                        <label htmlFor='fileIqaName' className='form__input-label'>
-                            ชื่อไฟล์ (หากมี)
-                        </label>
-
-                        <div className='form__input-file-upload'>
-                            {uploadProgression ? (
-                                <div style={{ width: '70%' }}>
-                                    <input
-                                        type='text'
-                                        className='upload-progression'
-                                        style={{
-                                            width: `${uploadProgression}%`,
-                                            color: 'white',
-                                            textAlign: 'center',
-                                        }}
-                                        value={`${uploadProgression}%`}
-                                        readOnly
-                                    />
-                                </div>
-                            ) : (
-                                <input
-                                    type='text'
-                                    name='fileIqaName'
-                                    className='input'
-                                    readOnly
-                                    style={{ width: '70%', cursor: 'pointer' }}
-                                    onClick={handleOpenUploadBox}
-                                    value={
-                                        selectedFile
-                                            ? selectedFile.name
-                                            : iqa
-                                                ? iqa.fileIqaName
-                                                : ''
-                                    }
-                                    ref={register}
-                                />
-                            )}
-
-                            <ButtonStyled>
-                                <Button
-                                    width='100%'
-                                    type='button'
-                                    onClick={handleOpenUploadBox}
-                                    disabled={loading}
-                                    style={{
-                                        borderRadius: '0px',
-                                        border: '1px solid #007bff',
-                                        background: '#007bff',
-                                    }}
-                                >
-                                    <span>แนบไฟล์<AttachFileIcon /></span>
-                                </Button>
-                            </ButtonStyled>
-
-                            <input
-                                type='file'
-                                ref={inputRef}
-                                style={{ display: 'none' }}
-                                onChange={handleSelectFile}
+                        {/* Detail */}
+                        <div className='form__input-container'>
+                            <label htmlFor='detail' className='form__input-label'>
+                                รายละเอียดข้อบกพร่อง
+                            </label>
+                            <textarea
+                                id='detail'
+                                className='input'
+                                rows={4}
+                                name='detail'
+                                defaultValue={iqa.detail}
+                                ref={register({ required: 'โปรดใส่รายละเอียดข้อบกพร่อง' })}
                             />
                         </div>
-                    </div>
+                        {errors && (
+                            <p className='paragraph-error text-center'>{errors.detail?.message}</p>
+                        )}
 
-                    <Button
-                        type='submit'
-                        loading={loading}
-                        disabled={loading}
-                        width='100%'
-                        style={{ margin: '1rem 0rem 0rem' }}
-                    >
-                        บันทึก
-                    </Button>
+                        {/* Upload File */}
+                        <div className='form__input-container'>
+                            <label htmlFor='fileIqaName' className='form__input-label'>
+                                ชื่อไฟล์ (หากมี)
+                            </label>
 
-                </form>
+                            <div className='form__input-file-upload'>
+                                {uploadProgression ? (
+                                    <div style={{ width: '70%' }}>
+                                        <input
+                                            type='text'
+                                            className='upload-progression'
+                                            style={{
+                                                width: `${uploadProgression}%`,
+                                                color: 'white',
+                                                textAlign: 'center',
+                                            }}
+                                            value={`${uploadProgression}%`}
+                                            readOnly
+                                        />
+                                    </div>
+                                ) : (
+                                    <input
+                                        type='text'
+                                        name='fileIqaName'
+                                        className='input'
+                                        readOnly
+                                        style={{ width: '70%', cursor: 'pointer' }}
+                                        onClick={handleOpenUploadBox}
+                                        value={
+                                            selectedFile
+                                                ? selectedFile.name
+                                                : iqa
+                                                    ? iqa.fileIqaName
+                                                    : ''
+                                        }
+                                        ref={register}
+                                    />
+                                )}
+
+                                <ButtonStyled>
+                                    <Button
+                                        width='100%'
+                                        type='button'
+                                        onClick={handleOpenUploadBox}
+                                        disabled={loading}
+                                        style={{
+                                            borderRadius: '0px',
+                                            border: '1px solid #007bff',
+                                            background: '#007bff',
+                                        }}
+                                    >
+                                        <span>แนบไฟล์<AttachFileIcon /></span>
+                                    </Button>
+                                </ButtonStyled>
+
+                                <input
+                                    type='file'
+                                    ref={inputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleSelectFile}
+                                />
+                            </div>
+                        </div>
+
+                        <Button
+                            type='submit'
+                            loading={loading}
+                            disabled={loading}
+                            width='100%'
+                            style={{ margin: '1rem 0rem 0rem' }}
+                        >
+                            บันทึก
+                        </Button>
+
+                    </form>
+                )}
                 {error && <p className='paragraph-error'>{error}</p>}
-        </ModalStyled>
+            </ModalStyled>
         </>
     )
 }

@@ -257,6 +257,7 @@ export type ApproveIqa = {
     approveIqa: Approve
     approveDetail?: string
     qmrName: string
+    signature?: string
     approvedAt: firebase.firestore.Timestamp
 }
 export type IqaType = {
@@ -267,6 +268,7 @@ export type IqaType = {
     dept: string
     checkedProcess: string
     requirements: Requirements
+    signature?: string
     inspector1: string
     inspector2: string | null
     inspector3: string | null
@@ -347,6 +349,7 @@ export type IqaAnswer = {
     id: string
     iqaId: string
     answerName: string
+    signature?: string
     containmentAction?: string
     containmentDueDate?: string
     containmentName?: string
