@@ -249,7 +249,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
-                                    {signatureAnswer && <SignatureImage src={signatureAnswer} alt="signatureAnswer" />}
+                                    {signatureAnswer && <SignatureImage src={signatureAnswer} alt="signature-answer" />}
                                     <p>{answerName}</p>
                                     <p>ผู้ตอบ NC</p>
                                     <p>{formatDate(answerAt)}</p>
@@ -289,7 +289,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
-                                    {signature && <SignatureImage src={signature} alt="signature" />}
+                                    {signature && <SignatureImage src={signature} alt="signature-create" />}
                                     <p>{creatorName}</p>
                                     <p>ผู้ออก NC</p>
                                     {follow?.followedAt && (
@@ -331,7 +331,7 @@ const NcPrint: React.FC<Props> = ({ labelRef, ncDetail, ncAnswer }) => {
                             </WidthStyled>
                             <TwentyFive height='100%'>
                                 <div>
-                                    {approve?.signature && <SignatureImage src={approve.signature} alt="signature" />}
+                                    {approve?.signature && <SignatureImage src={approve.signature} alt="signature-qmr" />}
                                     <p>{approve?.qmrName}</p>
                                     <p >QMR</p>
 
@@ -539,8 +539,9 @@ const NcPrintStyled = styled.section`
 `
 
 const SignatureImage = styled.img`
-    height: 60px;
-    width: 99%;
+    margin-top: 1rem;
+    height: 50px;
+    width: 98%;
     object-fit: cover;
 `
 

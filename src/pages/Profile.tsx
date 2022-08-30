@@ -3,40 +3,22 @@ import styled from 'styled-components'
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
-import { MainLayout,InnerLayout, SpinnerStyled } from '../styles/LayoutStyle'
+import { MainLayout, InnerLayout } from '../styles/LayoutStyle'
 import Title from '../components/Title'
 import { useAuthContext } from '../state/auth-context'
 import AddAndEditPersonnel from '../components/manage-users/AddAndEditPersonnel';
 import { Personnel } from '../types'
-import { useManagePersonnel } from '../hooks/useManagePersonnel';
-import { storageRef } from '../firebase/config'
-import Spinner from '../components/Spinner';
+import DeletePersonnel from '../components/manage-users/DeletePersonnel';
 
 interface Props { }
 
 const Profile: React.FC<Props> = () => {
     const [openDialog, setOpenDialog] = useState(false)
     const [personnelToEdit, setPersonnelToEdit] = useState<Personnel | null>(null)
+    const [confirmDialog, setConfirmDialog] = useState(false)
+    const [personnelToDelete, setPersonnelToDelete] = useState<Personnel | null>(null)
 
     const { authState: { userInfo } } = useAuthContext()
-
-    const {
-        deletePersonnel,
-        loading,
-        error
-    } = useManagePersonnel()
-    
-
-    if (loading) return (
-        <SpinnerStyled>
-            <div className='typography'>
-                <Spinner color='#007bff' height={50} width={50} />
-                <span>Loading... </span>
-            </div>
-        </SpinnerStyled>
-    )
-
-    if (error) return <h2 className='header--center'>{error}</h2>
 
     return (
         <MainLayout>
@@ -55,22 +37,31 @@ const Profile: React.FC<Props> = () => {
                     <UserCard>
                         <h4>รายชื่อผู้ใช้งาน</h4>
 
-                        {userInfo?.personnel 
-                            && (userInfo?.personnel?.length > 0) 
-                            && userInfo?.personnel.map((item,index) => (
+                        {userInfo?.personnel
+                            && (userInfo?.personnel?.length > 0)
+                            && userInfo?.personnel.map((item, index) => (
                                 <div key={index} className='user-item'>
-                                    <p>{index+1}. {item.personnelName}</p>
-                                    <EditIcon onClick={() => {
-                                        setPersonnelToEdit({...item, index})
-                                        setOpenDialog(true)
-                                    }}/>
-                                    <DeleteIcon onClick={() => {
-                                        deletePersonnel(index, userInfo)
-                                        const oldImageRef = storageRef.child(item.imageRef)
-                                        oldImageRef.delete()
-                                    }}/>
+                                    <p>{index + 1}. {item.personnelName}</p>
+                                    <div className='icon edit-icon'>
+                                        <div className='tooltip'>Edit</div>
+                                        <span onClick={() => {
+                                            setPersonnelToEdit({ ...item, index })
+                                            setOpenDialog(true)
+                                        }}>
+                                            <EditIcon/>
+                                        </span>
+                                    </div>
+                                    <div className='icon delete-icon'>
+                                        <div className='tooltip'>Delete</div>
+                                        <span onClick={() => {
+                                            setPersonnelToDelete({ ...item, index })
+                                            setConfirmDialog(true)
+                                        }}>
+                                            <DeleteIcon/>
+                                        </span>
+                                    </div>
                                 </div>
-                        ))}
+                            ))}
 
                         <div className='button-add'>
                             <ButtonAdd onClick={() => setOpenDialog(true)}>
@@ -79,14 +70,21 @@ const Profile: React.FC<Props> = () => {
                         </div>
                     </UserCard>
 
-                    {openDialog && 
-                        <AddAndEditPersonnel 
+                    {openDialog &&
+                        <AddAndEditPersonnel
                             userInfo={userInfo}
                             setOpenDialog={setOpenDialog}
                             personnelToEdit={personnelToEdit}
                             setPersonnelToEdit={setPersonnelToEdit}
                         />
                     }
+                    {confirmDialog &&
+                        <DeletePersonnel
+                            userInfo={userInfo}
+                            personnel={personnelToDelete}
+                            setConfirmDialog={setConfirmDialog}
+                            setPersonnelToDelete={setPersonnelToDelete}
+                        />}
                 </ProfileStyled>
             </InnerLayout>
         </MainLayout>
@@ -127,32 +125,84 @@ const UserCard = styled.div`
         display: flex;
         align-items: center;
         padding-top: .5rem;
-
-        svg {
-            margin-left: .5rem;
-            cursor: pointer;
-            color: white;
-            border-radius: 5px;
-            box-shadow: 5px 3px 3px rgba(0, 0, 0, .5);
-            transition: all 0.3s ease 0s;
-        }
-
-        svg:hover {
-            transform: translateY(-3px);
-        }
-
-        svg:nth-child(2) {
-            background-color: #FFC107;
-        }
-
-        svg:nth-child(3) {
-            background-color: red;
-        }
-
+        
         p {
             width: 350px;
             font-size: 1.3rem;
             padding-left: 3rem;
+        } 
+
+        .icon {
+            position: relative;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+
+        .icon .tooltip {
+            position: absolute;
+            top: -30px;
+            background-color: #fff;
+            color: #fff;
+            font-size: 16px;
+            padding: 5px 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+
+        .tooltip:before {
+            position: absolute;
+            content: "";
+            height: 10px;
+            width: 10px;
+            background-color: #fff;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+
+        .icon:hover .tooltip {
+            top: -45px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .icon span {
+            position: relative;
+            padding-top: 5px;
+            text-align: center;
+            border-radius: 3px;
+            z-index: 2;
+        }
+
+        .icon:hover span{
+            color: #fff;
+        }
+        
+        .icon:hover span,
+        .icon:hover .tooltip {
+            text-shadow: 0px -1px 0px rgba(0,0,0,0.4);
+        }
+
+        .edit-icon:hover span,
+        .edit-icon:hover .tooltip,
+        .edit-icon:hover .tooltip:before {
+            background-color: #FFA500;
+        }
+
+        .delete-icon:hover span,
+        .delete-icon:hover .tooltip,
+        .delete-icon:hover .tooltip:before {
+            background-color: #DE463B;
         }
     }
 

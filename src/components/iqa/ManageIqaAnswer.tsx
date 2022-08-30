@@ -102,7 +102,7 @@ const ManageIqaAnswer: React.FC<Props> = ({
             fileAnswerIqaUrl,
             fileAnswerIqaName,
             fileAnswerIqaRef,
-            docDetail,
+            docDetail
         } = iqaAnswer
 
         const isNotEdited =
@@ -437,7 +437,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                                         color: 'white',
                                                         textAlign: 'center',
                                                     }}
-                                                    // uploadProgression={uploadProgression}
                                                     value={`${uploadProgression}%`}
                                                 />
                                             </>
@@ -461,10 +460,6 @@ const ManageIqaAnswer: React.FC<Props> = ({
                                                     }
                                                     ref={register}
                                                 />
-                                                {/* ref={register({ required: 'โปรดแนบไฟล์ของคุณ' })}
-                                            {errors && (
-                                                <p className='paragraph-error text-center'>{errors.fileAnswerIqaName?.message}</p>
-                                            )} */}
                                                 {errors && (
                                                     <p className='paragraph-error text-center'>{errors.fileAnswerIqaName?.message}</p>
                                                 )}

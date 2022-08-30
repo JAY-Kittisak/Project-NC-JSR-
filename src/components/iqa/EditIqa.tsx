@@ -499,7 +499,7 @@ const EditIqaStyled = styled.div`
     bottom: 0;
     background: rgb(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);
-    z-index: 1;
+    z-index: 2;
 `;
 
 const ModalStyled = styled.div`
@@ -513,7 +513,7 @@ const ModalStyled = styled.div`
     animation: appear 0.4s linear;
     position: fixed;
     min-width: 40rem;
-    z-index: 1;
+    z-index: 3;
     
     @keyframes appear {
         from {

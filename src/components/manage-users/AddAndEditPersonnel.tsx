@@ -3,11 +3,12 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components'
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
-import Button from '../Button';
-import { fileType } from '../../helpers'
+import Button from '../Button'
 import { UserInfo, PersonnelInput, Personnel } from '../../types'
 import { useManagePersonnel } from '../../hooks/useManagePersonnel'
 import { storageRef } from '../../firebase/config'
+
+const typeSignature = ['image/png', 'image/jpeg', 'image/jpg']
 
 interface Props {
     userInfo: UserInfo | null
@@ -50,7 +51,7 @@ const AddAndEditPersonnel: React.FC<Props> = ({
 
         const file = files[0]
 
-        if (!fileType.includes(file.type)) {
+        if (!typeSignature.includes(file.type)) {
             alert('Wrong file format, allow only ".png",".jpeg",".jpg" and ".pdf".')
             return
         }
