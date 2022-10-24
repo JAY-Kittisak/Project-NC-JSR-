@@ -97,7 +97,7 @@ const NcChartDept: React.FC<Props> = ({ ncToDept, branchChart , deptChart}) => {
 
         const topics = ncToDept.map(item => item.topic)
         
-        const onlyTopics = new Set(ncToDept.map(item => item.topic))
+        const onlyTopics = new Set(topics)
         
         let valuesPieChart: ValueDept[] = []
 
